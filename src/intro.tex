@@ -8,13 +8,11 @@
 %"The problems of the world cannot possibly be solved by skeptics or cynics whose horizons are limited by the obvious realities. We need men who can dream of things that never were and ask why not?" \\ \emph{John F. Kennedy}
 %\end{flushright}
 %}
+%\vspace{+10pt}
 %%%%
 
-\vspace{+10pt}
 
-
-\section{Limitation of traditional robotic systems}
-\label{sec:limitationOfTraditionnalRoboticSystems}
+In many robotic systems, actuators are often required to operate in distinctively different torque-speed load conditions. Machine tools, for instance, are usually either moving at high-speed unloaded during reaching phases, or moving slowly applying large forces during manufacturing operations (see Fig. \ref{fig:machinetool}). Also a legged robot, for example, has to move its leg forward quickly through the air and, once touching the ground, it has to bear a large load (see Fig. \ref{fig:leggedrobot}), or a gripper needs to reach the part quickly and then has to apply large holding forces (see Fig. \ref{fig:gripper}). These two operating conditions, high speed at low torque vs. high torque at low speed, are often an order of magnitude different, while the required output power is similarly low.
 
 %
 \begin{figure}[H]
@@ -33,9 +31,40 @@
 				\label{fig:app}
 \end{figure}
 
+This discrepancy in requirements is problematic as most actuators will be operating far for their optimal conditions with a gear ratio picked from a middle ground. Electromagnetic actuators are not optimal in term of efficiency and power output at extremum torque-speed conditions. This often leads to the use of over-sized and inefficient actuators, which is inhibitory particularly for mobile robots.
+
+
+\section{Limitation of traditional robotic systems}
+\label{sec:limitationOfTraditionnalRoboticSystems}
+
+Electric motor have a power efficiency of about 200 W/Kg
+
 
 \section{Proposed solution: Robots using multiple gear-ratio actuators}
 \label{sec:ProposedSolutionRobotsUsingMultipleGearRatioActuators}
+
+
+To meet the power requirement of all operating points with small actuators, it is proposed to use electric motors coupled to a gearbox with two drastically different gear ratio, see Fig. \ref{fig:2s}. 
+
+\begin{figure}[htb]
+        \centering
+				\subfloat[two drastically different reduction ratios]{
+				\includegraphics[width=0.35\textwidth]{2speed.png}}
+        \subfloat[discrete operating modes]{
+				\includegraphics[width=0.40\textwidth]{1DOFmodes.png}}
+        \caption{Dual-speed actuator}\label{fig:2s}
+\end{figure}
+
+
+The two main advantage of the approach are: \textbf{good power output and efficiency for a wide range of output speeds} and \textbf{radical changes of intrinsic impedance} (goes with the square of the reduction ratio). 
+
+\subsection{Features of gear-shifting in a robotic context}
+
+\paragraph{Power output and efficiency}
+In many situation, using multiple gear ratios allows for the downsizing of the motors while still meeting required forces/speeds capabilities. Furthermore, by actively selecting gearing ratios to keep motors in efficient regimes, the energy consumption of a robot can be greatly reduced. 
+
+\paragraph{Radical changes of intrinsic impedance}
+The gearing ratio has a radical effect on the output impedance of a robot; the motor inertia and viscous damping are reflected to the output proportionally with the square of the gearing ratio. Gear-shifting can thus also be used as an alternative approach to variable impedance actuation. A two-speed actuator could be made back-drivable by selecting the small reduction ratio, to interact safely with the environment and to make use of the natural dynamic behavior of a robot.  Alternatively, a two-speed actuator could be made non-back-drivable by selecting the large reduction ratio, to rejected disturbances or to hold a weight without consuming power.
 
 
 \begin{figure}[H]
