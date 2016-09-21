@@ -19,13 +19,13 @@ In many robotic systems, actuators are often required to operate in distinctivel
 				\vspace{-10pt}
         \centering
 				\subfloat[Machine tool]{
-				\includegraphics[width=0.25\textwidth]{machinetool.png}
+				\includegraphics[width=0.30\textwidth]{machinetool.png}
 				\label{fig:machinetool}}
         \subfloat[Legged robot]{
-				\includegraphics[width=0.25\textwidth]{leggedrobot.png}
+				\includegraphics[width=0.30\textwidth]{leggedrobot.png}
 				\label{fig:leggedrobot}}
 				\subfloat[Gripper]{
-				\includegraphics[width=0.25\textwidth]{gripper.png}
+				\includegraphics[width=0.30\textwidth]{gripper.png}
 				\label{fig:gripper}}
         \caption{Robotics system encountering very different load situation}
 				\label{fig:app}
@@ -34,13 +34,21 @@ In many robotic systems, actuators are often required to operate in distinctivel
 This discrepancy in requirements is problematic as most actuators will be operating far for their optimal conditions with a gear ratio picked from a middle ground. Electromagnetic actuators are not optimal in term of efficiency and power output at extremum torque-speed conditions. This often leads to the use of over-sized and inefficient actuators, which is inhibitory particularly for mobile robots.
 
 
-\section{Limitation of traditional robotic systems}
+\section{Limitation of traditional actuation systems}
 \label{sec:limitationOfTraditionnalRoboticSystems}
 
 Electric motor have a power efficiency of about 200 W/Kg
 
+actuator review here
 
-\section{Proposed solution: Robots using multiple gear-ratio actuators}
+Traditional robots generally use actuators that behave as displacement-sources because of their high intrinsic impedance. These include geared EM motors and hydraulics cylinders. Using a force sensor, it is possible to control the output force using those actuators, but the bandwidth is rather limited. To guarantee the stability of the force-feedback scheme only half the intrinsic inertia can be canceled \cite{hogan_impedance_2004}. Since 70's, roboticists have been attempting to build actuators that can behave naturally as a force-source such as series-elastic actuators, pneumatic cylinder and air-muscles \cite{hanafusa_stable_1977}\cite{pratt_series_1995}. However, because of the physical limitation of compliant transmission materials, the achievable bandwidth is limited and precise position control is hardly achievable. Direct drive EM actuators are the best force-source actuators with high fidelity, high bandwidth. However, the very low force density and low efficiency at low speeds make them impractical for mobile robot applications \cite{hollerbach_comparative_1992}. Moreover, on the other hand, actuators with non-back-drivable mechanisms have the advantage for pure position control tasks and they can bear very large load without any power consumption.
+
+Since both small and large intrinsic impedances are advantageous in different scenario, several group have developed variable intrinsic impedance actuators, such as based on variable stiffness spring \cite{tonietti_design_2005}, antagonist non-linear devices \cite{koganezawa_antagonistic_2006}, a series-compliance that can be locked with a brake \cite{leach_linear_2012} and dual-motors in serial configuration \cite{kim_serial-type_2010}. Furthermore, so-called macro-micro actuators, can improve the bandwidth of force-source type of actuators by exploiting the high-bandwidth of a small actuator in parallel, allowing for wider-range impedance control and improved position control \cite{morrell_parallel-coupled_1998}.
+
+While the actuator work in robotics have been focused on impedance and bandwidth issues, in the powertrain field the torque-speed matching issue is predominant, since power density and efficiency are critical for mobile systems.
+
+
+\section{Proposed approach: Variable Transmissions}
 \label{sec:ProposedSolutionRobotsUsingMultipleGearRatioActuators}
 
 
