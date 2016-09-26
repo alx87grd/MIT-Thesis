@@ -46,15 +46,15 @@ actuator quick review here
 \label{sec:ProposedSolutionRobotsUsingMultipleGearRatioActuators}
 
 
-To meet the power requirement of all operating points with small actuators, it is proposed to use electric motors coupled to a gearbox with two drastically different gear ratio, see Fig. \ref{fig:2s}. 
+To meet the power requirement of all operating points with small actuators, it is proposed to use electric motors coupled to a gearbox where the gear-ratio can be drastically changed online, see Fig. \ref{fig:2s}. 
 
 \begin{figure}[htb]
         \centering
-				\subfloat[two drastically different reduction ratios]{
-				\includegraphics[width=0.35\textwidth]{2speed.png}}
+				\subfloat[two drastically different gear-ratios]{
+				\includegraphics[width=0.40\textwidth]{2speed.png}}
         \subfloat[discrete operating modes]{
-				\includegraphics[width=0.40\textwidth]{1DOFmodes.png}}
-        \caption{Dual-speed actuator}\label{fig:2s}
+				\includegraphics[width=0.45\textwidth]{1DOFmodes.png}}
+        \caption{Two-speed actuator}\label{fig:2s}
 \end{figure}
 
 
@@ -68,10 +68,13 @@ In many situation, using multiple gear ratios allows for the downsizing of the m
 \paragraph{Radical changes of intrinsic impedance}
 The gearing ratio has a radical effect on the output impedance of a robot; the motor inertia and viscous damping are reflected to the output proportionally with the square of the gearing ratio. Gear-shifting can thus also be used as an alternative approach to variable impedance actuation. A two-speed actuator could be made back-drivable by selecting the small reduction ratio, to interact safely with the environment and to make use of the natural dynamic behavior of a robot.  Alternatively, a two-speed actuator could be made non-back-drivable by selecting the large reduction ratio, to rejected disturbances or to hold a weight without consuming power.
 
+\paragraph{Directionality of properties}
+For a multiple DoF mechanism, the speed/force properties are directional. Typically the Jacobian of a mechanism is only a function of the configuration $J=J(\underline{q})$, but a mechanism using $m$ variable gear-ratio actuators with $n$ possible gear-ratio, the Jacobian (from actuator coordinates to task-space coordinates) would also be function of the gear-ratios selected, i.e. dependent on control inputs $\underline{u}$ : $J=J(\underline{q},\underline{u})$. Hence, for a given configuration there is $n^m$ manipulability ellipsoid option. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear-ratios would be picked to meet the task requirement.
+
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.90\textwidth]{gearselectionlegged.png}
+		\includegraphics[width=0.99\textwidth]{gearselectionlegged.png}
 	\caption{Example of advantageous gear selection with a multi-DOF robot}
 	\label{fig:gearselectionlegged}
 \end{figure}
@@ -80,16 +83,38 @@ The gearing ratio has a radical effect on the output impedance of a robot; the m
 \section{Main challenges}
 \label{sec:MainChallenges}
 
-\subsection{Actuator design}
-\label{sec:ActuatorDesign}
+\paragraph{How to make fast and seamless gearshift?}
+Gear shifting is more technically challenging in robotics applications than in vehicle applications. For powertrains, the load is mostly a large inertia, while for robots, the loads may exhibit a rich range of dynamics including spring-like and damper-like loads. Hence, unlike vehicle applications, leaving the load free momentarily during transitions (from one gear-ratio to another) is not acceptable in the context of robotics. Moreover, many robotic applications would benefit from having order-of-magnitudes difference between the possible gear-ratios, i.e. a wider range of ratio than what is typical in vehicle power-train. Hence, an effective gear shifting methodology adapted to robotics is needed, allowing for fast and seamless transitions between very different gear-ratios under diverse load conditions.
 
-\subsection{Control and planning of hybrid system}
-\label{sec:ControlAndPlanningOfHybridSystem}
+\paragraph{When to use what gear-ratio?}
+From the control perspective, automating the gear-ratio selection in a robotic context is a new and challenging problem. Gear-shifting is a very non-linear process and the plant becomes a hybrid dynamical system if the usable gear-ratios are a set of discrete values. Hence, no classical control approach can be applied directly to handle the additional gear-ratio selection control input. In simple scenarios, the gear-ratio selection can be based on simple principles. However, to handle the generalize problem of the gear-ratio selection for multi-DoF robots, that experience diverse types of forces acting simultaneously and coupling between each axis, new methodologies are needed to generate trajectories and feedback laws that would use effectively all the gear-ratios options.
 
 
 
 \section{Original contributions}
 \label{sec:contribution}
+
+\subsection{New actuation technology}
+
+\subsubsection{Dual-motor architecture}
+
+\subsubsection{Nullspace synchronization controller}
+
+\subsubsection{Control scheme for fast gearshift during impacts}
+
+\subsection{High-level control}
+
+\subsubsection{Optimal gear-ratio selection based on state feedback}
+
+\subsubsection{Closed-form solution for optimal gear-ratio matrix of n-DoF manipulator}
+
+\subsection{Implementation}
+
+\subsubsection{Custom built lightweight 3-DoF robotic arm}
+
+\subsubsection{Open-source Software Library}
+
+for the control and planning of robot using dual-speed dual-motor actuators
 
 
 \section{Organization of the thesis}
