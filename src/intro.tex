@@ -94,25 +94,42 @@ From the control perspective, automating the gear-ratio selection in a robotic c
 \section{Original contributions}
 \label{sec:contribution}
 
+In order to fully integrate the use of variable gear-ratio actuators for robots, innovation at many level were necessary, from the mechanical design up to control algorithms. 
+
 \subsection{New actuation technology}
 
-\subsubsection{Dual-motor architecture}
+The first main contribution of the thesis is an actuation technology, consisting of a mechanical design used in conjunction with novel gear-shifting control laws. 
 
-\subsubsection{Nullspace synchronization controller}
+\paragraph{Dual-motor dual-speed architecture}
 
-\subsubsection{Control scheme for fast gearshift during impacts}
+This thesis propose a system level architecture, that will be refer as DSDM (dual-speed dual-motor), enabling seamless gear-shift between two discrete order-of-magnitude different gear-ratios. Similar mechanical architectures have been used in the past, but not for the purpose of fast gearshift that is explored here.
+
+\paragraph{Nullspace synchronization controller}
+
+The key idea in the proposed actuation technology is a novel control algorithm, that leverage the nullspace of the DSDM actuator, to make possible transiting for one gear-ratio to another while also always fully controlling the output load. 
+
+\paragraph{Control scheme for fast gearshift during impacts}
+
+Additionally, another novel control scheme is proposed for fast transition during impacts. For instance making possible an almost instantaneous gear-shift after the leg of a robot makes contact with the ground.
+
 
 \subsection{High-level control}
 
-\subsubsection{Optimal gear-ratio selection based on state feedback}
+The second major contribution of this thesis, is the development of intelligent automatic gear-ratio selection in complex multi-DoF robotic systems.
 
-\subsubsection{Closed-form solution for optimal gear-ratio matrix of n-DoF manipulator}
+\paragraph{Closed-form solution for optimal gear-ratios}
+
+A closed-from solution for the optimal gear-ratios of an arbitrary $n$-DoF robotic system along a known trajectory is derived.
+
+\paragraph{Optimal gear-ratio selection based on state feedback}
+
+This thesis propose novel control laws including optimal gear-ratio selection based on state feedback. 
 
 \subsection{Implementation}
 
-\subsubsection{Custom built lightweight 3-DoF robotic arm}
+\paragraph{Custom built lightweight 3-DoF robotic arm}
 
-\subsubsection{Open-source Software Library}
+\paragraph{Open-source Software Library}
 
 for the control and planning of robot using dual-speed dual-motor actuators
 
