@@ -3,31 +3,70 @@
 
 In this appendix, the nomenclature and equations used in this thesis are presented.
 
+\begin{table}[htbp]
+	\centering
+	\caption{Nomenclature}	% Table caption must be placed on top of the table %
+		\begin{tabular}{ c c l r }
+        \hline \hline
+			$n$             &  :  & number of DoF                                              & \\
+			$m$             &  :  & number of actuator                                         & \\
+			$l$             &  :  & number of contact constraints                              & \\
+			$o$             &  :  & number of end-effector coordinates                         & \\ \hline \hline
+			$\vec{g}$       &  :  & Gravitational forces vector                                & $n$  \\
+			$\vec{f}_c$     &  :  & Contact forces vector                                      & $l$  \\
+			$\vec{f}_e$     &  :  & End-effector forces vector                                 & $o$  \\
+			$\vec{c}$       &  :  & Sum of state-dependent generalized forces                  & $n$  \\
+			$\vec{\tau}$    &  :  & Electromagnetic motor torques                              & $m$  \\
+			$\vec{q}$       &  :  & Joint coordinates position vector                          & $n$  \\
+			$\vec{p}$       &  :  & End-effector position vector                               & $o$  \\
+			$\vec{a}$       &  :  & Actuator coordinates position vector                       & $m$  \\
+			$\vec{w}$       &  :  & Motor coordinates velocity vector                          & $m$  \\ 
+			$\vec{\phi}$    &  :  & Constraint vector                                          & $l$  \\
+			$\vec{\lambda}$ &  :  & Coordinates of velocity subspace respecting constraints    & $n-l$  \\\hline \hline
+			$H$             &  :  & Inertia matrix                                             & $n$ x $n$ \\
+			$D$             &  :  & Damping matrix                                             & $n$ x $n$ \\
+			$C$             &  :  & Coriolis/Centrifugal forces matrix                         & $n$ x $n$ \\
+			$B$             &  :  & Motor torques --> generalized forces matrix                & $n$ x $m$ \\
+			$R$             &  :  & Gear-ratio matrix (diagonal)                               & $m$ x $m$ \\
+			$I$             &  :  & Intrinsic actuator inertia matrix (diagonal)               & $m$ x $m$ \\
+			$B$             &  :  & Intrinsic actuator damping matrix (diagonal)               & $m$ x $m$ \\
+			$J_a$           &  :  & actuator coordinates / joint coordinates Jacobian matrix   & $m$ x $n$ \\
+			$J_e$           &  :  & task-space coordinates / joint coordinates Jacobian matrix & $o$ x $n$ \\
+			$J_c$           &  :  & Contact constraints Jacobian matrix                        & $l$ x $n$ \\ 
+			$V$             &  :  & Vector base of the velocity subspace matrix                & $n$ x $(n-l)$ \\ 
+		\hline \hline
+        \end{tabular}		
+	\label{tab:nom}
+\end{table}
+
 \section{Equations of motions}
 \label{sec:eom}
 
 The general form of the equations of motion of robotic system (interconnected rigid body driven by actuators) are:
-
+%
 \begin{align}
 H(\vec{q}) \vec{\ddot{q}} + C(\vec{q},\vec{\dot{q}}) \vec{\dot{q}} + D \vec{\dot{q}} + \vec{g}(\vec{q}) = B \vec{\tau} 
 \label{eq:manipulator}
 \end{align}
-
+%
 where $\vec{q}$ is the generalized coordinates vector, $H$ is the inertia matrix, $C$ is the Coriolis/centrifugal force matrix, $D$ is a damping matrix, $\vec{g}$ is the gravitational forces vector and $B$ is a matrix mapping motor torques $\vec{\tau}$ into generalized forces.
-
+%
 Kinetic energy is given by:
+%
 \begin{align}
 \frac{1}{2} \vec{\dot{q}}^T H(\vec{q}) \vec{\dot{q}} 
 \label{eq:kinetic}
 \end{align}
-
+%
 Conservation of energy also give the following relation:
+%
 \begin{align}
 \dot{H} = C + C^T
 \label{eq:kinetic}
 \end{align}
-
-On occasion, for shortest, dependence notation is dropped and $\vec{c}$ is used to represent all state dependent forces, leading to the short form:
+%
+On occasion, dependence notation is dropped and $\vec{c}$ is used to represent all state dependent forces, leading to the short form:
+%
 \begin{align}
 H \vec{\ddot{q}} + \vec{c} = B \vec{\tau} 
 \label{eq:manipulator_short}
@@ -47,7 +86,7 @@ H \vec{\ddot{q}} + \vec{c} = B \vec{\tau}
 \begin{align}
 \vec{\dot{p}}   &= J_e( \vec{q} ) \vec{\dot{q} }  \quad \text{ joint-space    --> end-effector   } \\
 \vec{\dot{q}}   &= J_a( \vec{q} ) \vec{\dot{a} }  \quad \text{ actuator-space --> joint-space    } \\
-\vec{\dot{a} }  &= R( \vec{q} )   \vec{ w      }  \quad \text{ rotor-space    --> actuator-space } 
+\vec{\dot{a} }  &= R              \vec{ w      }  \quad \text{ rotor-space    --> actuator-space } 
 \label{eq:coord_transform}
 \end{align}
 
@@ -68,27 +107,109 @@ D   &= D_m + J_a^T R^T B_a R J_a
 \section{Contact}
 \label{sec:contact}
 
-\subsection{Constraints forces}
+\subsection{Kinematic Constraints}
 \label{sec:constraints}
-
+%
+If a robotic manipulator enter contact with a fixed object, then some DoF are constrained. In the case of a bilateral constraint, the constraint can be expressed as:
 \begin{align}
-\phi( \vec{ q } ) = 0
+\vec{\phi}( \vec{ q } ) = 0
 \label{eq:constraint}
 \end{align}
-
+%
+The time-derivative of the constraint must also be equal to zero, which gives some constraints in terms of velocity and acceleration:
 \begin{align}
-\frac{d \phi( \vec{ q } ) }{dt} = J_c( \vec{ q } ) \vec{\dot{q}}  = 0
+\frac{d \vec{\phi}( \vec{ q } ) }{dt}     &= J_c( \vec{ q } ) \vec{\dot{q}}  = 0 \\
+\frac{d^2 \vec{\phi}( \vec{ q } ) }{dt^2} &= J_c( \vec{ q } ) \vec{\ddot{q}}  + \dot{J}_c( \vec{ q } ) \vec{\dot{q}} = 0 
 \label{eq:constraint_diff}
 \end{align}
-
+%
+when $J_c$ is the constraint jacobian:
+%
 \begin{align}
-\frac{d^2 \phi( \vec{ q } ) }{dt^2} = J_c( \vec{ q } ) \vec{\ddot{q}}  = 0
-\label{eq:constraint_diff2}
+J_c( \vec{ q } )                    &= \frac{d \vec{\phi}( \vec{ q } ) }{d\vec{ q }}
+\label{eq:constraint_jaco}
 \end{align}
 
+\subsection{Constraint forces}
+\label{sec:constraint_forces}
+
+The constraint jacobian can be used to map constraint forces $\vec{f}_c$ to generalized forces in the EoM:
+%
+\begin{align}
+H \vec{\ddot{q}} + \vec{c} = B \vec{\tau} + J_c( \vec{ q } )^T  \vec{f}_c
+\label{eq:manipulator_constraint}
+\end{align}
+%
+Solving for $\vec{\ddot{q}}$ in eq. \eqref{eq:manipulator_constraint} and substituting in eq. \eqref{eq:constraint_diff}, it is possible to get and expression for the constraint forces $\vec{f}_c$ as a function of states and applied torques:
+%
+\begin{align}
+\vec{f}_c = \left( J_c H^{-1} J_c^T \right)^{-1} \left(  J_c H^{-1} [\vec{c} - B \vec{\tau} ] - \dot{J}_c( \vec{ q } ) \vec{\dot{q}}   \right)
+\label{eq:const_forces}
+\end{align}
+%
+Alternatively, it possible to solve for acceleration $\vec{\ddot{q}}$ and constraints forces $\vec{f}_c$ simultaneously by solving the following system of equations:
+%
+\begin{align}
+\left[ \begin{array}{c c } 	H & -J_c^T  \\ J_c 	& 0  	\end{array} \right] \left[ \begin{array}{c} \vec{\ddot{q}}  \\ \vec{f}_c \end{array} \right] = \left[ \begin{array}{c}  B \vec{\tau} - \vec{c}   \\ -\dot{J}_c \vec{\dot{q}}  \end{array} \right]
+\label{eq:manipulator_constraint_eom}
+\end{align}
 
 
 \subsection{Impact forces}
+\label{sec:impact}
+%
+When the robot first enter contact with a fixed object, impulsive contact forces will at on the system. Integrating eq. \eqref{eq:manipulator_constraint} over the short impact interval gives:
+%
+\begin{align}
+\int{ ( H \vec{\ddot{q}} + \vec{c} ) dt } &= \int{ ( B \vec{\tau} + J_c( \vec{ q } )^T  \vec{f}_c ) dt } \\
+H \vec{\dot{q}}^+ - H \vec{\dot{q}}^- &= J_c( \vec{ q } )^T  \int{  \vec{f}_c dt }
+\label{eq:manipulator_impact}
+\end{align}
+%
+where any non-impulsive forces are neglected during the short impact interval. Projecting onto constrained coordinates (multiplying by $J_c H^{-1}$) gives:
+%
+\begin{align}
+J_c \vec{\dot{q}}^+ - J_c \vec{\dot{q}}^- &= J_c H^{-1} J_c^T  \int{  \vec{f}_c dt }
+\label{eq:manipulator_impact2}
+\end{align}
+%
+Then assuming a sticky inelastic impact (no bouncing), then the constraint is respected after the impact ($J_c \vec{\dot{q}}^+=0$) and it is possible to solve for the impact force:
+%
+\begin{align}
+\int{  \vec{f}_c dt } &= - \left( J_c H^{-1} J_c^T \right)^{-1}  J_c \vec{\dot{q}}^-
+\label{eq:manipulator_impact_force}
+\end{align}
+%
+and also for the velocity after the impact:
+%
+\begin{align}
+\vec{\dot{q}}^+ &= - \Big[ I - H^{-1} J_c^T \left( J_c H^{-1} J_c^T \right)^{-1} J_c \Big] \vec{\dot{q}}^-
+\label{eq:manipulator_impact_velocity}
+\end{align}
+%
+Alternatively, it possible to solve for velocity $\vec{\dot{q}}^+$ and impulsive forces $\int{ \vec{f}_c dt }$ simultaneously by solving the following system of equations:
+%
+\begin{align}
+\left[ \begin{array}{c c } 	H & -J_c^T  \\ J_c 	& 0  	\end{array} \right] \left[ \begin{array}{c} \vec{\dot{q}}^+  \\ \int{ \vec{f}_c dt }\end{array} \right] = \left[ \begin{array}{c}  	H \vec{\dot{q}}^-   \\ 0  \end{array} \right]
+\label{eq:manipulator_impact_eom}
+\end{align}
+
+
+Instead of using the constraint Jacobian $J_c$, it is also possible to parametrize the subspace of the velocity that satisfy the constraint:
+%
+\begin{align}
+\vec{\dot{q}}^+ &= V \vec{\lambda} = \vec{v}_1 \lambda_1  + ... + \vec{v}_{n-l} \lambda_{n-l}
+\end{align}
+%
+and solve the following system of equations:
+%
+\begin{align}
+\Bigg[ \begin{array}{c c } 	H V & -J_c^T  	\end{array} \Bigg] \left[ \begin{array}{c} \vec{\lambda}  \\ \int{ \vec{f}_c dt }\end{array} \right] = H \vec{\dot{q}}^-
+\label{eq:manipulator_impact_eom}
+\end{align}
+
+
+\subsection{Hybrid system and transitions}
 \label{sec:impact}
 
 
