@@ -187,7 +187,7 @@ and also for the velocity after the impact:
 \label{eq:manipulator_impact_velocity}
 \end{align}
 %
-Alternatively, it possible to solve for velocity $\vec{\dot{q}}^+$ and impulsive forces $\int{ \vec{f}_c dt }$ simultaneously by solving the following system of equations:
+Alternatively, it possible to solve for velocity $\vec{\dot{q}}^+$ and impulsive forces $\int{ \vec{f}_c dt }$ simultaneously by solving the following system of $n+l$ equations:
 %
 \begin{align}
 \left[ \begin{array}{c c } 	H & -J_c^T  \\ J_c 	& 0  	\end{array} \right] \left[ \begin{array}{c} \vec{\dot{q}}^+  \\ \int{ \vec{f}_c dt }\end{array} \right] = \left[ \begin{array}{c}  	H \vec{\dot{q}}^-   \\ 0  \end{array} \right]
@@ -201,7 +201,7 @@ Instead of using the constraint Jacobian $J_c$, it is also possible to parametri
 \vec{\dot{q}}^+ &= V \vec{\lambda} = \vec{v}_1 \lambda_1  + ... + \vec{v}_{n-l} \lambda_{n-l}
 \end{align}
 %
-and solve the following system of equations:
+and solve the following smaller system of $n$ equations:
 %
 \begin{align}
 \Bigg[ \begin{array}{c c } 	H V & -J_c^T  	\end{array} \Bigg] \left[ \begin{array}{c} \vec{\lambda}  \\ \int{ \vec{f}_c dt }\end{array} \right] = H \vec{\dot{q}}^-

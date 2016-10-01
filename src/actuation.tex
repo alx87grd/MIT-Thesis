@@ -125,4 +125,69 @@ While the actuator work in robotics have been focused on impedance and bandwidth
 
 \subsection{Using impact forces for faster transitions}
 
+DSDM model with impulsive force only:
+
+
+generalized coords:
+
+%
+\begin{align}
+\vec{\dot{q}} = \left[ \begin{array}{c} 	\dot{a} \\ w_1 \end{array} \right]
+\label{eq:dsdm_impact_q}
+\end{align}
+%
+
+
+%
+\begin{align}
+H = \left[ \begin{array}{c c} 	m_0 + R_1^2 J_1  &  -\frac{R_1^2}{R_2} J_1 \\ -\frac{R_1^2}{R_2} J_1  &  J_1 + (\frac{R_2}{R_1})^2 J_2 \end{array} \right]
+\label{eq:dsdm_impact_H}
+\end{align}
+%
+
+constraint
+%
+\begin{align}
+\dot{a} &= 0 \\
+J_c     &= \left[ \begin{array}{c c} 1 & 0 \end{array} \right]
+\label{eq:dsdm_impact_const}
+\end{align}
+%
+
+%
+\begin{align}
+J_c     &= \left[ \begin{array}{c c} 1 & 0 \end{array} \right] \\ 
+V       &= \left[ \begin{array}{c} 0 \\ 1 \end{array} \right]
+\label{eq:dsdm_impact_jaco}
+\end{align}
+%
+
+
+Then solving for a sticky impact, see section \ref{sec:impact}:
+
+%
+\begin{align}
+\left[ \begin{array}{c} \lambda \\ \int{f_c dt} \end{array} \right] &= \Bigg[ \begin{array}{c c} HV & -J_c^T \end{array} \Bigg]^{-1} \Bigg[ H \Bigg] \left[ \begin{array}{c} \dot{a}^- \\ \dot{w}_1^- \end{array} \right] \\
+\left[ \begin{array}{c} \lambda \\ \int{f_c dt} \end{array} \right] &= \Bigg[ \begin{array}{c c} 
+\frac{-R_2^2/R_1 J_2}{J_1+(\frac{R_1}{R_2})^2 J_2} & 1 \\
+- (m_o + R_2^2 J_2+\frac{-R_2^2/R_1 J_2}{J_1+(\frac{R_1}{R_2})^2 J_2}) & 0 
+\end{array} \Bigg] \left[ \begin{array}{c} \dot{a}^- \\ \dot{w}_1^- \end{array} \right]
+\label{eq:dsdm_impact_sol}
+\end{align}
+%
+
+Then simplifying for the case of $(\frac{R_2}{R_2})^2 J_2 >> J_1 $ we have the following results:
+%
+\begin{align}
+\dot{a}^+ &= 0 \\
+w_1^+     &\approx - R_1 \dot{a}^- + w_1^-  = - \frac{R_1}{R_2} w_2^- \\
+w_2^+     &\approx  w_2^- \\
+\int{f_c dt}     &\approx -[m_o + R_1^2 J_1] \dot{a}^-
+\label{eq:dsdm_impact_res}
+\end{align}
+%
+
+Those results basically show that when the reflected inertia of M2 is much greater than that of M1, the impact affect only $w_1$ and $w_2$ remains unchanged. 
+
+Interestingly 
 
