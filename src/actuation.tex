@@ -175,16 +175,16 @@ Hence, the 3-ports planetary coupling can be interpreted as a 0-junction, in the
 
 
 
-Fig. \ref{fig:dynamics} shows a lumped-parameter dynamic model of a DSDM when the brake is open (high-speed mode). $J_i$ and $b_i$ are the inertia and damping of the respective i-th ports, $V_1$, $V_2$, $I_1$, $I_2$ are the driving tension and currents in M1 and M2, and $k_m$ is the motor constant. 
+Fig. \ref{fig:dynamics} shows a lumped-parameter dynamic model of a DSDM when the brake is open (high-speed mode). $J_i$ and $b_i$ are the inertia and damping of the respective i-th ports, $V_1$, $V_2$, $i_1$, $i_2$ are the driving tension and currents in M1 and M2, and $k_m$ is the motor constant. 
 
 \begin{figure}[htb]
 	\centering
-		\includegraphics[width=0.65\textwidth]{dynamics.pdf}
+		\includegraphics[width=0.65\textwidth]{dynamics.png}
 	\caption{Lumped-parameter dynamic model of a DSDM}
 	\label{fig:dynamics}
 \end{figure}
 
-It is then assumed that low-level high-bandwidth current controller will be used, and electromagnetic torques $\tau_i = k_m I_i$ are going to be considered directly as inputs to the system. Applying Newton's law on each ports yields the following equations of motions:
+It is then assumed that low-level high-bandwidth current controller will be used, and electromagnetic torques $\tau_i = k_m i_i$ are going to be considered directly as inputs to the system. Applying Newton's law on each ports yields the following equations of motions:
 %
 \begin{align}
 \tau_{ext}  - e_o &= Z_o(s) w_o \\
@@ -196,7 +196,7 @@ where $Z_i(s) = J_i s + b_i$ represents the mechanical impedance of the i-th por
 
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.60\textwidth]{dynamics_block.pdf}
+		\includegraphics[width=0.60\textwidth]{dynamics_block.png}
 	\caption{Dynamics of a DSDM}
 	\label{fig:dynamics_block}
 \end{figure}
@@ -380,27 +380,27 @@ w_1
 \label{sec:out}
 
 The variable of interest is the output $w_o$, and its dynamic can be expressed, going back to the Laplace domain by:
-
+%
 \begin{align}
 \left[
-\scriptstyle Z_1(s) Z_2(s) + \frac{Z_1(s) Z_o(s)}{R_2^2} + \frac{Z_2(s) Z_o(s)}{R_1^2}
-\right] w_o(s) = 
+ Z_1(s) Z_2(s) + \frac{Z_1(s) Z_o(s)}{R_2^2} + \frac{Z_2(s) Z_o(s)}{R_1^2}
+\right] w_o(s) = \\
 \left[
-\scriptstyle \frac{Z_2(s)}{R_1}
+ \frac{Z_2(s)}{R_1}
 \right] \tau_1(s)  + 
 \left[
-\scriptstyle \frac{Z_1(s)}{R_2}
+ \frac{Z_1(s)}{R_2}
 \right] \tau_2(s)  + 
 \left[
-\scriptstyle \frac{Z_2(s)}{R_1^2} + \frac{Z_1(s) }{R_2^2}
+ \frac{Z_2(s)}{R_1^2} + \frac{Z_1(s) }{R_2^2}
 \right] \tau_{ext}(s)
 \label{eq:dsdm_output}
 \end{align}
 
-When the brake on M1 of the DSDM is locked, the output equation is reduced, by letting $Z_1(s) \leftarrow \infty$, to:
+When the brake on M1 of the DSDM is locked, the output equation is reduced, by letting $Z_1(s) \rightarrow \infty$, to:
 \begin{align}
 \left[
-\scriptstyle Z_o(s)  + R_2^2 Z_2(s)
+ Z_o(s)  + R_2^2 Z_2(s)
 \right] w_o(s) = 
 \left[
 R_2
@@ -409,46 +409,61 @@ R_2
 \label{eq:dsdm_output_HF}
 \end{align}
 
-For the dual-motor operation when the brake is open, if the gear-ratio $R_2$ of M2 is large, the behavior can be approximated. The equation can be reduced to:
-\begin{align}
-\left[
-\scriptstyle Z_1(s) R_1^2 + \left(1 + \frac{Z_1(s) R_1^2 }{ Z_2(s) R_2^2} \right) Z_o(s)
-\right] w_o(s) = 
-\left[
-R_1
-\right] \tau_1(s)  + 
-\left[
-\scriptstyle R_1 \frac{R_1 Z_1(s)}{R_2 Z_2(s)}
-\right] \tau_2(s)  + 
-\left[
-\scriptstyle  1 + \frac{Z_1(s) R_1^2 }{ Z_2(s) R_2^2} 
-\right] \tau_{ext}(s)
-\label{eq:dsdm_output_HS}
-\end{align}
-
-Then assuming the reflected impedance of M1 is much smaller than that of M2 ($Z_1(s) R_1^2 << Z_2(s) R_2^2$), and neglecting motor side damping ($\frac{Z_1(s)}{Z_2(s)} = \frac{I_1}{I_2}$), the equation reduce to:
+When the brake is open, if the gear-ratio $R_2$ of M2 is large, the equation can be simplified. 
+%
+%, the behavior can be approximated. First eq. \eqref{eq:dsdm_output} is rearranged:
+%\begin{align}
+%\left[
+%\scriptstyle Z_1(s) R_1^2 + \left(1 + \frac{Z_1(s) R_1^2 }{ Z_2(s) R_2^2} \right) Z_o(s)
+%\right] w_o(s) = 
+%\left[
+%R_1
+%\right] \tau_1(s)  + 
+%\left[
+%\scriptstyle R_1 \frac{R_1 Z_1(s)}{R_2 Z_2(s)}
+%\right] \tau_2(s)  + 
+%\left[
+%\scriptstyle  1 + \frac{Z_1(s) R_1^2 }{ Z_2(s) R_2^2} 
+%\right] \tau_{ext}(s)
+%\label{eq:dsdm_output_HS}
+%\end{align}
+%
+Assuming the reflected impedance of M1 is much smaller than that of M2, and neglecting motor side damping, the equation reduce to:
 \begin{align}
 \left[
 Z_o(s)  + R_1^2 Z_1(s)
-\right] w_o(s) = 
+\right] w_o(s) &= 
 \left[
 R_1
 \right] \tau_1(s)  + 
 \left[
 R_1 \frac{R_1 I_1}{R_2 I_2}
 \right] \tau_2(s)  + 
-\tau_{ext}(s)
+\tau_{ext}(s) \\
+&\text{if} \quad Z_1(s) R_1^2 << Z_2(s) R_2^2 
+\quad \& \quad \frac{Z_1(s)}{Z_2(s)} = \frac{I_1}{I_2}
 \label{eq:dsdm_output_HF}
 \end{align}
 
 During high-speed mode the behavior of the output is also dominated by a first-order linear behavior, but interestingly both input torques contributed to the motion through inertial coupling. Note that this differ from a serial architecture, in both case speed adds-up and effort is shared (0-type junction), but inertial properties are different.
 
 
+\subsubsection{Discrete Operating Modes}
+
+Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes of the system. During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the dynamic behavior is described by the Laplace transfer function given by eq. \eqref{eq:dsdm_output_HF}. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the dynamic behavior is described by state space equation given by eq. \eqref{eq:ss}.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.65\textwidth]{operating_modes.png}
+	\caption{Discrete operating modes of the actuators}
+	\label{fig:operatingmodes}
+\end{figure}
+
 
 
 \subsection{Nullspace of the system}
 
-From the kinematic input-output view point, the DSDM actuator has one redundant degree of freedom. In other words, there is an infinite number of combinations of $w_1$ and $w_2$ producing the same output speed $w_0$, from eq.\eqref{eq:kinematic}:  
+During high-speed mode, from the kinematic input-output view point, the DSDM actuator has one redundant degree of freedom. In other words, there is an infinite number of combinations of $w_1$ and $w_2$ producing the same output speed $w_0$, from eq.\eqref{eq:kinematic}:  
 %
 \begin{align}
 \left[
@@ -503,7 +518,7 @@ R_1 & R_1 \frac{R_1 I_1}{R_2 I_2}
 \label{eq:output}
 \end{align}
 % 
-Hence, there is a one degree of freedom space of inputs $I_1$ and $I_2$ that do not affect the output:
+Hence, there is a one degree of freedom space of inputs $\tau_1$ and $\tau_2$ that do not affect the output:
 \begin{align}
 \left[ \begin{array}{c}
 \tau_1 \\
@@ -521,40 +536,58 @@ b_T  w_o = 0 \quad \forall u \in \Re
 \end{align}
 
 
-\subsection{Operating modes}
 
+\subsection{Control algorithms}
 
-\begin{figure}[H]
+During high-force mode, the actuator behaves like a regular geared EM motor and standard speed or position control scheme can be used. During high-speed mode, with a small reduction ratio $R_1$ (high transparency transmission), the DSDM actuator can be controlled like a direct drive motor: controlling M1 current lead to almost direct control of the output torque. Moreover, exploiting the nullspace, a secondary objective can be brought into the system without influencing the output torque. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary controller can be used not only for load balancing but also for minimizing power consumption, avoiding speed saturation of M1, etc. Note that the nullspace projection vector, see eq.\eqref{eq:dyn_null_proj}, depends only on parameters associated with the motors. Therefore, it is possible to project the secondary controller inputs on the output nullspace even if the output dynamic parameters that include the load inertia and damping are unknowns. 
+
+Fig. \ref{fig:HS_loop} and Fig. \ref{fig:HF_loop} show DSDM control algorithms implemented as intermediary control loops between hardware and high-level commands. The high-speed controller tracks a received desired torque by controlling the current in M1, and can also optionally track a secondary objective without affecting the main-loop, by projecting the secondary input into the nullspace of the main-loop. The high-force controller directly convert a received desired torque to a current set-point for M2.
+
+%The high-level robot controller, discussed in detail in Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}, could be a simple PID for a single output system, a computed torque algorithm for a complex robots, etc. 
+ 
+
+\begin{figure}[p]
 	\centering
-		\includegraphics[width=1.00\textwidth]{HS_loop.pdf}
+		\includegraphics[width=0.95\textwidth]{HS_ctl.png}
 	\caption{High-speed mode control loop}
 	\label{fig:HS_loop}
 \end{figure}
 
-During high-force mode, with M1 locked by the brake, the actuator behaves like a regular geared EM motor and standard speed or position control scheme can be used.
-
-
-With a small reduction ratio $R_1$ the DSDM actuator can be controlled like a direct drive motor: the output torque can be controlled directly by controlling M1 current, see inner feedback loop in Fig. \ref{fig:HS_loop}. The output loop can be used for various objectives. With the measurement of output position and velocity, impedance control, friction compensation and feedback linearization can be implemented. Moreover, exploiting the nullspace, a secondary objective can be brought into the system without influencing the output. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. Note that the nullspace projection vector, see eq.\eqref{eq:dyn_null_proj}, depends only on parameters associated with the motors. Therefore, it is possible to project the secondary controller inputs on the output nullspace even if the output dynamic parameters that include the load inertia and damping are unknowns. The secondary controller can be used not only for load balancing but also for minimizing power consumption, avoiding speed saturation of M1, etc.
-
-\begin{figure}[H]
+\begin{figure}[p]
 	\centering
-		\includegraphics[width=0.65\textwidth]{automatic_flow.pdf}
-	\caption{State machine for automatic mode selection}
-	\label{fig:automaticflow}
+		\includegraphics[width=0.95\textwidth]{HF_ctl.png}
+	\caption{High-force mode control loop}
+	\label{fig:HF_loop}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.95\textwidth]{down_ctl.png}
+	\caption{Synchronization mode control loop}
+	\label{fig:down_loop}
 \end{figure}
 
 
 
-\subsection{Transitions (gear-shift) control}
 
-Unlike powertrains, where the load is mostly a large inertia and can be disengaged momentarily during gear shiftings, robotic actuators face a wide range of dynamic load, which must be controlled continuously even during a transition. For instance, if it drives a spring-like load, even a very short disengagement from the load might lead to large undesirable output motion. This section addresses transition control between the two modes.
+\subsubsection{Transitions (gear-shift)}
 
-\paragraph{From high-force mode to high-speed mode}
-This transition control is simple. The locking brake can be released anytime, M1 is then instantaneously freed and the controller can immediately switch to the high-speed control mode.
+This section addresses transition control between the two discrete operating modes. Fig. \ref{fig:automaticflow} show the state machine used to transit between the different necessary control mode.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.70\textwidth]{discrete_control_modes.png}
+	\caption{State machine of discrete control modes}
+	\label{fig:automaticflow}
+\end{figure}
+
+
+\paragraph{Up-shift: From high-force mode to high-speed mode}
+In this case, the transition is simple because the system goes from 1 DoF to 2 DoF. The locking brake can be released anytime, M1 is then instantaneously freed and the controller can immediately switch to the high-speed control mode.
 %
 
-\paragraph{From high-speed mode to high-force mode}
-For this transition, M1 speed $w_1$ must be brought to zero so that the locking brake can be engaged. Two algorithms, a kinematic and a dynamic approach, can be considered. The former assumes local high gain velocity feedback controls for the individual motors. Hence velocities $w_1$ and $w_2$ can be treated as control inputs. Using the nullspace projection vector from eq.\eqref{eq:kinematicnullspace}, the kinematic control law can be written as 
+\paragraph{Down-shift: From high-speed mode to high-force mode}
+In this case, the transition is harder because the system goes from 2 DoF to 1 DoF, and some synchronization work is needed. M1 speed $w_1$ must be brought to zero so that the locking brake can be engaged smoothly without any impact. Hence, as illustrated at Fig. \ref{fig:automaticflow}, when it is decided to engage high-force mode, and intermediary synchronization control mode is needed. Two algorithms, a kinematic and a dynamic approach, can be considered. The former assumes local high gain velocity feedback controls for the individual motors. Hence velocities $w_1$ and $w_2$ can be treated as control inputs. Using the nullspace projection vector from eq.\eqref{eq:kinematicnullspace}, the kinematic control law can be written as 
 %
 \begin{align}
 \left[
@@ -585,19 +618,19 @@ leading to
 w_o = u_2 \quad \text{with} \quad w_1 = u_1
 \end{align}
 %
-Therefore during transitions, using $u_1$ velocity $w_1$ can be driven to zero, while fully controlling the output velocity using $u_2$. The kinematic control law is valid only when high fidelity velocity controls are available. Alternatively the dynamic control algorithm does not require this. While running the high-speed control scheme of Fig. \ref{fig:HS_loop}, a braking law for $w_1$ can be used in parallel as the secondary controller projected on the output nullspace:
+Therefore during transitions, using $u_1$ velocity $w_1$ can be driven to zero, while fully controlling the output velocity using $u_2$. The kinematic control law is valid only when high fidelity velocity controls are available. Alternatively the dynamic control algorithm does not require this. As illustrated in Fig. \ref{fig:down_loop}, while running the general high-speed controller, a braking law for $w_1$ can be used in parallel as the secondary controller projected on the output nullspace:
 \begin{align}
 \left[ \begin{array}{c}
-I_1 \\
-I_2
+\tau_1 \\
+\tau_2
 \end{array} \right]
  = 
 \underbrace{\left[ \begin{array}{c}
-\frac{I_1}{k_1} \\
--\frac{R_2 I_2}{R_1 k_2} 
+1 \\
+-\frac{R_2 I_2}{R_1 I_1} 
 \end{array} \right]}_{\text{Nullspace Projection}} \underbrace{-C w_1}_{\text{Braking Law}} + 
 \left[ \begin{array}{c}
-\frac{1}{k_1 R_1} \\
+\frac{1}{R_1} \\
 0 
 \end{array} \right]  \tau_d
 \end{align}
@@ -607,12 +640,11 @@ I_T \dot{w}_o +
 b_T  w_o
 =& \, \tau_d  \quad \text{and} \quad \dot{w}_1 = -C w_1 + f(w_o,\tau_d) %\scriptstyle \frac{R_1 b_o}{I_T} \textstyle w_o
 \end{align}
-Hence, the output is not influenced by the braking law due to orthogonality, and is still controlled using the desired torque $\tau_d$ determined by the high-speed mode controller. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturations. Increasing the gain $C$ will lead to faster braking of $w_1$, however $I_2$ will saturate if the gain is too large. A large $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is a trade-off, passed the $I_2$ saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control.
+Hence, the output is not influenced by the braking law due to orthogonality, and is still controlled using the desired torque $\tau_d$ determined by the high-speed mode controller. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturations. Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is a trade-off, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control.
 
 
 
-
-\subsection{Transitions leveraging impact forces}
+\subsubsection{Leveraging Impact Forces}
 
 DSDM model with impulsive force only:
 
