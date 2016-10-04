@@ -84,9 +84,9 @@ H \vec{\ddot{q}} + \vec{c} = B \vec{\tau}
 \end{figure}
 
 \begin{align}
-\vec{\dot{p}}   &= J_e( \vec{q} ) \vec{\dot{q} }  \quad \text{ joint-space    --> end-effector   } \\
-\vec{\dot{q}}   &= J_a( \vec{q} ) \vec{\dot{a} }  \quad \text{ actuator-space --> joint-space    } \\
-\vec{\dot{a} }  &= R              \vec{ w      }  \quad \text{ rotor-space    --> actuator-space } 
+\vec{\dot{p}}   &= J_e( \vec{q} ) \vec{\dot{q} }  \quad \text{ from joint-space to end-effector   } \\
+\vec{\dot{a}}   &= J_a( \vec{q} ) \vec{\dot{q} }  \quad \text{ from joint-space to actuator-space } \\
+\vec{w }        &= R              \vec{\dot{a} }  \quad \text{ from actuator-space to rotor-space } 
 \label{eq:coord_transform}
 \end{align}
 
@@ -158,7 +158,7 @@ Alternatively, it possible to solve for acceleration $\vec{\ddot{q}}$ and constr
 \subsection{Impact forces}
 \label{sec:impact}
 %
-When the robot first enter contact with a fixed object, impulsive contact forces will at on the system. Integrating eq. \eqref{eq:manipulator_constraint} over the short impact interval gives:
+When the robot first enter contact with a fixed object, impulsive contact forces will act on the system. Integrating eq. \eqref{eq:manipulator_constraint} over the short impact interval gives:
 %
 \begin{align}
 \int{ ( H \vec{\ddot{q}} + \vec{c} ) dt } &= \int{ ( B \vec{\tau} + J_c( \vec{ q } )^T  \vec{f}_c ) dt } \\
@@ -195,10 +195,11 @@ Alternatively, it possible to solve for velocity $\vec{\dot{q}}^+$ and impulsive
 \end{align}
 
 
-Instead of using the constraint Jacobian $J_c$, it is also possible to parametrize the subspace of the velocity that satisfy the constraint:
+Instead of augmenting the system with constraint equations,  it is also possible to parametrize the subspace of velocities that satisfy the contact constraint (which correspond to the nullspace of $J_c$):
 %
 \begin{align}
-\vec{\dot{q}}^+ &= V \vec{\lambda} = \vec{v}_1 \lambda_1  + ... + \vec{v}_{n-l} \lambda_{n-l}
+\vec{\dot{q}}^+ &= V \vec{\lambda} = \vec{v}_1 \lambda_1  + ... + \vec{v}_{n-l} \lambda_{n-l} \\
+& \quad \text{with} \quad J_c V \vec{\lambda} = 0 \quad \forall \quad \vec{\lambda} \in \Re^{n-l}
 \end{align}
 %
 and solve the following smaller system of $n$ equations:
