@@ -461,15 +461,136 @@ Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes
 \end{figure}
 
 
+\subsubsection{Impacts}
+
+During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities will suddenly change, as a function of the full dynamic of the robot and the contact situation:
+%
+\begin{align}
+\left[
+\begin{array}{c}
+w_0^+ \\
+w_1^+ \\
+\end{array}
+\right] = 
+\left[
+\begin{array}{c}
+w_0^- \\
+w_1^- \\
+\end{array}
+\right] +
+\vec{h}( \vec{q} , \vec{\dot{q}} , J_c )
+\end{align}
+%
+where $\vec{h}$ can be a complex mapping involving high-dimensional dynamic and constraints. However, since there is no impulsive force on the motor side, the effect of the contact can be reduce to a impulse torque applied to the output $\int{\tau_c dt}$ of the actuator, leading to:
+%
+\begin{align}
+\left[
+\begin{array}{c}
+w_0^+ \\
+w_1^+ \\
+\end{array}
+\right] = 
+\left[
+\begin{array}{c}
+w_0^- \\
+w_1^- \\
+\end{array}
+\right] +
+H^{-1} \left[
+\begin{array}{c}
+1 \\
+0 \\
+\end{array}
+\right] \int{\tau_c( \vec{q} , \vec{\dot{q}} , J_c ) dt}
+\end{align}
+%
+If the reflected inertia of M2 is much greater than M1 ($R_2^2 I_2 >> R_1^2 I_1 $), this reduced to
+%
+\begin{align}
+\left[
+\begin{array}{c}
+w_0^+ \\
+w_1^+ \\
+\end{array}
+\right] = 
+\left[
+\begin{array}{c}
+w_0^- \\
+w_1^- \\
+\end{array}
+\right] +
+\frac{ \int{\tau_c( \vec{q} , \vec{\dot{q}} , J_c ) dt} }{ I_o + I_1 R_1^2} 
+\left[
+\begin{array}{c}
+1 \\
+R_1 \\
+\end{array}
+\right] 
+\end{align}
+%
+Hence, M2 velocity will be unchanged and the velocity discontinuity of the output is transmitted directly to M1 during an impact:
+%
+\begin{align}
+\Delta w_o  &= w_o^+ - w_o^- = \frac{ \int{\tau_c( \vec{q} , \vec{\dot{q}} , J_c ) dt} }{ I_o + I_1 R_1^2}  \\
+\Delta w_1  &= w_1^+ - w_1^- = R_1 \Delta w_o \\
+\Delta w_2  &= w_2^+ - w_2^- =  0
+\label{eq:dsdm_impact_gen_delta_w1}
+\end{align}
+
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.70\textwidth]{dsdm_impact_model.png}
+	\caption{DSDM actuator impact model}
+	\label{fig:dsdm_impact_model_1}
+\end{figure}
+
+
+
+\paragraph{Example}
+Fig.\ref{fig:dsdm_impact_model_1} illustrates a simple impact scenario with a single DSDM actuator. The equation of motion previous introduced (eq. \eqref{eq:dsdm_manip}) can describe this situation. However here, displacement variables corresponding to angles of rotation of the output and M1, ignorable coordinates for an unconstrained scenario, are introduced:
+%
+\begin{align}
+\vec{q} = \left[ \begin{array}{c} 	q_0 \\ q_1 \end{array} \right] \quad
+\vec{\dot{q}} = \left[ \begin{array}{c} 	w_0 \\ w_1 \end{array} \right]
+\label{eq:dsdm_impact_q}
+\end{align}
+%
+to expressed the contact constraint in the standard form (see section \ref{sec:contact}):
+%
+\begin{align}
+\phi( \vec{q} )       &= q_0 - c = 0 \\
+\dot{\phi}( \vec{q} ) &= J_c\vec{\dot{q}} =  w_0 = 0 \\
+J_c                   &= \frac{d \phi}{d\vec{q}} = \left[ \begin{array}{c c} 1 & 0 \end{array} \right]
+\label{eq:dsdm_impact_const}
+\end{align}
+%
+Then assuming the impact is completely inelastic and $R_2^2 I_2 >> R_1^2 I_1$, eq.\eqref{eq:manipulator_impact_force} can be used to solve for the impact force:
+%
+\begin{align}
+\int{  \tau_c dt } &= - \left( J_c H^{-1} J_c^T \right)^{-1}  J_c \vec{\dot{q}}^- = -(I_0 + I_1 R_1^2) w_o^-
+\label{eq:dsdm_impact_force}
+\end{align}
+%
+and the resulting velocities immediately after the impact are:
+\begin{align}
+\Delta w_o  = - w_o^- \quad  \Delta w_1  = - R_1 w_o^-  \quad  \Delta w_2  = 0
+\label{eq:dsdm_impact_res}
+\end{align}
+
+
+
 
 \subsection{Nullspace of the system}
+
+\subsubsection{Kinematic}
 
 During high-speed mode, from the kinematic input-output view point, the DSDM actuator has one redundant degree of freedom. In other words, there is an infinite number of combinations of $w_1$ and $w_2$ producing the same output speed $w_0$, from eq.\eqref{eq:kinematic}:  
 %
 \begin{align}
-\left[
 w_o
-\right] = 
+ = 
 \left[
 \begin{array}{c c}
 \frac{1}{R_1} & \frac{1}{R_2}
@@ -503,6 +624,9 @@ w_0 = 0 \quad \forall u \in \Re
 \label{eq:kinematicnullspace}
 \end{align}
 %
+
+\subsubsection{Dynamic}
+
 Interestingly, a similar expression can be obtained for the dynamics of the output in response to electromagnetic torque inputs, from the first line of eq.\eqref{eq:ss}:
 %
 \begin{align}
@@ -536,7 +660,7 @@ b_T  w_o = 0 \quad \forall u \in \Re
 \label{eq:dyn_null_proj}
 \end{align}
 
-
+\subsubsection{Impact Impulse}
 
 \subsection{Control algorithms}
 
@@ -595,7 +719,10 @@ In this case, the transition is simple because the system goes from 1 DoF to 2 D
 %
 
 \paragraph{Down-shift: From high-speed mode to high-force mode}
-In this case, the transition is harder because the system goes from 2 DoF to 1 DoF, and some synchronization work is needed. M1 speed $w_1$ must be brought to zero so that the locking brake can be engaged smoothly without any impact. Hence, as illustrated at Fig. \ref{fig:automaticflow}, when it is decided to engage high-force mode, and intermediary synchronization control mode is needed. Two algorithms, a kinematic and a dynamic approach, can be considered. The former assumes local high gain velocity feedback controls for the individual motors. Hence velocities $w_1$ and $w_2$ can be treated as control inputs. Using the nullspace projection vector from eq.\eqref{eq:kinematicnullspace}, the kinematic control law can be written as 
+In this case, the transition is harder because the system goes from 2 DoF to 1 DoF, and some synchronization work is needed. M1 speed $w_1$ must be brought to zero so that the locking brake can be engaged smoothly without any impact. Hence, as illustrated at Fig. \ref{fig:automaticflow}, when it is decided to engage high-force mode, and intermediary synchronization control mode is needed. Two algorithms, a kinematic and a dynamic approach, can be considered. 
+
+\paragraph{Kinematic algo}
+The kinematic control aglorithm assumes local high gain velocity feedback controls for the individual motors. Hence velocities $w_1$ and $w_2$ can be treated as control inputs. Using the nullspace projection vector from eq.\eqref{eq:kinematicnullspace}, the kinematic control law can be written as 
 %
 \begin{align}
 \left[
@@ -616,17 +743,20 @@ u_1 +
 0 \\
 R_2 \\
 \end{array}
-\right] u_2
+\right] u_0
 \label{eq:kinematicsys}
 \end{align}
 %
 leading to
 %
 \begin{align}
-w_o = u_2 \quad \text{with} \quad w_1 = u_1
+w_o = u_0 \quad \text{with} \quad w_1 = u_1
 \end{align}
 %
-Therefore during transitions, using $u_1$ velocity $w_1$ can be driven to zero, while fully controlling the output velocity using $u_2$. The kinematic control law is valid only when high fidelity velocity controls are available. Alternatively the dynamic control algorithm does not require this. As illustrated in Fig. \ref{fig:down_loop}, while running the general high-speed controller, a braking law for $w_1$ can be used in parallel as the secondary controller projected on the output nullspace:
+Therefore during transitions, using $u_1$ velocity $w_1$ can be driven to zero, while fully controlling the output velocity using $u_0$. The kinematic control law is valid only when high fidelity velocity controls are available. Alternatively the dynamic control algorithm does not require this. 
+
+\paragraph{Dynamic algo}
+As illustrated in Fig. \ref{fig:down_loop}, while running the general high-speed controller, a braking law for $w_1$ can be used in parallel as the secondary controller projected on the output nullspace:
 \begin{align}
 \left[ \begin{array}{c}
 \tau_1 \\
@@ -653,101 +783,36 @@ Hence, the output is not influenced by the braking law due to orthogonality, and
 
 
 
-\subsection{Transitions Leveraging Impact Forces}
+\subsubsection{Predictive algorithm for fast gear-shift during impacts}
 
 This section described a control scheme where the velocity of the internal DoF is adjusted beforehand when an impact is expected, so that impact forces bring M1 velocity close to zero, allowing for fast down-shift transitions. This is aimed at situation like a leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot.
 
-\subsubsection{Simple Example}
 
-Here, a simple situation of a grounded DSDM actuator making contact with a fixed grounded object is explored, see Fig. \ref{fig:dsdm_impact_model}.
-
-\begin{figure}[htbp]
-	\centering
-		\includegraphics[width=0.70\textwidth]{dsdm_impact_model.png}
-	\caption{DSDM actuator contacting a fixed object}
-	\label{fig:dsdm_impact_model}
-\end{figure}
-
-The equation of motion previous introduced (eq. \eqref{eq:dsdm_manip}) can describe this situation. However here, displacement variables corresponding to angles of rotation of the output and M1, ignorable coordinates for an unconstrained scenario, are introduced:
+\paragraph{Kinematic algo}
+Rearranging the results to express the two variable of interest (approaching speed $w_0^-$ and M1 velocity after the impact $w_1^+$) lead to:
 %
 \begin{align}
-\vec{q} = \left[ \begin{array}{c} 	q_0 \\ q_1 \end{array} \right] \quad
-\vec{\dot{q}} = \left[ \begin{array}{c} 	w_0 \\ w_1 \end{array} \right]
-\label{eq:dsdm_impact_q}
-\end{align}
-%
-to expressed the contact constraint in the standard form (see section \ref{sec:contact}):
-%
-\begin{align}
-\phi( \vec{q} )       &= q_0 - c = 0 \\
-\dot{\phi}( \vec{q} ) &= J_c\vec{\dot{q}} =  w_0 = 0 \\
-J_c                   &= \frac{d \phi}{d\vec{q}} = \left[ \begin{array}{c c} 1 & 0 \end{array} \right]
-\label{eq:dsdm_impact_const}
-\end{align}
-%
-Then assuming the impact is completely inelastic, the velocity at time $t^+$ right after the impact is satisfying the constraint (no bouncing back the surface), and thus parametrized by a single DoF with unkown velocity $\lambda$:
-%
-\begin{align}
-\vec{\dot{q}}^+ &= \underbrace{ \left[ \begin{array}{c} 0 \\ 1 \end{array} \right] }_{ V } \lambda^+
-\label{eq:dsdm_impact_jaco}
-\end{align}
-%
-Then solving for impact force and resulting velocity simultaneously, see section \ref{sec:impact}:
-%
-\begin{align}
-\left[ \begin{array}{c} \lambda^+ \\ \int{f_c dt} \end{array} \right] &= \Bigg[ \begin{array}{c c} HV & -J_c^T \end{array} \Bigg]^{-1} \Bigg[ H \Bigg] \left[ \begin{array}{c} w_0^- \\ w_1^- \end{array} \right] \\
-\left[ \begin{array}{c} \lambda^+ \\ \int{f_c dt} \end{array} \right] &= \Bigg[ \begin{array}{c c} 
-\frac{-R_2^2/R_1 I_2}{I_1+(\frac{R_1}{R_2})^2 I_2} & 1 \\
-- (I_o + R_2^2 I_2+\frac{-R_2^2/R_1 I_2}{I_1+(\frac{R_1}{R_2})^2 I_2}) & 0 
-\end{array} \Bigg] \left[ \begin{array}{c} w_0^- \\ w_1^- \end{array} \right]
-\label{eq:dsdm_impact_sol}
-\end{align}
-%
-
-Simplifying for the case of $R_2^2 I_2 >> R_1^2 I_1 $ we have the following results:
-%
-\begin{align}
-w_0^+            &= 0 \\
-w_1^+            &\approx - R_1 w_0^- + w_1^-  = - \frac{R_1}{R_2} w_2^- \\
-w_2^+            &\approx  w_2^- \\
-\int{f_c dt}     &\approx -[I_o + R_1^2 I_1] w_0^-
-\label{eq:dsdm_impact_res}
-\end{align}
-%
-
-Those results basically show that when the reflected inertia of M2 is much greater than that of M1, the impact affect only $w_1$ and $w_2$ remains unchanged through the impact. Rearranging the results to express the two variable of interest ( approaching speed $w_0^-$ and after impact M1 velocity $w_1^+$) lead to:
-%
-\begin{align}
-\left[ \begin{array}{c} w_0^- \\ w_1^+ \end{array} \right] &= \Bigg[ \begin{array}{c c} \frac{1}{R_1} & \frac{1}{R_2}\\ 0 & -\frac{R_1}{R_2} \end{array} \Bigg] \left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] 
+\left[ \begin{array}{c} w_0^- \\ w_1^+ \end{array} \right] &= \Bigg[ \begin{array}{c c} \frac{1}{R_1} & \frac{1}{R_2}\\ 1 & 0 \end{array} \Bigg] \left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] + \left[ \begin{array}{c} 0 \\ R_1 \frac{\int{\tau_c dt}}{I_o + I_1 R_1^2} \end{array} \right]
 \label{eq:dsdm_impact_approx_sol}
 \end{align}
 %
-Hence it is possible to set both motor velocities so that the approaching speed and after impact M1 velocity can be set arbitrarily and independently using the nullspace, by determining velocity setpoints as:
+Hence it is possible to set both motor velocities so that the approaching speed and after impact M1 velocity can be set arbitrarily and independently using the nullspace, by determining velocity set-points as:
 %
 \begin{align}
 \left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] &= \Bigg[ \begin{array}{c} R_1 \\ 0  \end{array} \Bigg] u_0  + 
 \underbrace{ \left[ \begin{array}{c} 1 \\ -\frac{R_2}{R_1} \end{array} \right]}_{\text{Nullspace projection}}
- u_1 \\
-&\text{leading to} \quad w_o^- = u_0 \quad w_1^+ = u_1
-\label{eq:dsdm_impact_kin_ctl}
+ \left( u_1 - R_1 \frac{\int{\tau_c dt}}{I_o + I_1 R_1^2} \right) 
 \end{align}
 %
-For this simple scenario where a fixed DSDM hit a fixed object, the result is trivial: by keeping $w_2^-=0$ M1 will be still right after the impact and the brake can be engaged immediately. But the principle can be extended to complex scenario where a model is available to predict the change of velocity expected during the impact.
-
-
-\subsubsection{Generalization}
-
-In the general case for a DSDM used in a robotic system, assuming the reflected inertia of M2 is much greater than M1 ($R_2^2 I_2 >> R_1^2 I_1 $), during an impact M2 velocity will be unchanged and the drop in velocity for M1 is function of the full robot dynamics and contact constraints:
+leading to
 %
 \begin{align}
-\Delta w_1  &= w_1^+ - w_1^- = f_{imp}( \vec{q} , \vec{\dot{q}} , J_c ) \\
-\Delta w_2  &= w_2^+ - w_2^- \approx 0
-\label{eq:dsdm_impact_gen_delta_w1}
+ w_o^- = u_0 \quad \text{and} \quad w_1^+ = u_1
 \end{align}
 %
+Therefore, if expected an impact and can predict the impulsive reaction $\int{\tau_c dt}$, using this control law lead to independent control of the approaching speed of the actuator output $w_o^-$, which would be used for the primary objective (for instance making contact with the object at the right place and time), and resulting velocity of M1 after the impact $w_1^+$, which would be set to zero to allow for instantaneous down-shift.
 
-\subsubsection{Predictive Control Algorithm}
-
+\paragraph{Dynamic algo}
 The proposed control algorithm is as follow. When an impact is expected during high-speed mode, estimate the expected the drop in velocity for the actuator using a collision model considering the full robot dynamic, then assign the negative of the estimated speed drop as a velocity set-point for M1:
 %
 \begin{align}
