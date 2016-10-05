@@ -196,7 +196,7 @@ where $Z_i(s) = J_i s + b_i$ represents the mechanical impedance of the i-th por
 
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.60\textwidth]{dynamics_block.png}
+		\includegraphics[width=0.80\textwidth]{dynamics_block.png}
 	\caption{Dynamics of a DSDM}
 	\label{fig:dynamics_block}
 \end{figure}
@@ -311,6 +311,7 @@ w_1      \\
  \tau_{ext}
 \end{array}
 \right] }_{\vec{\tau}}
+\label{eq:dsdm_manip}
 \end{align}
 
 The inverse of the inertia matrix is given by:
@@ -644,71 +645,76 @@ Hence, the output is not influenced by the braking law due to orthogonality, and
 
 
 
-\subsubsection{Leveraging Impact Forces}
+\subsection{Transitions Leveraging Impact Forces}
 
-DSDM model with impulsive force only:
+This section described a control scheme where the velocity of the internal DoF is adjusted beforehand when an impact is expected, so that impact forces bring M1 velocity close to zero, allowing for fast down-shift transitions. This is aimed at situation like a leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot.
 
+\subsubsection{Simple Example}
 
-generalized coords:
+Here, a simple situation of a grounded DSDM actuator making contact with a fixed grounded object is explored, see Fig. \ref{fig:dsdm_impact_model}.
 
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=0.70\textwidth]{dsdm_impact_model.png}
+	\caption{DSDM actuator contacting a fixed object}
+	\label{fig:dsdm_impact_model}
+\end{figure}
+
+The equation of motion previous introduced (eq. \eqref{eq:dsdm_manip}) can describe this situation. However here, displacement variables corresponding to angles of rotation of the output and M1, ignorable coordinates for an unconstrained scenario, are introduced:
 %
 \begin{align}
-\vec{\dot{q}} = \left[ \begin{array}{c} 	\dot{a} \\ w_1 \end{array} \right]
+\vec{q} = \left[ \begin{array}{c} 	q_0 \\ q_1 \end{array} \right] \quad
+\vec{\dot{q}} = \left[ \begin{array}{c} 	w_0 \\ w_1 \end{array} \right]
 \label{eq:dsdm_impact_q}
 \end{align}
 %
-
-
+to expressed the contact constraint in the standard form (see section \ref{sec:contact}):
 %
 \begin{align}
-H = \left[ \begin{array}{c c} 	m_0 + R_1^2 I_1  &  -\frac{R_1^2}{R_2} I_1 \\ -\frac{R_1^2}{R_2} I_1  &  I_1 + (\frac{R_2}{R_1})^2 I_2 \end{array} \right]
-\label{eq:dsdm_impact_H}
-\end{align}
-%
-
-constraint
-%
-\begin{align}
-\dot{a} &= 0 \\
-J_c     &= \left[ \begin{array}{c c} 1 & 0 \end{array} \right]
+\phi( \vec{q} )       &= q_0 - c = 0 \\
+\dot{\phi}( \vec{q} ) &= J_c\vec{\dot{q}} =  w_0 = 0 \\
+J_c                   &= \frac{d \phi}{d\vec{q}} = \left[ \begin{array}{c c} 1 & 0 \end{array} \right]
 \label{eq:dsdm_impact_const}
 \end{align}
 %
-
+Then assuming the impact is completely inelastic, the velocity at time $t^+$ right after the impact is satisfying the constraint (no bouncing back the surface), and thus parametrized by a single DoF with unkown velocity $\lambda$:
 %
 \begin{align}
-J_c     &= \left[ \begin{array}{c c} 1 & 0 \end{array} \right] \\ 
-V       &= \left[ \begin{array}{c} 0 \\ 1 \end{array} \right]
+\vec{\dot{q}}^+ &= \underbrace{ \left[ \begin{array}{c} 0 \\ 1 \end{array} \right] }_{ V } \lambda^+
 \label{eq:dsdm_impact_jaco}
 \end{align}
 %
-
-
-Then solving for a sticky impact, see section \ref{sec:impact}:
-
+Then solving for impact force and resulting velocity simultaneously, see section \ref{sec:impact}:
 %
 \begin{align}
-\left[ \begin{array}{c} \lambda \\ \int{f_c dt} \end{array} \right] &= \Bigg[ \begin{array}{c c} HV & -J_c^T \end{array} \Bigg]^{-1} \Bigg[ H \Bigg] \left[ \begin{array}{c} \dot{a}^- \\ \dot{w}_1^- \end{array} \right] \\
-\left[ \begin{array}{c} \lambda \\ \int{f_c dt} \end{array} \right] &= \Bigg[ \begin{array}{c c} 
-\frac{-R_2^2/R_1 J_2}{J_1+(\frac{R_1}{R_2})^2 J_2} & 1 \\
-- (m_o + R_2^2 J_2+\frac{-R_2^2/R_1 J_2}{J_1+(\frac{R_1}{R_2})^2 J_2}) & 0 
-\end{array} \Bigg] \left[ \begin{array}{c} \dot{a}^- \\ \dot{w}_1^- \end{array} \right]
+\left[ \begin{array}{c} \lambda^+ \\ \int{f_c dt} \end{array} \right] &= \Bigg[ \begin{array}{c c} HV & -J_c^T \end{array} \Bigg]^{-1} \Bigg[ H \Bigg] \left[ \begin{array}{c} w_0^- \\ w_1^- \end{array} \right] \\
+\left[ \begin{array}{c} \lambda^+ \\ \int{f_c dt} \end{array} \right] &= \Bigg[ \begin{array}{c c} 
+\frac{-R_2^2/R_1 I_2}{I_1+(\frac{R_1}{R_2})^2 I_2} & 1 \\
+- (I_o + R_2^2 I_2+\frac{-R_2^2/R_1 I_2}{I_1+(\frac{R_1}{R_2})^2 I_2}) & 0 
+\end{array} \Bigg] \left[ \begin{array}{c} w_0^- \\ w_1^- \end{array} \right]
 \label{eq:dsdm_impact_sol}
 \end{align}
 %
 
-Then simplifying for the case of $(\frac{R_2}{R_2})^2 J_2 >> J_1 $ we have the following results:
+Simplifying for the case of $R_2^2 I_2 >> R_1^2 I_1 $ we have the following results:
 %
 \begin{align}
-\dot{a}^+ &= 0 \\
-w_1^+     &\approx - R_1 \dot{a}^- + w_1^-  = - \frac{R_1}{R_2} w_2^- \\
-w_2^+     &\approx  w_2^- \\
-\int{f_c dt}     &\approx -[m_o + R_1^2 J_1] \dot{a}^-
+w_0^+            &= 0 \\
+w_1^+            &\approx - R_1 w_0^- + w_1^-  = - \frac{R_1}{R_2} w_2^- \\
+w_2^+            &\approx  w_2^- \\
+\int{f_c dt}     &\approx -[I_o + R_1^2 I_1] w_0^-
 \label{eq:dsdm_impact_res}
 \end{align}
 %
 
-Those results basically show that when the reflected inertia of M2 is much greater than that of M1, the impact affect only $w_1$ and $w_2$ remains unchanged. 
+Those results basically show that when the reflected inertia of M2 is much greater than that of M1, the impact affect only $w_1$ and $w_2$ remains unchanged through the impact. 
+
+%
+\begin{align}
+\left[ \begin{array}{c} w_1^+ \\ \int{f_c dt} \end{array} \right] &= \Bigg[ \begin{array}{c c} -R_1 & 1 \\ -(I_o + R_1^2 I_1) & 0 \end{array} \Bigg] \left[ \begin{array}{c} w_0^- \\ w_1^- \end{array} \right] 
+\label{eq:dsdm_impact_approx_sol}
+\end{align}
+%
 
 Interestingly 
 
