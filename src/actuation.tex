@@ -131,13 +131,13 @@ A DSDM actuator will be lighter than a single motor for applications with a wide
 \end{figure}
 
 
-\section{Control Algorithms for Fast and Seamless Gearshifts}
+\section{Fast and Seamless Gearshifts}
 \label{sec:FastAndSeamlessGearshifts}
 
 \subsection{Modeling}
 
 
-\subsubsection{3-ports planetary gear junction}
+\subsubsection{3-ports Planetary Gear Junction}
 As illustrated at Fig. \ref{fig:dualmotorconcept} a planetary gear box can be used to implement the differential junction. With the planet carrier connected to the output, M1 to the sun gear and M2 to the ring gear, the kinematic relation of the system is given by
 %
 \begin{align}
@@ -546,27 +546,34 @@ Fig. \ref{fig:HS_loop} and Fig. \ref{fig:HF_loop} show DSDM control algorithms i
 
 %The high-level robot controller, discussed in detail in Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}, could be a simple PID for a single output system, a computed torque algorithm for a complex robots, etc. 
  
-
-\begin{figure}[p]
-	\centering
-		\includegraphics[width=0.95\textwidth]{HS_ctl.png}
-	\caption{High-speed mode control loop}
-	\label{fig:HS_loop}
-\end{figure}
-
 \begin{figure}[p]
 	\centering
 		\includegraphics[width=0.95\textwidth]{HF_ctl.png}
-	\caption{High-force mode control loop}
+	\caption{High-Force Mode Controller}
 	\label{fig:HF_loop}
 \end{figure}
 
 \begin{figure}[p]
 	\centering
+		\includegraphics[width=0.95\textwidth]{HS_ctl.png}
+	\caption{High-Speed Mode: Generic Controller}
+	\label{fig:HS_loop}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
 		\includegraphics[width=0.95\textwidth]{down_ctl.png}
-	\caption{Synchronization mode control loop}
+	\caption{High-Speed Mode: Synchronization controller}
 	\label{fig:down_loop}
 \end{figure}
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.95\textwidth]{imp_ctl.png}
+	\caption{High-Speed Mode: Impact Preparation Controller}
+	\label{fig:imp_loop}
+\end{figure}
+
 
 
 
@@ -631,15 +638,16 @@ Therefore during transitions, using $u_1$ velocity $w_1$ can be driven to zero, 
 -\frac{R_2 I_2}{R_1 I_1} 
 \end{array} \right]}_{\text{Nullspace Projection}} \underbrace{-C w_1}_{\text{Braking Law}} + 
 \left[ \begin{array}{c}
-\frac{1}{R_1} \\
+1 \\
 0 
 \end{array} \right]  \tau_d
+\label{eq:syncrhonization_ctl}
 \end{align}
 leads  to:
 \begin{align}
 I_T \dot{w}_o +
 b_T  w_o
-=& \, \tau_d  \quad \text{and} \quad \dot{w}_1 = -C w_1 + f(w_o,\tau_d) %\scriptstyle \frac{R_1 b_o}{I_T} \textstyle w_o
+=& \, R_1 \tau_d  \quad \text{and} \quad \dot{w}_1 = -C w_1 + f(w_o,\tau_d) %\scriptstyle \frac{R_1 b_o}{I_T} \textstyle w_o
 \end{align}
 Hence, the output is not influenced by the braking law due to orthogonality, and is still controlled using the desired torque $\tau_d$ determined by the high-speed mode controller. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturations. Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is a trade-off, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control.
 
@@ -707,43 +715,72 @@ w_2^+            &\approx  w_2^- \\
 \end{align}
 %
 
-Those results basically show that when the reflected inertia of M2 is much greater than that of M1, the impact affect only $w_1$ and $w_2$ remains unchanged through the impact. 
-
+Those results basically show that when the reflected inertia of M2 is much greater than that of M1, the impact affect only $w_1$ and $w_2$ remains unchanged through the impact. Rearranging the results to express the two variable of interest ( approaching speed $w_0^-$ and after impact M1 velocity $w_1^+$) lead to:
 %
 \begin{align}
-\left[ \begin{array}{c} w_1^+ \\ \int{f_c dt} \end{array} \right] &= \Bigg[ \begin{array}{c c} -R_1 & 1 \\ -(I_o + R_1^2 I_1) & 0 \end{array} \Bigg] \left[ \begin{array}{c} w_0^- \\ w_1^- \end{array} \right] 
+\left[ \begin{array}{c} w_0^- \\ w_1^+ \end{array} \right] &= \Bigg[ \begin{array}{c c} \frac{1}{R_1} & \frac{1}{R_2}\\ 0 & -\frac{R_1}{R_2} \end{array} \Bigg] \left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] 
 \label{eq:dsdm_impact_approx_sol}
 \end{align}
 %
-
-Interestingly 
-
-
-Generalized case, complex robot dynamic:
-
+Hence it is possible to set both motor velocities so that the approaching speed and after impact M1 velocity can be set arbitrarily and independently using the nullspace, by determining velocity setpoints as:
 %
 \begin{align}
-\Delta w_1  = w_1^+ - w_1^- = f_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) 
+\left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] &= \Bigg[ \begin{array}{c} R_1 \\ 0  \end{array} \Bigg] u_0  + 
+\underbrace{ \left[ \begin{array}{c} 1 \\ -\frac{R_2}{R_1} \end{array} \right]}_{\text{Nullspace projection}}
+ u_1 \\
+&\text{leading to} \quad w_o^- = u_0 \quad w_1^+ = u_1
+\label{eq:dsdm_impact_kin_ctl}
+\end{align}
+%
+For this simple scenario where a fixed DSDM hit a fixed object, the result is trivial: by keeping $w_2^-=0$ M1 will be still right after the impact and the brake can be engaged immediately. But the principle can be extended to complex scenario where a model is available to predict the change of velocity expected during the impact.
+
+
+\subsubsection{Generalization}
+
+In the general case for a DSDM used in a robotic system, assuming the reflected inertia of M2 is much greater than M1 ($R_2^2 I_2 >> R_1^2 I_1 $), during an impact M2 velocity will be unchanged and the drop in velocity for M1 is function of the full robot dynamics and contact constraints:
+%
+\begin{align}
+\Delta w_1  &= w_1^+ - w_1^- = f_{imp}( \vec{q} , \vec{\dot{q}} , J_c ) \\
+\Delta w_2  &= w_2^+ - w_2^- \approx 0
 \label{eq:dsdm_impact_gen_delta_w1}
 \end{align}
 %
 
-Proposed predictive controller: regulate as much as possible (up to velocity saturation limits) :
+\subsubsection{Predictive Control Algorithm}
 
+The proposed control algorithm is as follow. When an impact is expected during high-speed mode, estimate the expected the drop in velocity for the actuator using a collision model considering the full robot dynamic, then assign the negative of the estimated speed drop as a velocity set-point for M1:
 %
 \begin{align}
 w_{1,d}  = -\hat{f}_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) 
 \label{eq:dsdm_impact_gen_delta_w1}
 \end{align}
 %
-
-which will lead when an impact happen to 
+Then, using the optional secondary objective loop of the high-speed mode controller, track this velocity set-point in the nullspace, similarly to the synchronization controller of eq. \eqref{eq:syncrhonization_ctl} but with a non-zero set-point:
 %
 \begin{align}
-w_1^+ =  w_1^- + \Delta w_1 = -\hat{f}_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) + f_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c )  \approx 0
+\left[ \begin{array}{c}
+\tau_1 \\
+\tau_2
+\end{array} \right]
+ = 
+\underbrace{\left[ \begin{array}{c}
+1 \\
+-\frac{R_2 I_2}{R_1 I_1} 
+\end{array} \right]}_{\text{Nullspace Projection}} \underbrace{C (w_{1,d} -  w_1)}_{\text{Speed controller}} + 
+\left[ \begin{array}{c}
+1 \\
+0 
+\end{array} \right]  \underbrace{ \tau_d }_{\text{Main Loop}}
+\end{align}
+%
+If the velocity controller is able to perfectly track the velocity set-point and the collision is perfectly predicted, then immediately after the impact, M1 velocity will be zero:
+%
+\begin{align}
+w_1^+ =  w_1^- + \Delta w_1 = f_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) -\hat{f}_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) \approx 0
 \label{eq:dsdm_impact_vel}
 \end{align}
 %
+Hence, it would be possible to engaged the brake and switch to high-force mode almost instantaneously. In practice, because of speed saturation it won't always be possible to perfectly track the desired speed in the nullspace. However, by running this control scheme and bringing $w_1^+$ as close as possible to zero,  faster gear-shift will still be achieved because synchronization error will be smaller at the start of the down-shift process.
 
 
 
