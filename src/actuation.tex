@@ -718,3 +718,32 @@ Those results basically show that when the reflected inertia of M2 is much great
 
 Interestingly 
 
+
+Generalized case, complex robot dynamic:
+
+%
+\begin{align}
+\Delta w_1  = w_1^+ - w_1^- = f_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) 
+\label{eq:dsdm_impact_gen_delta_w1}
+\end{align}
+%
+
+Proposed predictive controller: regulate as much as possible (up to velocity saturation limits) :
+
+%
+\begin{align}
+w_{1,d}  = -\hat{f}_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) 
+\label{eq:dsdm_impact_gen_delta_w1}
+\end{align}
+%
+
+which will lead when an impact happen to 
+%
+\begin{align}
+w_1^+ =  w_1^- + \Delta w_1 = -\hat{f}_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) + f_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c )  \approx 0
+\label{eq:dsdm_impact_vel}
+\end{align}
+%
+
+
+
