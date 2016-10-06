@@ -1,7 +1,16 @@
 \chapter{Variable Gear-ratio Actuation }
 \label{sec:MultipleSpeedActuationTechnology}
 
-This chapter present an actuation technology, consisting of a mechanical architecture called DSDM (dual-motor dual-speed) used in conjunction with novel gear-shifting control algorithms, that make possible fast and seamless transitions between two radically different gear-ratios. 
+This chapter present an actuation technology, consisting of a mechanical architecture called DSDM (dual-motor dual-speed) used in conjunction with novel gear-shifting control algorithms, that make possible fast and seamless transitions between two radically different gear-ratios. Fig. \ref{fig:dsdm_proto} illustrate DSDM actuator prototype. 
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.60\textwidth]{dsdm_proto_2.jpg}
+	\caption{DSDM actuator prototype}
+	\label{fig:dsdm_proto}
+\end{figure}
+
+This technology allows for improved power transmission over a wide range of output speed, and reflecting radically different impedance at the output. Unlike alternative approach, this is achieved without requiring development of novel components, only proven technology (motor, brake and gears), which can be greatly advantageous from a product development point-of-view. 
 
 \section{Motivation}
 \label{sec:mot}
@@ -26,13 +35,16 @@ It will be a significant breakthrough if a type of multiple speed transmission c
 \section{Actuator Research}
 \label{sec:actres}
 
-\paragraph{Classical Actuators} Traditional robots generally use actuators that behave as displacement-sources because of their high intrinsic impedance. These include geared EM motors and hydraulics cylinders. Using a force sensor, it is possible to control the output force with this type of actuators, but the bandwidth is rather limited. To guarantee the stability of the force-feedback scheme only half the intrinsic inertia can be canceled \cite{hogan_impedance_2004}. Since 70's, roboticists have been attempting to build actuators that can behave naturally as a force-source such as series-elastic actuators, pneumatic cylinder and air-muscles \cite{hanafusa_stable_1977}\cite{pratt_series_1995}. However, because of the physical limitation of compliant transmission materials, the achievable bandwidth is limited and precise position control is hardly achievable. Direct drive EM actuators are the best force-source actuators with high fidelity, high bandwidth, and have been used for high-speed robots \cite{asada_direct-drive_1987} and more recently small legged robots \cite{kenneally_design_2016}. However, the very low force density \cite{hollerbach_comparative_1992} and low efficiency at low speeds make them impractical for mobile robot applications, just holding a payload with static torques require continuous currents in the motors leading to a large energy consumption even though no mechanical work is done. Moreover, on the other hand, actuators with non-back-drivable mechanisms have the advantage for pure position control tasks and they can bear very large load without any power consumption.
+\paragraph{Classical Actuators} Traditional robots generally use actuators that behave as displacement-sources because of their high intrinsic impedance. These include geared EM motors and hydraulics cylinders. Using a force sensor, it is possible to control the output force with this type of actuators, but the bandwidth is rather limited. To guarantee the stability of the force-feedback scheme only half the intrinsic inertia can be canceled \cite{hogan_impedance_2004}. Since 70's, roboticists have been attempting to build actuators that can behave naturally as a force-source such as series-elastic actuators, pneumatic cylinder and air-muscles \cite{hanafusa_stable_1977}\cite{pratt_series_1995}. However, because of the physical limitation of compliant transmission materials, the achievable bandwidth is limited and precise position control is hardly achievable. Direct drive EM actuators are the best force-source actuators with high fidelity, high bandwidth, and have been used for high-speed robots \cite{asada_direct-drive_1987} and more recently small legged robots \cite{kenneally_design_2016}. However, the very low force density \cite{hollerbach_comparative_1992} and low efficiency at low speeds make them impractical for mobile robot applications, just holding a payload with static torques require continuous currents in the motors leading to a large energy consumption even though no mechanical work is done. 
 
-\paragraph{Variable Impedance Actuators} Since both small and large intrinsic impedances are advantageous in different scenario, several group have developed variable intrinsic impedance actuators, such as based on variable stiffness spring \cite{tonietti_design_2005}, antagonist non-linear devices \cite{koganezawa_antagonistic_2006}, a series-compliance that can be locked with a brake \cite{leach_linear_2012} and dual-motors in serial configuration \cite{kim_serial-type_2010}. Furthermore, so-called macro-micro actuators, can improve the bandwidth of force-source type of actuators by exploiting the high-bandwidth of a small actuator in parallel, allowing for wider-range impedance control and improved position control \cite{morrell_parallel-coupled_1998}.
+\paragraph{Variable Impedance Actuators} Force-source type of actuator are desirable for interaction tasks, for instance grasping, manipulation and locomotion, since the interaction force can be controlled. On the other hand, actuators with non-back-drivable mechanisms have the advantage for pure position controlled tasks, disturbance rejection and statically bearing large load without any power consumption. Since both small and large intrinsic impedances are advantageous in different scenario, several group have developed variable intrinsic impedance actuators, such as based on variable stiffness spring \cite{tonietti_design_2005}, antagonist non-linear devices \cite{koganezawa_antagonistic_2006}, a series-compliance that can be locked with a brake \cite{leach_linear_2012} and dual-motors in serial configuration \cite{kim_serial-type_2010}. Furthermore, so-called macro-micro actuators, can improve the bandwidth of force-source type of actuators by exploiting the high-bandwidth of a small actuator in parallel, allowing for wider-range impedance control and improved position control \cite{morrell_parallel-coupled_1998}.
 
-\paragraph{Vehicle Powertrains} While the actuator work in robotics have been focused on impedance and bandwidth issues, in the powertrain field the torque-speed matching issue is predominant, since power density and efficiency are critical for mobile systems. The idea of using multiple gear ratios with electric motors has been explored occasionally, to improve efficiency and power density \cite{mckeegan_antonovs_2011}. A twin motor configuration has been proposed for smooth gear shifting, where each motor shifts at a different timing \cite{bologna_electric_2014}. Also, a dual motor configuration using a planetary coupling and non-back-drivable worm-gears was proposed for a mobile robot powertrain \cite{lee_new_2012}. Multiple gear-ratio powertrains provide effective solutions for torque-speed matching, but are not adapted to make gear shifts while interacting with dynamic environment and a new gear shifting methodology adapted to robotics is needed.
+\paragraph{Vehicle Powertrains} While the actuator work in robotics have been focused on impedance and bandwidth issues, in the powertrain field the torque-speed matching issue is predominant, since power density and efficiency are critical for mobile systems. The idea of using multiple gear ratios with electric motors has been explored occasionally, to improve efficiency and power density \cite{mckeegan_antonovs_2011}. A twin motor configuration has been proposed for smooth gear shifting, where each motor shifts at a different timing \cite{bologna_electric_2014}. Also, a dual motor configuration using a planetary coupling and non-back-drivable worm-gears was proposed for a mobile robot powertrain \cite{lee_new_2012}. Multiple gear-ratio powertrains provide effective solutions for torque-speed matching, but are not adapted to make gear shifts while interacting with dynamic environments and a new gear shifting methodology adapted to robotics is needed.
 
-\paragraph{Novel Contribution} This presented actuator work in this chapter, address the issue of improving available power and efficiency over a wide range of operating speeds, which has rarely been addressed in the robotics literature. Also, the proposed dual-speed actuator is an alternative approach to impedance variation that can achieve many order-of-magnitude changes. The main novel contribution is the methodology for gear shifting that is adapted to a robotics context. A mechanical architecture where two motors are coupled using a 3-ports gearbox and a brake is used. Similar dual-motor architectures have been used in hybrid car powertrains and actuators \cite{byeong-sang_kim_improved_2007}, but not in a the context of addressing gear shifting issues, i.e. the control of transitions between discrete operating modes. Here this architecture is used in conjunction with a novel controller to provide full control of the output during gear shifting, which is a key enabling feature for robotic applications.
+\paragraph{Variable Gear-ratio Actuators} 
+While variable gear-ratio actuators have been studied extensively for automobile power-trains, they have not yet been fully investigated in robotics, despite significant potential gains. A few instance of research in that direction were made for legged locomotion \cite{hirose_design_1991}, grasping robotic hands \cite{shin_robot_2012} and actuators \cite{hirose_development_1999} \cite{byeong-sang_kim_improved_2007}\cite{tahara_high-backdrivable_2011}. While those works are highly promising, no gear shifting methodology for generic robot actuator in arbitrary dynamic situation are proposed. 
+
+\paragraph{Novel Contribution} The presented actuator work in this chapter, address the issue of improving available power and efficiency over a wide range of operating speeds, which has rarely been addressed in the robotics literature. Also, the proposed multiple gear-ratios actuator is an alternative approach to impedance variation that can achieve many order-of-magnitude changes. The main novel contribution is the methodology for gear shifting that is adapted to a robotics context. A mechanical architecture where two motors are coupled using a 3-ports gearbox and a brake is used. Similar dual-motor architectures have been used in hybrid car powertrains and actuators , but not in a the context of addressing gear shifting issues, i.e. the control of transitions between discrete operating modes. Here this architecture is used in conjunction with a novel controller to provide full control of the output during gear shifting, which is a key enabling feature for robotic applications. A preliminary version of this work have been published in \cite{girard_two-speed_2015}, but this chapter include a more throughout analysis and new algorithms for managing impacts. 
 
 
 \section{Dual-Speed Dual-Motor architecture}
@@ -59,13 +71,6 @@ The envisioned implementation of the DSDM concept is to embed all the components
 \end{figure}
 
 Fig. \ref{fig:embedded} shows a prototype of a DSDM actuator with a revolute output, using discrete off-the-shelf motors for modularity and ease of implementation.
-
-\begin{figure}[H]
-	\centering
-		\includegraphics[width=0.60\textwidth]{dsdm_proto_2.jpg}
-	\caption{DSDM actuator prototype}
-	\label{fig:dsdm_proto}
-\end{figure}
 
 
 \subsection{Principle}
@@ -448,6 +453,14 @@ R_1 \frac{R_1 I_1}{R_2 I_2}
 
 During high-speed mode the behavior of the output is also dominated by a first-order linear behavior, but interestingly both input torques contributed to the motion through inertial coupling. Note that this differ from a serial architecture, in both case speed adds-up and effort is shared (0-type junction), but inertial properties are different.
 
+\begin{align}
+\text{High-speed mode: } \quad \left[ I_o + R_1^2 I_1 \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_1 \right] \tau_1 + \left[ R_1 \frac{R_1 I_1}{R_2 I_2} \right] \tau_2 
+\label{eq:dsdm_output_HSw0} \\
+\text{High-force mode: } \quad \left[ I_o + R_2^2 I_2 \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_2 \right] \tau_2 
+\label{eq:dsdm_output_HFw0}
+\end{align}
+
+Note that, if DSDM would be used on multi-DoF robots, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would be more complex: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected.
 
 \subsubsection{Discrete Operating Modes}
 
@@ -482,7 +495,7 @@ w_1^- \\
 \vec{h}( \vec{q} , \vec{\dot{q}} , J_c )
 \end{align}
 %
-where $\vec{h}$ can be a complex mapping involving high-dimensional dynamic and constraints. However, since there is no impulsive force on the motor side, the effect of the contact can be reduce to a impulse torque applied to the output $\int{\tau_c dt}$ of the actuator, leading to:
+where $\vec{h}$ can be a complex mapping involving high-dimensional dynamic and constraints. However, since there is no impulsive force on the motor side, the effect of the contact, from the actuator point-of-view, can be reduce to a impulse torque $\tau_c$ applied to the output of the actuator, leading to:
 %
 \begin{align}
 \left[
@@ -502,10 +515,10 @@ H^{-1} \left[
 1 \\
 0 \\
 \end{array}
-\right] \int{\tau_c( \vec{q} , \vec{\dot{q}} , J_c ) dt}
+\right] \int{\tau_c dt}
 \end{align}
 %
-If the reflected inertia of M2 is much greater than M1 ($R_2^2 I_2 >> R_1^2 I_1 $), this reduced to
+If the reflected inertia of M2 is much greater than that of M1 ($R_2^2 I_2 >> R_1^2 I_1 $), than the impulsive reaction is expressed by:
 %
 \begin{align}
 \left[
@@ -520,7 +533,7 @@ w_0^- \\
 w_1^- \\
 \end{array}
 \right] +
-\frac{ \int{\tau_c( \vec{q} , \vec{\dot{q}} , J_c ) dt} }{ I_o + I_1 R_1^2} 
+\frac{ \int{\tau_c dt} }{ I_o + I_1 R_1^2} 
 \left[
 \begin{array}{c}
 1 \\
@@ -532,7 +545,7 @@ R_1 \\
 Hence, M2 velocity will be unchanged and the velocity discontinuity of the output is transmitted directly to M1 during an impact:
 %
 \begin{align}
-\Delta w_o  &= w_o^+ - w_o^- = \frac{ \int{\tau_c( \vec{q} , \vec{\dot{q}} , J_c ) dt} }{ I_o + I_1 R_1^2}  \\
+\Delta w_o  &= w_o^+ - w_o^- = \frac{ \int{\tau_c dt} }{ I_o + I_1 R_1^2}  \\
 \Delta w_1  &= w_1^+ - w_1^- = R_1 \Delta w_o \\
 \Delta w_2  &= w_2^+ - w_2^- =  0
 \label{eq:dsdm_impact_gen_delta_w1}
@@ -558,7 +571,7 @@ Fig.\ref{fig:dsdm_impact_model_1} illustrates a simple impact scenario with a si
 \label{eq:dsdm_impact_q}
 \end{align}
 %
-to expressed the contact constraint in the standard form (see section \ref{sec:contact}):
+Then the contact constraint is expressed in the standard form (see section \ref{sec:contact}):
 %
 \begin{align}
 \phi( \vec{q} )       &= q_0 - c = 0 \\
@@ -567,14 +580,14 @@ J_c                   &= \frac{d \phi}{d\vec{q}} = \left[ \begin{array}{c c} 1 &
 \label{eq:dsdm_impact_const}
 \end{align}
 %
-Then assuming the impact is completely inelastic and $R_2^2 I_2 >> R_1^2 I_1$, eq.\eqref{eq:manipulator_impact_force} can be used to solve for the impact force:
+Then it is assumed that the impact is completely inelastic and again, for simplicity that $R_2^2 I_2 >> R_1^2 I_1$. Solving for the impact force using eq.\eqref{eq:manipulator_impact_force} lead to:
 %
 \begin{align}
 \int{  \tau_c dt } &= - \left( J_c H^{-1} J_c^T \right)^{-1}  J_c \vec{\dot{q}}^- = -(I_0 + I_1 R_1^2) w_o^-
 \label{eq:dsdm_impact_force}
 \end{align}
 %
-and the resulting velocities immediately after the impact are:
+and the resulting change in velocities during the impact are thus:
 \begin{align}
 \Delta w_o  = - w_o^- \quad  \Delta w_1  = - R_1 w_o^-  \quad  \Delta w_2  = 0
 \label{eq:dsdm_impact_res}
@@ -787,7 +800,7 @@ Therefore, if an impact is expected and the upcoming impulsive impact reaction $
 
 %\paragraph{Dynamic algo}
 %
-Alternatively, as for the braking law used for synchronization during the down-shift process, this problem can be approached from a dynamic point of view. As shown in the last section, the ideal desired velocity for M1 is a function of the expected impulsive contact reaction:
+Alternatively, as for the braking law used for synchronization during the down-shift process, this problem can be approached from a dynamic point of view. A desired velocity for M1 is defined has a function of the expected impulsive contact reaction:
 %
 \begin{align}
 w_{1,d}  = - R_1 \frac{\int{\tau_c dt}}{I_o + I_1 R_1^2}
@@ -803,8 +816,8 @@ Then, while using the regular high-speed controller to control the output, the s
 \end{array} \right]
  = 
 \underbrace{\left[ \begin{array}{c}
-1 \\
--\frac{R_2 I_2}{R_1 I_1} 
+I_1 \\
+-\frac{R_2 }{R_1} I_2 
 \end{array} \right]}_{\text{Nullspace Projection}} \underbrace{C (w_{1,d} -  w_1)}_{\text{Speed controller}} + 
 \left[ \begin{array}{c}
 1 \\
@@ -812,7 +825,7 @@ Then, while using the regular high-speed controller to control the output, the s
 \end{array} \right]  \underbrace{ \tau_d }_{\text{Main Loop}}
 \end{align}
 %
-As discussed before, this will lead to independent output dynamics controlled with $\tau_d$:
+As discussed before, this will lead to independent output dynamics controlled with $\tau_d$ which would be used by the main robot control loop:
 \begin{align}
 I_T \dot{w}_o +
 b_T  w_o
