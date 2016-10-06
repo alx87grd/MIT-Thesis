@@ -462,6 +462,7 @@ Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes
 
 
 \subsubsection{Impacts}
+\label{sec:model_impact}
 
 During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities will suddenly change, as a function of the full dynamic of the robot and the contact situation:
 %
@@ -651,8 +652,8 @@ Hence, there is a one degree of freedom space of inputs $\tau_1$ and $\tau_2$ th
 \end{array} \right]
  = 
 \underbrace{\left[ \begin{array}{c}
-1 \\
--\frac{R_2 I_2}{R_1 I_1} 
+I_1 \\
+-\frac{R_2 }{R_1 }  I_2
 \end{array} \right]}_{\text{Nullspace Projection}} u
 \; \rightarrow \;
 I_T \dot{w}_o +
@@ -660,46 +661,12 @@ b_T  w_o = 0 \quad \forall u \in \Re
 \label{eq:dyn_null_proj}
 \end{align}
 
-\subsubsection{Impact Impulse}
 
 \subsection{Control algorithms}
 
 During high-force mode, the actuator behaves like a regular geared EM motor and standard speed or position control scheme can be used. During high-speed mode, with a small reduction ratio $R_1$ (high transparency transmission), the DSDM actuator can be controlled like a direct drive motor: controlling M1 current lead to almost direct control of the output torque. Moreover, exploiting the nullspace, a secondary objective can be brought into the system without influencing the output torque. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary controller can be used not only for load balancing but also for minimizing power consumption, avoiding speed saturation of M1, etc. Note that the nullspace projection vector, see eq.\eqref{eq:dyn_null_proj}, depends only on parameters associated with the motors. Therefore, it is possible to project the secondary controller inputs on the output nullspace even if the output dynamic parameters that include the load inertia and damping are unknowns. 
 
 Fig. \ref{fig:HS_loop} and Fig. \ref{fig:HF_loop} show DSDM control algorithms implemented as intermediary control loops between hardware and high-level commands. The high-speed controller tracks a received desired torque by controlling the current in M1, and can also optionally track a secondary objective without affecting the main-loop, by projecting the secondary input into the nullspace of the main-loop. The high-force controller directly convert a received desired torque to a current set-point for M2.
-
-%The high-level robot controller, discussed in detail in Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}, could be a simple PID for a single output system, a computed torque algorithm for a complex robots, etc. 
- 
-\begin{figure}[p]
-	\centering
-		\includegraphics[width=0.95\textwidth]{HF_ctl.png}
-	\caption{High-Force Mode Controller}
-	\label{fig:HF_loop}
-\end{figure}
-
-\begin{figure}[p]
-	\centering
-		\includegraphics[width=0.95\textwidth]{HS_ctl.png}
-	\caption{High-Speed Mode: Generic Controller}
-	\label{fig:HS_loop}
-\end{figure}
-
-\begin{figure}[p]
-	\centering
-		\includegraphics[width=0.95\textwidth]{down_ctl.png}
-	\caption{High-Speed Mode: Synchronization controller}
-	\label{fig:down_loop}
-\end{figure}
-
-\begin{figure}[p]
-	\centering
-		\includegraphics[width=0.95\textwidth]{imp_ctl.png}
-	\caption{High-Speed Mode: Impact Preparation Controller}
-	\label{fig:imp_loop}
-\end{figure}
-
-
-
 
 
 \subsubsection{Transitions (gear-shift)}
@@ -721,7 +688,7 @@ In this case, the transition is simple because the system goes from 1 DoF to 2 D
 \paragraph{Down-shift: From high-speed mode to high-force mode}
 In this case, the transition is harder because the system goes from 2 DoF to 1 DoF, and some synchronization work is needed. M1 speed $w_1$ must be brought to zero so that the locking brake can be engaged smoothly without any impact. Hence, as illustrated at Fig. \ref{fig:automaticflow}, when it is decided to engage high-force mode, and intermediary synchronization control mode is needed. Two algorithms, a kinematic and a dynamic approach, can be considered. 
 
-\paragraph{Kinematic algo}
+%\paragraph{Kinematic algo}
 The kinematic control aglorithm assumes local high gain velocity feedback controls for the individual motors. Hence velocities $w_1$ and $w_2$ can be treated as control inputs. Using the nullspace projection vector from eq.\eqref{eq:kinematicnullspace}, the kinematic control law can be written as 
 %
 \begin{align}
@@ -755,7 +722,7 @@ w_o = u_0 \quad \text{with} \quad w_1 = u_1
 %
 Therefore during transitions, using $u_1$ velocity $w_1$ can be driven to zero, while fully controlling the output velocity using $u_0$. The kinematic control law is valid only when high fidelity velocity controls are available. Alternatively the dynamic control algorithm does not require this. 
 
-\paragraph{Dynamic algo}
+%\paragraph{Dynamic algo}
 As illustrated in Fig. \ref{fig:down_loop}, while running the general high-speed controller, a braking law for $w_1$ can be used in parallel as the secondary controller projected on the output nullspace:
 \begin{align}
 \left[ \begin{array}{c}
@@ -764,8 +731,8 @@ As illustrated in Fig. \ref{fig:down_loop}, while running the general high-speed
 \end{array} \right]
  = 
 \underbrace{\left[ \begin{array}{c}
-1 \\
--\frac{R_2 I_2}{R_1 I_1} 
+I_1 \\
+-\frac{R_2 }{R_1 }  I_2
 \end{array} \right]}_{\text{Nullspace Projection}} \underbrace{-C w_1}_{\text{Braking Law}} + 
 \left[ \begin{array}{c}
 1 \\
@@ -773,13 +740,19 @@ As illustrated in Fig. \ref{fig:down_loop}, while running the general high-speed
 \end{array} \right]  \tau_d
 \label{eq:syncrhonization_ctl}
 \end{align}
-leads  to:
+leading to independent output dynamics controlled with $\tau_d$:
 \begin{align}
 I_T \dot{w}_o +
 b_T  w_o
-=& \, R_1 \tau_d  \quad \text{and} \quad \dot{w}_1 = -C w_1 + f(w_o,\tau_d) %\scriptstyle \frac{R_1 b_o}{I_T} \textstyle w_o
+=& \, R_1 \tau_d  
 \end{align}
-Hence, the output is not influenced by the braking law due to orthogonality, and is still controlled using the desired torque $\tau_d$ determined by the high-speed mode controller. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturations. Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is a trade-off, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control.
+and a $w_1$ closed-loop dynamic converging exponentially to zero if the synchronization gain $C$ is large:
+\begin{align}
+ %\dot{w}_1 = -C w_1 + f(w_o,\tau_d) %\scriptstyle \frac{R_1 b_o}{I_T} \textstyle w_o
+ \dot{w}_1 = -C w_1 + \underbrace{\left[\frac{R_1^2}{I_T} + \frac{R_1^2 I_o}{R_2^2 I_2 I_T} \right] \tau_d - \left[\frac{R_1 b_o}{I_T}\right] w_o }_{\text{Undesirable coupling from main loop}}
+\end{align}
+
+Hence, the output is not influenced by the braking law due to orthogonality, and is still controlled using the desired torque $\tau_d$ determined by the high-speed mode controller. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturations. Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control. Also the synchronization gain can be a complex compensator, for instance a PI ( $C(s) = k_p + \frac{k_i}{s}$ ), for better rejection of disturbances coming from the main loop coupling. 
 
 
 
@@ -788,8 +761,8 @@ Hence, the output is not influenced by the braking law due to orthogonality, and
 This section described a control scheme where the velocity of the internal DoF is adjusted beforehand when an impact is expected, so that impact forces bring M1 velocity close to zero, allowing for fast down-shift transitions. This is aimed at situation like a leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot.
 
 
-\paragraph{Kinematic algo}
-Rearranging the results to express the two variable of interest (approaching speed $w_0^-$ and M1 velocity after the impact $w_1^+$) lead to:
+%\paragraph{Kinematic algo}
+Rearranging the results of section \ref{sec:model_impact} to express the two variables of interest (approaching speed $w_0^-$ and M1 velocity after the impact $w_1^+$), as a function of controllable inputs (from a kinematic point of view), lead to:
 %
 \begin{align}
 \left[ \begin{array}{c} w_0^- \\ w_1^+ \end{array} \right] &= \Bigg[ \begin{array}{c c} \frac{1}{R_1} & \frac{1}{R_2}\\ 1 & 0 \end{array} \Bigg] \left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] + \left[ \begin{array}{c} 0 \\ R_1 \frac{\int{\tau_c dt}}{I_o + I_1 R_1^2} \end{array} \right]
@@ -810,17 +783,18 @@ leading to
  w_o^- = u_0 \quad \text{and} \quad w_1^+ = u_1
 \end{align}
 %
-Therefore, if expected an impact and can predict the impulsive reaction $\int{\tau_c dt}$, using this control law lead to independent control of the approaching speed of the actuator output $w_o^-$, which would be used for the primary objective (for instance making contact with the object at the right place and time), and resulting velocity of M1 after the impact $w_1^+$, which would be set to zero to allow for instantaneous down-shift.
+Therefore, if an impact is expected and the upcoming impulsive impact reaction $\int{\tau_c dt}$ can be computed, using this control law lead to independent control of the approaching speed of the actuator output $w_o^-$, which would be used for the primary objective (for instance making contact with the object at the right place and time), and resulting velocity of M1 after the impact $w_1^+$, which would be set to zero to allow for instantaneous down-shift.
 
-\paragraph{Dynamic algo}
-The proposed control algorithm is as follow. When an impact is expected during high-speed mode, estimate the expected the drop in velocity for the actuator using a collision model considering the full robot dynamic, then assign the negative of the estimated speed drop as a velocity set-point for M1:
+%\paragraph{Dynamic algo}
+%
+Alternatively, as for the braking law used for synchronization during the down-shift process, this problem can be approached from a dynamic point of view. As shown in the last section, the ideal desired velocity for M1 is a function of the expected impulsive contact reaction:
 %
 \begin{align}
-w_{1,d}  = -\hat{f}_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) 
+w_{1,d}  = - R_1 \frac{\int{\tau_c dt}}{I_o + I_1 R_1^2}
 \label{eq:dsdm_impact_gen_delta_w1}
 \end{align}
 %
-Then, using the optional secondary objective loop of the high-speed mode controller, track this velocity set-point in the nullspace, similarly to the synchronization controller of eq. \eqref{eq:syncrhonization_ctl} but with a non-zero set-point:
+Then, while using the regular high-speed controller to control the output, the secondary objective loop can be used to track M1 velocity set-point $w_{1,d}$ in the nullspace. This is analogous to the synchronization controller of eq. \eqref{eq:syncrhonization_ctl} but with a non-zero set-point for M1:
 %
 \begin{align}
 \left[ \begin{array}{c}
@@ -838,14 +812,54 @@ Then, using the optional secondary objective loop of the high-speed mode control
 \end{array} \right]  \underbrace{ \tau_d }_{\text{Main Loop}}
 \end{align}
 %
-If the velocity controller is able to perfectly track the velocity set-point and the collision is perfectly predicted, then immediately after the impact, M1 velocity will be zero:
+As discussed before, this will lead to independent output dynamics controlled with $\tau_d$:
+\begin{align}
+I_T \dot{w}_o +
+b_T  w_o
+=& \, R_1 \tau_d  
+\end{align}
+and a $w_1$ closed-loop dynamic converging exponentially to $w_{1,d}$ if the synchronization gain $C$ is large:
+\begin{align}
+ %\dot{w}_1 = -C w_1 + f(w_o,\tau_d) %\scriptstyle \frac{R_1 b_o}{I_T} \textstyle w_o
+ \dot{w}_1 = C \left( w_{1,d} - w_1 \right) + \underbrace{\left[\frac{R_1^2}{I_T} + \frac{R_1^2 I_o}{R_2^2 I_2 I_T} \right] \tau_d - \left[\frac{R_1 b_o}{I_T}\right] w_o }_{\text{Undesirable coupling from main loop}}
+\end{align}
+
+If the velocity controller is able to track the velocity set-point and the collision is perfectly predicted, then immediately after the impact, M1 velocity will be zero:
 %
 \begin{align}
-w_1^+ =  w_1^- + \Delta w_1 = f_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) -\hat{f}_{imp}( \vec{q} , \vec{\dot{q}}^- , J_c ) \approx 0
+w_1^+ =  w_1^- + \Delta w_1 = w_{1,d}  + R_1 \frac{\int{\tau_c dt}}{I_o + I_1 R_1^2} \approx 0
 \label{eq:dsdm_impact_vel}
 \end{align}
 %
-Hence, it would be possible to engaged the brake and switch to high-force mode almost instantaneously. In practice, because of speed saturation it won't always be possible to perfectly track the desired speed in the nullspace. However, by running this control scheme and bringing $w_1^+$ as close as possible to zero,  faster gear-shift will still be achieved because synchronization error will be smaller at the start of the down-shift process.
+Hence, it would be possible to engaged the brake and switch to high-force mode almost instantaneously. In practice, because of speed saturation it won't always be possible to perfectly track the desired speed $w_{1,d}$ in the nullspace, or to perfectly predict the contact impulse $\int{\tau_c dt}$. However, by running this control scheme and bringing $w_1^+$ as close as possible to zero, gear-shift will nonetheless be achieved faster because synchronization error will be smaller at the start of the down-shift process.
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.95\textwidth]{HF_ctl.png}
+	\caption{High-Force Mode Controller}
+	\label{fig:HF_loop}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.95\textwidth]{HS_ctl.png}
+	\caption{High-Speed Mode: Generic Controller}
+	\label{fig:HS_loop}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.95\textwidth]{down_ctl.png}
+	\caption{High-Speed Mode: Synchronization controller}
+	\label{fig:down_loop}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.95\textwidth]{imp_ctl.png}
+	\caption{High-Speed Mode: Impact Preparation Controller}
+	\label{fig:imp_loop}
+\end{figure}
 
 
 
