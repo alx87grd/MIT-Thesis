@@ -35,6 +35,8 @@
 
 \subsection{Modeling}
 
+Fig. \ref{fig:1dof_landing} shows a rigid body dynamic model of the robot. This system has 3 DoF : absolute velocity of robot base $\dot{x}_R$, relative leg/actuator velocity $\dot{a}$ and internal DoF in the DSDM $w_1$. 
+
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.95\textwidth]{1dof_landing.png}
@@ -42,18 +44,38 @@
 	\label{fig:1dof_landing}
 \end{figure}
 
-Presence of M2 DoF neglected.
+However, for the purpose of the high-level control loop, as discussed in Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}, DSDM actuator can be modeled as variable gear-ratio actuator with two discrete options ($R \in \{R_1,R_2\}$). As illustrated at Fig. \ref{fig:1dof_landing_approx}, in that case the system only have two DoF : absolute velocity of robot base $\dot{x}_R$ and relative leg/actuator velocity $\dot{a}$.
 
-Kinematic:
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.95\textwidth]{1dof_landing_approx.png}
+	\caption{Simple Robot Landing with a 1-DoF leg equipped with a DSDM}
+	\label{fig:1dof_landing_approx}
+\end{figure}
 
+%\subsubsection{Kinematic}
+
+The kinematic relationship in the system is described by:
+%
 \begin{align}
-\text{actuator output relative velocity} : \dot{a} 
+ x_R &= a + x_F \\
+ \dot{x}_R &= \dot{a} + \dot{x}_F 
+\end{align}
+%
+and the following variable as used as generalized coordinates:
+%
+\begin{align}
+\dot{\vec{q}} = 
+\left[ \begin{array}{c}
+\dot{x}_R \\ \dot{a}
+\end{array} \right] 
 \end{align}
 
-Kinetic energy:
 
+The kinetic energy is given by:
+%
 \begin{align}
-T &= 1/2 \left[ m_R \right] \dot{x}_R^2 + 1/2 \left[ m_F \right] \dot{x}_F^2 + 1/2 \underbrace{\left[ I_o + R_1^2 I_1 \right]}_{I_a} \dot{a}^2 \\
+T &= 1/2 \left[ m_R \right] \dot{x}_R^2 + 1/2 \left[ m_F \right] \dot{x}_F^2 + 1/2 \underbrace{\left[ I_o + R^2 I_1 \right]}_{I_a} \dot{a}^2 \\
 T &= 1/2 
 \left[ \begin{array}{c c}
 \dot{x}_R & \dot{a}
@@ -68,15 +90,8 @@ m_R + m_F & -m_F \\
 \dot{x}_R \\ \dot{a}
 \end{array} \right] }_{\dot{\vec{q}}}
 \end{align}
-
-Generalized forces:
-
-
-
-
-
-Contact constraint:
-
+%
+When the leg is in contact with the ground the constraint is described by:
 %
 \begin{align}
 \phi( \vec{q} )       &= x_R - a = 0 \\
@@ -84,17 +99,14 @@ Contact constraint:
 J_c                   &= \frac{d \phi}{d\vec{q}} = \left[ \begin{array}{c c} 1 & -1 \end{array} \right]
 \label{eq:dsdm_impact_const}
 \end{align}
-
-
 %
-EoM:
-
-
+The equation of motion is then given by:
+%
 \begin{align} 
 \underbrace{
 \left[ \begin{array}{c c}
-m_R + m_F & -m_F \\
--m_F      & I_a + m_F
+\scriptsize m_R + m_F & -m_F \\
+\scriptsize -m_F      & I_a + m_F
 \end{array} \right] }_{H}
 \underbrace{
 \left[ \begin{array}{c}
@@ -128,10 +140,17 @@ m_R + m_F & -m_F \\
 \end{array} \right] }_{J_c^T}
 f_c
 \end{align}
-
-
 %
-Ground contact force
+Those EoM are valid for all possible situations:
+%
+\begin{align}
+&\text{Flight phase:} \quad f_c = 0 \\
+&\text{Leg on the ground:} \quad f_c \neq 0 \\
+&\text{High-force Mode:} \quad I_a = I_o + R_1^2 I_1 \quad b_a = b_o + R_1^2 b_1 \\
+&\text{High-speed Mode:} \quad I_a = I_o + R_2^2 I_2 \quad b_a = b_o + R_2^2 b_2
+\end{align}
+%
+When the robot hit the ground, the impulsive contact force is given by:
 %
 \begin{align}
 \int{  f_c dt } &= - \left( J_c H^{-1} J_c^T \right)^{-1}  J_c \vec{\dot{q}}^- =
@@ -139,7 +158,7 @@ Ground contact force
 \label{eq:dsdm_impact_force}
 \end{align}
 %
-Changes in velocity
+and the associated impulsive change in velocities is given by:
 %
 \begin{align}
 \left[ \begin{array}{c}
@@ -152,27 +171,40 @@ I_a \\ -m_R
 \end{align}
 %
 
+\subsection{Desired Motion}
 
-\subsection{Flight Phase Control}
+\subsection{R* controller for the Flight phase}
 
-\subsubsection{High-level Robot Controller}
+During the flight phase, there is 2 DoF and only one actuator, the system is thus under-actuated. Moreover, the dynamic of the CoM is completely uncontrollable. The proposed R* algorithm, see Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}, can still be used to control one out of the two DoF, i.e. using partial feedback linearization instead of full feedback linearization. 
 
-Under-actuated and uncontrollable
-
-
-Reduced system for partial feedback linearization:
+The dynamic of the controllable DoF can be extracted:
 \begin{align}
-\left[ I_a + \left( \frac{m_F m_R}{m_F + m_R} \right) \right] \ddot{a} + \Bigg[ b_a \Bigg] \dot{a} = R_1 \tau_1 \\
-\frac{1}{R_1}
+\left[ I_a + \left( \frac{m_F m_R}{m_F + m_R} \right) \right] \ddot{a} + \Bigg[ b_a \Bigg] \dot{a} = R_1 \tau_1
+\end{align}
+%
+and then rearranging to separate extrinsic and intrinsic torques:
+%
+\begin{align} 
+\frac{1}{R}
 \underbrace{\left(
 \left[ I_o + \left( \frac{m_F m_R}{m_F + m_R} \right) \right] \ddot{a} + \Bigg[ b_o \Bigg] \dot{a}
 \right)}_{\tau_E}
-+ R_1
++ R
 \underbrace{\left(
  I_1 \ddot{a} + b_1 \dot{a}
 \right)}_{\tau_I}
 = \tau_1
 \end{align}
+%
+Then the R* controller can be used to track a trajectory for the leg $a(t)$:
+%
+\begin{align} 
+\tau_1 &= \frac{1}{R^*} \tau_E( \ddot{a}_R , \dot{a} ) + R^* \, \tau_I( \ddot{a}_R , \dot{a} ) \\ 
+& \text{with} \quad R^* = argmin\left[ \tau_1^T \tau_1\right] \\
+& \quad \quad \quad R \in \{R_1, R_2\}
+\end{align}
+%
+
 
 
 \subsubsection{Predictive Impact Controller in DSDM Nullspace}
