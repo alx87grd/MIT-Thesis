@@ -73,7 +73,7 @@ Generalized forces:
 
 
 
-EoM:
+
 
 Contact constraint:
 
@@ -84,6 +84,52 @@ Contact constraint:
 J_c                   &= \frac{d \phi}{d\vec{q}} = \left[ \begin{array}{c c} 1 & -1 \end{array} \right]
 \label{eq:dsdm_impact_const}
 \end{align}
+
+
+%
+EoM:
+
+
+\begin{align} 
+\underbrace{
+\left[ \begin{array}{c c}
+m_R + m_F & -m_F \\
+-m_F      & I_a + m_F
+\end{array} \right] }_{H}
+\underbrace{
+\left[ \begin{array}{c}
+\ddot{x}_R \\ \ddot{a}
+\end{array} \right] }_{\ddot{\vec{q}}}
++
+\underbrace{
+\left[ \begin{array}{c c}
+0      & 0 \\
+0      & b_a 
+\end{array} \right] }_{D}
+\underbrace{
+\left[ \begin{array}{c}
+\dot{x}_R \\ \dot{a}
+\end{array} \right] }_{\dot{\vec{q}}}
++
+\underbrace{
+\left[ \begin{array}{c}
+-(m_R+m_F)g \\ m_F g 
+\end{array} \right] }_{\vec{g}}
+=
+\underbrace{
+\left[ \begin{array}{c}
+0 \\ R_1
+\end{array} \right] }_{B}
+\tau_1
++
+\underbrace{
+\left[ \begin{array}{c}
+1 \\ -1
+\end{array} \right] }_{J_c^T}
+f_c
+\end{align}
+
+
 %
 Ground contact force
 %
@@ -111,13 +157,21 @@ I_a \\ -m_R
 
 \subsubsection{High-level Robot Controller}
 
-Under-actuated & uncontrollable
+Under-actuated and uncontrollable
 
-\\
 
 Reduced system for partial feedback linearization:
 \begin{align}
-\left[ I_a + \left( \frac{m_F m_R}{m_F + m_R} \right) \right] \ddot{a} = R_1 \tau_1
+\left[ I_a + \left( \frac{m_F m_R}{m_F + m_R} \right) \right] \ddot{a} + \Bigg[ b_a \Bigg] \dot{a} = R_1 \tau_1 \\
+\frac{1}{R_1}
+\underbrace{\left(
+\left[ I_o + \left( \frac{m_F m_R}{m_F + m_R} \right) \right] \ddot{a} + \Bigg[ b_o \Bigg] \dot{a}
+\right)}_{\tau_E}
++ R_1
+\underbrace{\left(
+ I_1 \ddot{a} + b_1 \dot{a}
+\right)}_{\tau_I}
+= \tau_1
 \end{align}
 
 
