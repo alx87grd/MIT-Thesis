@@ -237,6 +237,40 @@ and high-force mode can be engaged seamlessly.
 
 \subsection{Ground Phase Control}
 
+The dynamic of the actuated DoF can be extracted:
+%
+\begin{align}
+\left[ I_a + \left( \frac{m_F m_R}{m_F + m_R} \right) \right] \ddot{a} + \Bigg[ b_a \Bigg] \dot{a} = R \tau_1 - \Bigg[ \frac{m_R}{m_R+m_F} \Bigg] f_c
+\end{align}
+%
+The contact force can be computed using eq. \eqref{eq:const_forces}:
+%
+\begin{align}
+f_c = \left( J_c H^{-1} J_c^T \right)^{-1} \left(  J_c H^{-1} [\vec{c} - B \vec{\tau} ] ) \right)
+= \frac{m_R}{I_a+m_R} \Bigg[ R \tau - \left(I_a + \frac{I_a m_F}{m_R} + m_F \right) g - b_a \dot{a} \Bigg]
+\end{align}
+%
+For complex robots, the R* algorithm could be implemented by considering the contact $f_c$ as a known term in the EoM, which would be computed online. However here, since the system is simple, it is possible to combine both equations beforehand and get an analytical 1-DoF equation after elimination:
+%
+\begin{align}
+\left[ I_a + m_R \right] \ddot{a} + \left[ b_a \right] \dot{a} = R \tau_1 
+\end{align}
+%
+and then rearranging to separate extrinsic and intrinsic torques:
+%
+\begin{align} 
+\frac{1}{R}
+\underbrace{\left(
+\left[ I_o + m_R \right] \ddot{a} + \left[ b_o \right] \dot{a}
+\right)}_{\tau_E}
++ R
+\underbrace{\left(
+ I_1 \ddot{a} + b_1 \dot{a}
+\right)}_{\tau_I}
+= \tau_1
+\end{align}
+%
+
 
 
 \section{Experiments}
