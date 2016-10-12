@@ -350,17 +350,12 @@ Leading to the following after eliminating the external torque and the damping a
 \dot{w_1}
 \end{array}
 \right] &= 
-\left[
-\begin{array}{c c}
-\frac{-b_T}{I_T} &   0 \\
-\frac{-R_1 b_o}{I_T}  &  0 \\
-\end{array}
-\right]
+F
 \left[ \begin{array}{c}
 w_o \\
 w_1
 \end{array} \right]+
-\underline{G}
+G
 \left[ \begin{array}{c}
 \tau_1 \\
 \tau_2
@@ -368,7 +363,15 @@ w_1
 \label{eq:ss}
 \\
 \text{with} \quad 
-\underline{G} &= 
+F &=
+\frac{1}{I_T}
+\left[
+\begin{array}{c c}
+-b_T      &  0 \\
+-R_1 b_o  &  0 \\
+\end{array}
+\right] \\
+G &= 
 \frac{1}{I_T}
 \left[
 \begin{array}{c c}

@@ -154,7 +154,7 @@ When the robot hit the ground, the impulsive contact force is given by:
 %
 \begin{align}
 \int{  f_c dt } &= - \left( J_c H^{-1} J_c^T \right)^{-1}  J_c \vec{\dot{q}}^- =
-\left[ m_F + (\frac{m_R I_a}{m_R + I_a}) \right] \underbrace{(\dot{x}_R^- - \dot{a}^-)}_{\dot{x}_F^-}
+\left[ m_F + \frac{m_R I_a}{m_R + I_a} \right] \underbrace{(\dot{x}_R^- - \dot{a}^-)}_{\dot{x}_F^-}
 \label{eq:dsdm_impact_force}
 \end{align}
 %
@@ -179,7 +179,7 @@ During the flight phase, there is 2 DoF and only one actuator, the system is thu
 
 The dynamic of the controllable DoF can be extracted:
 \begin{align}
-\left[ I_a + \left( \frac{m_F m_R}{m_F + m_R} \right) \right] \ddot{a} + \Bigg[ b_a \Bigg] \dot{a} = R_1 \tau_1
+\left[ I_a + \frac{m_F m_R}{m_F + m_R} \right] \ddot{a} + \Bigg[ b_a \Bigg] \dot{a} = R_1 \tau_1
 \end{align}
 %
 and then rearranging to separate extrinsic and intrinsic torques:
@@ -187,12 +187,12 @@ and then rearranging to separate extrinsic and intrinsic torques:
 \begin{align} 
 \frac{1}{R}
 \underbrace{\left(
-\left[ I_o + \left( \frac{m_F m_R}{m_F + m_R} \right) \right] \ddot{a} + \Bigg[ b_o \Bigg] \dot{a}
+\left[ I_o + \frac{m_F m_R}{m_F + m_R} \right] \ddot{a} + \Bigg[ b_o \Bigg] \dot{a}
 \right)}_{\tau_E}
 + R
-\underbrace{\left(
+\underbrace{\Bigg(
  I_1 \ddot{a} + b_1 \dot{a}
-\right)}_{\tau_I}
+\Bigg)}_{\tau_I}
 = \tau_1
 \end{align}
 %
@@ -246,7 +246,7 @@ The dynamic of the actuated DoF can be extracted:
 The contact force can be computed using eq. \eqref{eq:const_forces}:
 %
 \begin{align}
-f_c = \left( J_c H^{-1} J_c^T \right)^{-1} \left(  J_c H^{-1} [\vec{c} - B \vec{\tau} ] ) \right)
+f_c = \left( J_c H^{-1} J_c^T \right)^{-1} \left(  J_c H^{-1} [\vec{c} - B \vec{\tau} ]  \right)
 = \frac{m_R}{I_a+m_R} \Bigg[ R \tau - \left(I_a + \frac{I_a m_F}{m_R} + m_F \right) g - b_a \dot{a} \Bigg]
 \end{align}
 %
