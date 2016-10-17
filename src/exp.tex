@@ -72,10 +72,20 @@ To achieve the large reduction needed for the shoulder actuator of the robot, wh
 
 
 
-\subsection{Control software architecture}
+\section{Control architecture}
 \label{sec:ControlSoftwareArchitecture}
 
-The control algorithms are implemented on a computer using ROS \cite{quigley_ros:_2009}, the trajectory generation algorithm and the R* Computed Torque controller are written in \textit{Python}. The computer is communicating over USB with open-source \textit{Flexsea} motor-drivers \cite{duval_flexsea-execute:_2016} that handle the low-level current loops. The trajectory is generated offline in advance and loaded in memory upon initialization. The main R* control loop is running at a 500 Hz sampling rate. The low-level actuator controllers, receiving the torque and gear-ratio set-points, communicating with both motor drivers and handling the gear-shifting process (see Fig. \ref{fig:control_achitecture}), are also implemented in \textit{Python} and use the algorithm described in \cite{girard_two-speed_2015}. Transition from one gear-ratio to another are found to be consistently under 50 ms.
+The control algorithms are implemented on a computer using ROS \cite{quigley_ros:_2009}, the trajectory generation algorithm and the R* Computed Torque controller are written in \textit{Python}. The computer is communicating over USB with open-source \textit{Flexsea} motor-drivers \cite{duval_flexsea-execute:_2016} that handle the low-level current loops. The trajectory is generated offline in advance and loaded in memory upon initialization. The main R* control loop is running at a 500 Hz sampling rate. The low-level actuator controllers, receiving the torque and gear-ratio set-points, communicating with both motor drivers and handling the gear-shifting process (see Fig. \ref{fig:control_achitecture}), are ... TODO
+
+%also implemented in \textit{Python} and use the algorithm described in \cite{girard_two-speed_2015}. Transition from one gear-ratio to another are found to be consistently under 50 ms.
+
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.95\textwidth]{ros_diagram.png}
+	\caption{Control Software Architecture}
+	\label{fig:ros_diagram}
+\end{figure}
+
 
 \subsubsection{Motor drivers}
 
