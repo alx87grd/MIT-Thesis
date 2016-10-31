@@ -31,6 +31,72 @@
 
 
 
+
+
+
+
+\section{Case Study: Fixed-actuator impacting the ground}
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.70\textwidth]{dsdm_impact_model.png}
+	\caption{DSDM actuator impact model}
+	\label{fig:dsdm_impact_model_1}
+\end{figure}
+
+
+Fig.\ref{fig:dsdm_impact_model_1} illustrates a simple impact scenario with a single DSDM actuator. The equation of motion previous introduced (eq. \eqref{eq:dsdm_manip}) can describe this situation. However here, displacement variables corresponding to angles of rotation of the output and M1, ignorable coordinates for an unconstrained scenario, are introduced:
+%
+\begin{align}
+\vec{q} = \left[ \begin{array}{c} 	q_0 \\ q_1 \end{array} \right] \quad
+\vec{\dot{q}} = \left[ \begin{array}{c} 	w_0 \\ w_1 \end{array} \right]
+\label{eq:dsdm_impact_q}
+\end{align}
+%
+Then the contact constraint is expressed in the standard form (see section \ref{sec:contact}):
+%
+\begin{align}
+\phi( \vec{q} )       &= q_0 - c = 0 \\
+\dot{\phi}( \vec{q} ) &= J_c\vec{\dot{q}} =  w_0 = 0 \\
+J_c                   &= \frac{d \phi}{d\vec{q}} = \left[ \begin{array}{c c} 1 & 0 \end{array} \right]
+\label{eq:dsdm_impact_const}
+\end{align}
+%
+Then it is assumed that the impact is completely inelastic and again, for simplicity that $R_2^2 I_2 >> R_1^2 I_1$. Solving for the impact force using eq.\eqref{eq:manipulator_impact_force} lead to:
+%
+\begin{align}
+\int{  \tau_c dt } &= - \left( J_c H^{-1} J_c^T \right)^{-1}  J_c \vec{\dot{q}}^- = -(I_0 + I_1 R_1^2) w_o^-
+\label{eq:dsdm_impact_force}
+\end{align}
+%
+and the resulting change in velocities during the impact are thus:
+\begin{align}
+\Delta w_o  = - w_o^- \quad  \Delta w_1  = - R_1 w_o^-  \quad  \Delta w_2  = 0
+\label{eq:dsdm_impact_res}
+\end{align}
+
+
+\subsection{Desired Motion}
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.85\textwidth]{impact_traj_fixed_bad.png}
+	\caption{Gear-shifting after impact with no preparation}
+	\label{fig:fixed_bad_impact}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.85\textwidth]{impact_traj_fixed_good.png}
+	\caption{Gear-shifting after impact with preparation}
+	\label{fig:fixed_bad_impact}
+\end{figure}
+
+
+
+
 \section{Case Study: 1-DoF leg landing}
 
 \subsection{Modeling}
@@ -171,7 +237,27 @@ I_a \\ -m_R
 \end{align}
 %
 
+\newpage
+
 \subsection{Desired Motion}
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.85\textwidth]{impact_traj_land_bad.png}
+	\caption{Gear-shifting after impact with no preparation}
+	\label{fig:fixed_bad_impact}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.85\textwidth]{impact_traj_land_good.png}
+	\caption{Gear-shifting after impact with preparation}
+	\label{fig:fixed_bad_impact}
+\end{figure}
+
+
 
 \subsection{R* controller for the Flight phase}
 
