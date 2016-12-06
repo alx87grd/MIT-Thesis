@@ -56,7 +56,7 @@ To meet the power requirement of all operating points with small actuators, it i
 				\includegraphics[width=0.40\textwidth]{2speed.png}}
         \subfloat[discrete operating modes]{
 				\includegraphics[width=0.45\textwidth]{1DOFmodes.png}}
-        \caption{Two-speed actuator}\label{fig:2s}
+        \caption{Variable gear-ratio actuator with two discrete options}\label{fig:2s}
 \end{figure}
 
 
@@ -74,7 +74,7 @@ The gear-ratio has a radical effect on the output impedance of a robot; the moto
 Changing the gear-ratio has a radical effect on the natural dynamics of a system. By changing dynamically the gear-ratio, it is possible to select the natural dynamic behavior that is most advantageous for a task. For instance, selecting a small reduction ratio to exploit gravitational forces pulling the robot in a desired direction, or on the other hand, selecting a large reduction ratio to be insensitive to external disturbances.
 
 \paragraph{Directionality of properties}
-For a multiple DoF mechanism, the speed/force properties are directional. Typically the Jacobian of a mechanism is only a function of the configuration $J=J(\underline{q})$, but a mechanism using $m$ variable gear-ratio actuators with $n$ possible gear-ratio, the Jacobian (from actuator coordinates to task-space coordinates) would also be function of the gear-ratios selected, i.e. dependent on control inputs $\underline{u}$ : $J=J(\underline{q},\underline{u})$. Hence, for a given configuration there is $n^m$ manipulability ellipsoid option. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear-ratios would be picked to meet the task requirement.
+For a multiple DoF mechanism, the speed/force properties are directional. Typically the Jacobian of a mechanism is only a function of the configuration $J=J(\vec{q})$, but a mechanism using $m$ variable gear-ratio actuators with $n$ possible gear-ratio, the Jacobian (from actuator coordinates to task-space coordinates) would also be function of the gear-ratios selected, i.e. dependent on control inputs $\vec{u}$ : $J=J(\vec{q},\vec{u})$. Hence, for a given configuration there is $n^m$ manipulability ellipsoid option. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear-ratios would be picked to meet the task requirement.
 
 
 \begin{figure}[H]
@@ -99,49 +99,21 @@ From the control perspective, automating the gear-ratio selection in a robotic c
 \section{Original contributions}
 \label{sec:contribution}
 
-In order to fully integrate the use of variable gear-ratio actuators for robots, innovation at many level were necessary, from the mechanical design up to control algorithms. 
-
-\subsection{New actuation technology}
-
-The first contribution of the thesis is an actuation technology, consisting of a mechanical design used in conjunction with novel gear-shifting control algorithms. 
-
-\paragraph{Dual-motor dual-speed architecture}
-
-This thesis propose a system level architecture, that will be refer as DSDM (dual-speed dual-motor), enabling seamless gear-shift between two discrete order-of-magnitude different gear-ratios. Similar mechanical architectures have been used in the past, but not for the purpose of fast gearshift that is explored here.
-
-\paragraph{Nullspace synchronization controller}
-
-The key idea in the proposed actuation technology is a novel control algorithm, that leverage the nullspace of the DSDM actuator, to make possible transiting for one gear-ratio to another while also always fully controlling the output load. 
-
-\paragraph{Control scheme for fast gearshift during impacts}
-
-Additionally, another novel control scheme is proposed for fast transition during impacts. For instance making possible an almost instantaneous gear-shift after the leg of a robot makes contact with the ground.
+The two main contributions of this thesis are the development of a \emph{\textbf{gear-shifting methodology adapted to robotics}}, and \emph{\textbf{control algorithms to select dynamically the optimal gear-ratios}}. 
 
 
-\subsection{High-level control}
+\subsection{Gear-shifting methodology adapted to robotics}
 
-The second major contribution of this thesis, is the development of intelligent automatic gear-ratio selection in complex multi-DoF robotic systems.
+The first contribution of the thesis is an actuation technology capable of fast and seamless gear-shift between two discrete order-of-magnitude different gear-ratios. This technology consist of a mechanical architecture, that will be refer as DSDM (dual-speed dual-motor), used in conjunction with novel gear-shifting control algorithms. The key idea is exploiting the internal degree-of-freedom (DoF) of the actuator to make possible transiting for one gear-ratio to another while also always fully controlling the output load. 
 
-\paragraph{Closed-form solution for optimal gear-ratios}
+\subsection{Control algorithms to select gear-ratios dynamically}
 
-A closed-from solution for the optimal gear-ratios of an arbitrary $n$-DoF robotic system along a known trajectory is derived.
-
-\paragraph{Optimal gear-ratio selection based on state feedback}
-
-This thesis propose novel control laws including optimal gear-ratio selection based on state feedback. 
-
-\subsection{Implementation}
-
-\paragraph{Custom built lightweight 3-DoF robotic arm}
-
-\paragraph{Open-source Software Library}
-
-for the control and planning of robot using dual-speed dual-motor actuators
+The second major contribution of this thesis, is the development of intelligent automatic gear-ratio selection schemes for robotic systems. A closed-from solution for the optimal gear-ratios of an arbitrary $n$-DoF robotic system along a known trajectory is derived. Control laws extending this principle to online optimal gear-ratios selection based on state feedback are then developed. The key idea is to used a model to estimate intrinsic and extrinsic forces, to compute if it is more advantageous to attenuate extrinsic forces with large gear-ratios or alternatively to leverage them with a small gear-ratios. The method can be applied to arbitrary $n$-DoF non-linear robotic systems, using actuator with any kind of variable gear-reducer. A technique using additional knowledge about the level of uncertainty to improve the gear-ratio selection decision is also developed.
 
 
 \section{Organization of the thesis}
 \label{sec:OrganisationOfTheThesis}
 
-
+First, chapter \ref{sec:VisionForAircraftManufacturingAutomation} discuss a manufacturing application, motivating this thesis, that would hugely benefit from the developed technologies. Chapter \ref{sec:MultipleSpeedActuationTechnology} then present a variable gear-ratio actuator technology using a gear-shifting methodology adapted to robotics. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} explore the generalize problem of selecting gear-ratios for a robotic system equipped with variable gear-reducer, and present control algorithms. 
 
 

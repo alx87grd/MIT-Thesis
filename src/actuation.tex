@@ -1,4 +1,4 @@
-\chapter{Variable Gear-ratio Actuation }
+\chapter{Variable Gear-ratio Actuator with Fast and Seamless Transitions }
 \label{sec:MultipleSpeedActuationTechnology}
 
 This chapter present an actuation technology, consisting of a mechanical architecture called DSDM (dual-motor dual-speed) used in conjunction with novel gear-shifting control algorithms, that make possible fast and seamless transitions between two radically different gear-ratios. Fig. \ref{fig:dsdm_proto} illustrate DSDM actuator prototype. 
@@ -135,14 +135,20 @@ A DSDM actuator will be lighter than a single motor for applications with a wide
 	\label{fig:1vs2}
 \end{figure}
 
+\subsection{Efficiency advantage}
+\label{sec:EffAdvantage}
 
-\section{Fast and Seamless Gearshifts}
-\label{sec:FastAndSeamlessGearshifts}
-
-\subsection{Modeling}
+Depend on motor type... TODO
 
 
-\subsubsection{3-ports Planetary Gear Junction}
+%\section{Fast and Seamless Gearshifts}
+%\label{sec:FastAndSeamlessGearshifts}
+
+\section{Modeling}
+\label{sec:mod}
+
+
+\subsection{3-ports Planetary Gear Junction}
 As illustrated at Fig. \ref{fig:dualmotorconcept} a planetary gear box can be used to implement the differential junction. With the planet carrier connected to the output, M1 to the sun gear and M2 to the ring gear, the kinematic relation of the system is given by
 %
 \begin{align}
@@ -175,7 +181,7 @@ where $r_2$ is the additional reduction of M2, $N$ is the ratio of gear teeth of
 %
 Hence, the 3-ports planetary coupling can be interpreted as a 0-junction, in the bond graph terminology, with different mechanical advantages ($R_1$ and $R_2$) on each input ports. 
 
-\subsubsection{Dynamics}
+\subsection{Dynamics}
 \label{sec:dyn}
 
 
@@ -385,7 +391,7 @@ G &=
 %
 
 
-\subsubsection{Inputs/Outputs equations}
+\subsection{Inputs/Outputs equations}
 \label{sec:out}
 
 The variable of interest is the output $w_o$, and its dynamic can be expressed, going back to the Laplace domain by:
@@ -465,7 +471,7 @@ During high-speed mode the behavior of the output is also dominated by a first-o
 
 Note that, if DSDM would be used on multi-DoF robots, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would be more complex: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected.
 
-\subsubsection{Discrete Operating Modes}
+\subsection{Hybridness due to Discrete Operating Modes}
 
 Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes of the system. During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the dynamic behavior is described by the Laplace transfer function given by eq. \eqref{eq:dsdm_output_HF}. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the dynamic behavior is described by state space equation given by eq. \eqref{eq:ss}.
 
@@ -477,7 +483,7 @@ Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes
 \end{figure}
 
 
-\subsubsection{Impacts}
+\subsection{Impacts}
 \label{sec:model_impact}
 
 During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities will suddenly change, as a function of the full dynamic of the robot and the contact situation:
@@ -554,47 +560,44 @@ Hence, M2 velocity will be unchanged and the velocity discontinuity of the outpu
 \label{eq:dsdm_impact_gen_delta_w1}
 \end{align}
 
+%\begin{figure}[H]
+	%\centering
+		%\includegraphics[width=0.70\textwidth]{dsdm_impact_model.png}
+	%\caption{DSDM actuator impact model}
+	%\label{fig:dsdm_impact_model_1}
+%\end{figure}
 
-
-\begin{figure}[H]
-	\centering
-		\includegraphics[width=0.70\textwidth]{dsdm_impact_model.png}
-	\caption{DSDM actuator impact model}
-	\label{fig:dsdm_impact_model_1}
-\end{figure}
-
-
-
-\paragraph{Example}
-Fig.\ref{fig:dsdm_impact_model_1} illustrates a simple impact scenario with a single DSDM actuator. The equation of motion previous introduced (eq. \eqref{eq:dsdm_manip}) can describe this situation. However here, displacement variables corresponding to angles of rotation of the output and M1, ignorable coordinates for an unconstrained scenario, are introduced:
 %
-\begin{align}
-\vec{q} = \left[ \begin{array}{c} 	q_0 \\ q_1 \end{array} \right] \quad
-\vec{\dot{q}} = \left[ \begin{array}{c} 	w_0 \\ w_1 \end{array} \right]
-\label{eq:dsdm_impact_q}
-\end{align}
-%
-Then the contact constraint is expressed in the standard form (see section \ref{sec:contact}):
-%
-\begin{align}
-\phi( \vec{q} )       &= q_0 - c = 0 \\
-\dot{\phi}( \vec{q} ) &= J_c\vec{\dot{q}} =  w_0 = 0 \\
-J_c                   &= \frac{d \phi}{d\vec{q}} = \left[ \begin{array}{c c} 1 & 0 \end{array} \right]
-\label{eq:dsdm_impact_const}
-\end{align}
-%
-Then it is assumed that the impact is completely inelastic and again, for simplicity that $R_2^2 I_2 >> R_1^2 I_1$. Solving for the impact force using eq.\eqref{eq:manipulator_impact_force} lead to:
-%
-\begin{align}
-\int{  \tau_c dt } &= - \left( J_c H^{-1} J_c^T \right)^{-1}  J_c \vec{\dot{q}}^- = -(I_0 + I_1 R_1^2) w_o^-
-\label{eq:dsdm_impact_force}
-\end{align}
-%
-and the resulting change in velocities during the impact are thus:
-\begin{align}
-\Delta w_o  = - w_o^- \quad  \Delta w_1  = - R_1 w_o^-  \quad  \Delta w_2  = 0
-\label{eq:dsdm_impact_res}
-\end{align}
+%\paragraph{Example}
+%Fig.\ref{fig:dsdm_impact_model_1} illustrates a simple impact scenario with a single DSDM actuator. The equation of motion previous introduced (eq. \eqref{eq:dsdm_manip}) can describe this situation. However here, displacement variables corresponding to angles of rotation of the output and M1, ignorable coordinates for an unconstrained scenario, are introduced:
+%%
+%\begin{align}
+%\vec{q} = \left[ \begin{array}{c} 	q_0 \\ q_1 \end{array} \right] \quad
+%\vec{\dot{q}} = \left[ \begin{array}{c} 	w_0 \\ w_1 \end{array} \right]
+%\label{eq:dsdm_impact_q}
+%\end{align}
+%%
+%Then the contact constraint is expressed in the standard form (see section \ref{sec:contact}):
+%%
+%\begin{align}
+%\phi( \vec{q} )       &= q_0 - c = 0 \\
+%\dot{\phi}( \vec{q} ) &= J_c\vec{\dot{q}} =  w_0 = 0 \\
+%J_c                   &= \frac{d \phi}{d\vec{q}} = \left[ \begin{array}{c c} 1 & 0 \end{array} \right]
+%\label{eq:dsdm_impact_const}
+%\end{align}
+%%
+%Then it is assumed that the impact is completely inelastic and again, for simplicity that $R_2^2 I_2 >> R_1^2 I_1$. Solving for the impact force using eq.\eqref{eq:manipulator_impact_force} lead to:
+%%
+%\begin{align}
+%\int{  \tau_c dt } &= - \left( J_c H^{-1} J_c^T \right)^{-1}  J_c \vec{\dot{q}}^- = -(I_0 + I_1 R_1^2) w_o^-
+%\label{eq:dsdm_impact_force}
+%\end{align}
+%%
+%and the resulting change in velocities during the impact are thus:
+%\begin{align}
+%\Delta w_o  = - w_o^- \quad  \Delta w_1  = - R_1 w_o^-  \quad  \Delta w_2  = 0
+%\label{eq:dsdm_impact_res}
+%\end{align}
 
 
 
@@ -678,14 +681,14 @@ b_T  w_o = 0 \quad \forall u \in \Re
 \end{align}
 
 
-\subsection{Control algorithms}
+\section{Control algorithms}
 
 During high-force mode, the actuator behaves like a regular geared EM motor and standard speed or position control scheme can be used. During high-speed mode, with a small reduction ratio $R_1$ (high transparency transmission), the DSDM actuator can be controlled like a direct drive motor: controlling M1 current lead to almost direct control of the output torque. Moreover, exploiting the nullspace, a secondary objective can be brought into the system without influencing the output torque. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary controller can be used not only for load balancing but also for minimizing power consumption, avoiding speed saturation of M1, etc. Note that the nullspace projection vector, see eq.\eqref{eq:dyn_null_proj}, depends only on parameters associated with the motors. Therefore, it is possible to project the secondary controller inputs on the output nullspace even if the output dynamic parameters that include the load inertia and damping are unknowns. 
 
 Fig. \ref{fig:HS_loop} and Fig. \ref{fig:HF_loop} show DSDM control algorithms implemented as intermediary control loops between hardware and high-level commands. The high-speed controller tracks a received desired torque by controlling the current in M1, and can also optionally track a secondary objective without affecting the main-loop, by projecting the secondary input into the nullspace of the main-loop. The high-force controller directly convert a received desired torque to a current set-point for M2.
 
 
-\subsubsection{Transitions (gear-shift)}
+\subsection{Transitions (gear-shift)}
 
 This section addresses transition control between the two discrete operating modes. Fig. \ref{fig:automaticflow} show the state machine used to transit between the different necessary control mode.
 
@@ -772,7 +775,7 @@ Hence, the output is not influenced by the braking law due to orthogonality, and
 
 
 
-\subsubsection{Predictive algorithm for fast gear-shift during impacts}
+\subsection{Predictive algorithm for fast gear-shift during impacts}
 
 This section described a control scheme where the velocity of the internal DoF is adjusted beforehand when an impact is expected, so that impact forces bring M1 velocity close to zero, allowing for fast down-shift transitions. This is aimed at situation like a leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot.
 
