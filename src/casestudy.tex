@@ -1,6 +1,7 @@
-\chapter{A Case study of legged locomotion}
+\chapter{Case studies applied to legged locomotion}
 \label{sec:casestudy}
 
+This chapter provide examples of how the proposed technologies developed in this thesis can be applied to locomotion problems.
 
 \section{Requirement of legged locomotion}
 \label{sec:case_req}
@@ -28,12 +29,6 @@
 				\label{fig:legHF}}
         \caption{Advantageous gear-ratio selection for locomotion}\label{fig:legsol}
 \end{figure}
-
-
-
-
-
-
 
 \section{Case Study: Fixed-actuator impacting the ground}
 
@@ -259,7 +254,7 @@ I_a \\ -m_R
 
 
 
-\subsection{R* controller for the Flight phase}
+\subsection{Flight phase controller}
 
 During the flight phase, there is 2 DoF and only one actuator, the system is thus under-actuated. Moreover, the dynamic of the CoM is completely uncontrollable. The proposed R* algorithm, see Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}, can still be used to control one out of the two DoF, i.e. using partial feedback linearization instead of full feedback linearization. 
 
@@ -321,7 +316,7 @@ w_{1}^+  = 0
 and high-force mode can be engaged seamlessly.
 
 
-\subsection{Ground Phase Control}
+\subsection{Ground Phase Controller}
 
 The dynamic of the actuated DoF can be extracted:
 %
@@ -358,9 +353,8 @@ and then rearranging to separate extrinsic and intrinsic torques:
 %
 
 
-
-\section{Experiments}
+\section{Landing Experiments}
 \label{sec:case_exp}
 
 
-
+To DO

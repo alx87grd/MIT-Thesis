@@ -683,21 +683,30 @@ b_T  w_o = 0 \quad \forall u \in \Re
 
 \section{Control algorithms}
 
-During high-force mode, the actuator behaves like a regular geared EM motor and standard speed or position control scheme can be used. During high-speed mode, with a small reduction ratio $R_1$ (high transparency transmission), the DSDM actuator can be controlled like a direct drive motor: controlling M1 current lead to almost direct control of the output torque. Moreover, exploiting the nullspace, a secondary objective can be brought into the system without influencing the output torque. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary controller can be used not only for load balancing but also for minimizing power consumption, avoiding speed saturation of M1, etc. Note that the nullspace projection vector, see eq.\eqref{eq:dyn_null_proj}, depends only on parameters associated with the motors. Therefore, it is possible to project the secondary controller inputs on the output nullspace even if the output dynamic parameters that include the load inertia and damping are unknowns. 
-
-Fig. \ref{fig:HS_loop} and Fig. \ref{fig:HF_loop} show DSDM control algorithms implemented as intermediary control loops between hardware and high-level commands. The high-speed controller tracks a received desired torque by controlling the current in M1, and can also optionally track a secondary objective without affecting the main-loop, by projecting the secondary input into the nullspace of the main-loop. The high-force controller directly convert a received desired torque to a current set-point for M2.
-
-
-\subsection{Transitions (gear-shift)}
-
-This section addresses transition control between the two discrete operating modes. Fig. \ref{fig:automaticflow} show the state machine used to transit between the different necessary control mode.
-
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.70\textwidth]{discrete_control_modes.png}
 	\caption{State machine of discrete control modes}
 	\label{fig:automaticflow}
 \end{figure}
+
+\subsection{High-force mode controller}
+
+During high-force mode, the actuator behaves like a regular geared EM motor and standard speed or position control scheme can be used. 
+
+
+\subsection{High-speed mode controller}
+
+During high-speed mode, with a small reduction ratio $R_1$ (high transparency transmission), the DSDM actuator can be controlled like a direct drive motor: controlling M1 current lead to almost direct control of the output torque. Moreover, exploiting the nullspace, a secondary objective can be brought into the system without influencing the output torque. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary controller can be used not only for load balancing but also for minimizing power consumption, avoiding speed saturation of M1, etc. Note that the nullspace projection vector, see eq.\eqref{eq:dyn_null_proj}, depends only on parameters associated with the motors. Therefore, it is possible to project the secondary controller inputs on the output nullspace even if the output dynamic parameters that include the load inertia and damping are unknowns. 
+
+Fig. \ref{fig:HS_loop} and Fig. \ref{fig:HF_loop} show DSDM control algorithms implemented as intermediary control loops between hardware and high-level commands. The high-speed controller tracks a received desired torque by controlling the current in M1, and can also optionally track a secondary objective without affecting the main-loop, by projecting the secondary input into the nullspace of the main-loop. The high-force controller directly convert a received desired torque to a current set-point for M2.
+
+
+\subsection{Fast and Seamless Transitions (gear-shift)}
+
+This section addresses transition control between the two discrete operating modes. Fig. \ref{fig:automaticflow} show the state machine used to transit between the different necessary control mode.
+
+
 
 
 \paragraph{Up-shift: From high-force mode to high-speed mode}
@@ -775,7 +784,7 @@ Hence, the output is not influenced by the braking law due to orthogonality, and
 
 
 
-\subsection{Predictive algorithm for fast gear-shift during impacts}
+\subsection{Predictive algorithm for fast down-shifts after a contact}
 
 This section described a control scheme where the velocity of the internal DoF is adjusted beforehand when an impact is expected, so that impact forces bring M1 velocity close to zero, allowing for fast down-shift transitions. This is aimed at situation like a leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot.
 
@@ -881,4 +890,22 @@ Hence, it would be possible to engaged the brake and switch to high-force mode a
 \end{figure}
 
 %\section{Experimental Validation}
+
+\section{Experimental Results}
+\label{sec:dsdm_exp}
+
+\subsection{DSDM Dynamic Behavior}
+
+\subsubsection{High-force Mode Behavior}
+
+\subsubsection{High-speed Mode Behavior}
+
+
+\subsection{Seamless Transitions}
+
+\subsubsection{Constant Speed}
+
+\subsubsection{Contact with a Compliant Load}
+
+\subsubsection{Impact with a Stiff Load}
 

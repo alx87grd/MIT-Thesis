@@ -1,4 +1,4 @@
-\chapter{Dynamic selection of gear-ratios}  % to exploit or attenuate the external load dynamics
+\chapter{Optimal dynamic selection of gear-ratios}  % to exploit or attenuate the external load dynamics
 \label{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}
 
 The transmission gear-ratio that couples an actuator to a load has a significant effect upon the behavior of the actuator-load system. With a large reduction ratio, the load-side dynamics has no significant effect because it is attenuated by the factor of the square of the gear ratio. The net load acting on the actuator is mostly its own intrinsic load, including rotor inertia and friction. In contrast, with a small reduction ratio or a direct drive system \cite{asada_direct-drive_1987}, the behavior is usually dominated by the load-side dynamics which consist of highly non-linear inertial and gravitational forces for robotics manipulators. Sometime it can be advantageous to exploit the load-side dynamics: gravity may push the robot in a desired direction, dissipative torques induced on the actuator side may be small despite high-speed motion on the load side, etc. In other situations, however, it may be advantageous to be isolated from the load-side dynamics and external disturbances. For example, bearing a large load or moving it slowly against gravity requires a large reduction ratio.
@@ -365,3 +365,36 @@ Because the control effort during gear-shifts is neglected in the model, using t
 
 \subsection{Reinforcement Learning}
 
+
+
+\section{Simulation Results}
+\label{sec:shift_sim}
+
+TODO
+
+
+\section{Experiments Results}
+\label{sec:shift_exp}
+
+\subsection{Dynamic motions}
+\label{sec:DynamicMotions}
+
+
+Here a trajectory following experiments using the last DoF of the robot only is presented. A 1.5 Kg load is mounted on the end-effector, and the task is to bring it from the bottom position ($q=-\pi$) to the up-right position ($q=0$) using as little torques as possible. An RRT trajectory planning algorithm is used to search for a low torque trajectory reaching the goal, see Fig. \ref{fig:exp_rrt}. Then the R* Computed Torque Controller is used to track the reference trajectory. The experimental results are shown in Fig. \ref{fig:exp_traj} and a video of this experiment is also available in the multimedia attachment. 
+%
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.75\textwidth]{rrt_fig.pdf}
+	\caption{Trajectory generation algorithm searching for a low torque solution}
+	\label{fig:exp_rrt}
+\end{figure}
+%
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.75\textwidth]{exp_fig3.pdf}
+	\caption{Experimental results}
+	\label{fig:exp_traj}
+	\vspace{-10pt}
+\end{figure}
+%
+Results show that the robot is using its 1:23 gear-ratio to accumulate kinetic energy by swinging the arm link back and forth. Also the R* controller selects the 1:474 gear-ratio automatically to attenuate the load dynamics, when the actuator has to force the robot to stay with the trajectory.  Interestingly, the reference trajectory was planned so the robot would accumulate enough kinetic energy to swing straight up with the last swing. However, in the experiment, the dissipative forces are greater than anticipated by the planner, and the last swing is too small (the robot almost stop at $q=-0.9$ at $t=2.6$ in Fig. \ref{fig:exp_traj}). Then, the R* controller automatically engage the large 1:474 gear-ratio, to continue converging on the desired trajectory with much smaller torques than those required if keeping using the 1:23 gear-ratio in this situation (no momentum and a large gravitational force to overpower). This illustrates that including the gear-ratio selection in the feedback loop also increase the robustness of the system. Without the 1:474 gear-ratio option, tracking would have failed as the computed torque with 1:23 in this situation was greater than the maximum allowable motor torque.
