@@ -894,16 +894,84 @@ Hence, it would be possible to engaged the brake and switch to high-force mode a
 \section{Experimental Results}
 \label{sec:dsdm_exp}
 
+This section presents experimental results with the 
+
 \subsection{DSDM Dynamic Behavior}
 
-\subsubsection{High-force Mode Behavior}
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{dsdm_manual_all.pdf}
+	\caption{DSDM actuator with torque and mode commands set from a joystick }
+	\label{fig:dsdm_manual_all}
+\end{figure}
 
-\subsubsection{High-speed Mode Behavior}
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{dsdm_manual_motors.pdf}
+	\caption{DSDM actuator with torque and mode commands set from a joystick: Motors velocity }
+	\label{fig:dsdm_manual_motors}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{dsdm_manual_shift.pdf}
+	\caption{DSDM actuator with torque and mode commands set from a joystick: down-shift }
+	\label{fig:dsdm_manual_shift}
+\end{figure}
+
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{dsdm_position_tracking.pdf}
+	\caption{DSDM actuator tracking position commanded from a joystick }
+	\label{fig:dsdm_position_tracking}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{dsdm_speed_tracking.pdf}
+	\caption{DSDM actuator tracking output velocity commanded from a joystick }
+	\label{fig:dsdm_speed_tracking}
+\end{figure}
+
+
+\subsection{Nullspace}
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{dsdm_nullspace.pdf}
+	\caption{DSDM actuator tracking constant output velocity while sending manual command in the nullspace }
+	\label{fig:dsdm_nullspace}
+\end{figure}
 
 
 \subsection{Seamless Transitions}
 
 \subsubsection{Constant Speed}
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{dsdm_cstspd_shifts.pdf}
+	\caption{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode }
+	\label{fig:dsdm_cstspd_shifts}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{dsdm_cstspd_shifts_withprep.pdf}
+	\caption{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode }
+	\label{fig:dsdm_cstspd_shifts_withprep}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{dsdm_cstspd_shifts_withprep_zoom.pdf}
+	\caption{ Fast down-shift }
+	\label{fig:dsdm_cstspd_shifts_withprep_zoom}
+\end{figure}
 
 \subsubsection{Contact with a Compliant Load}
 
