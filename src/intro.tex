@@ -2,15 +2,6 @@
 \label{sec:Introduction}
 
 
-%%%% Citation
-%{\small
-%\begin{flushright}
-%"The problems of the world cannot possibly be solved by skeptics or cynics whose horizons are limited by the obvious realities. We need men who can dream of things that never were and ask why not?" \\ \emph{John F. Kennedy}
-%\end{flushright}
-%}
-%\vspace{+10pt}
-%%%%
-
 
 In many robotic systems, actuators are often required to operate in distinctively different torque-speed load conditions. Machine tools, for instance, are usually either moving at high-speed unloaded during reaching phases, or moving slowly applying large forces during manufacturing operations (see Fig. \ref{fig:machinetool}). Also a legged robot, for example, has to move its leg forward quickly through the air and, once touching the ground, it has to bear a large load (see Fig. \ref{fig:leggedrobot}), or a gripper needs to reach the part quickly and then has to apply large holding forces (see Fig. \ref{fig:gripper}). These two operating conditions, high speed at low torque vs. high torque at low speed, are often an order of magnitude different, while the required output power is similarly low.
 
@@ -108,7 +99,7 @@ The first contribution of the thesis is an actuation technology capable of fast 
 
 \subsection{Control algorithms to select gear-ratios dynamically}
 
-The second major contribution of this thesis, is the development of intelligent automatic gear-ratio selection schemes for robotic systems. A closed-from solution for the optimal gear-ratios of an arbitrary $n$-DoF robotic system along a known trajectory is derived. Control laws extending this principle to online optimal gear-ratios selection based on state feedback are then developed. The key idea is to used a model to estimate intrinsic and extrinsic forces, to compute if it is more advantageous to attenuate extrinsic forces with large gear-ratios or alternatively to leverage them with a small gear-ratios. The method can be applied to arbitrary $n$-DoF non-linear robotic systems, using actuator with any kind of variable gear-reducer. A technique using additional knowledge about the level of uncertainty to improve the gear-ratio selection decision is also developed.
+The second major contribution of this thesis, is the development of intelligent automatic gear-ratio selection schemes for robotic systems. A closed-from solution for the optimal gear-ratios of an arbitrary $n$-DoF robotic system along a known trajectory is derived. Control laws extending this principle to online optimal gear-ratios selection based on state feedback are then developed. The key idea is to used a model to estimate intrinsic and extrinsic forces, to compute if it is more advantageous to attenuate extrinsic forces with large gear-ratios or alternatively to leverage them with a small gear-ratios. The method can be applied to arbitrary $n$-DoF non-linear robotic systems, using actuator with any kind of variable gear-reducer. Moreover, a robust version of the control algorithm that can use some knowledge about the level of uncertainty to improve the gear-ratio selection decision is also developed.
 
 
 \section{Organization of the thesis}
