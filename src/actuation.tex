@@ -698,17 +698,27 @@ Assuming a only M1 is used during high-speed mode and only motor M2 is used duri
 From an outer-loop point of view, if the commanded torque to the DSDM actuator is routed this way:
 
 \begin{align}
-\tau_1 = \tau \quad \tau_2 = 0    \quad \text{if} k=0 \\
-\tau_1 = 0    \quad \tau_2 = \tau \quad \text{if} k=1
+\text{High-speed mode: }\tau_1 = \tau \quad \tau_2 = 0    \quad \text{if} k=0 \\
+\text{High-force mode: }\tau_1 = 0    \quad \tau_2 = \tau \quad \text{if} k=1
 \end{align}
 
-Then the equation of motions for each operating mode are:
+Then the equation of motions for each operating mode, eq. \eqref{eq:dsdm_output_HSw0} and eq. \eqref{eq:dsdm_output_HFw0},  are simplifyied to:
 
+\begin{align}
+\text{High-speed mode: } \quad \left[ I_o + R_1^2 I_1 \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_1 \right] \tau 
+\label{eq:dsdm_output_R1} \\
+\text{High-force mode: } \quad \left[ I_o + R_2^2 I_2 \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_2 \right] \tau 
+\label{eq:dsdm_output_R2}
+\end{align}
 
 and they can be reduced the same structure :
 
+\begin{align}
+\left[ I_o + R_k^2 I_k \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_k \right] \tau \quad k \in {1,2}
+\label{eq:dsdm_output_R} 
+\end{align}
 
-where only the gear-ratio is different. This would thus be equivalent to the system illustrated at Fig. XX, and the corresponding equation of motion:
+where only the gear-ratio is different. This would thus be equivalent to the system illustrated at Fig. XX, and also correspond to a single motor equipped with a two speed transmission (if  $I_1 = I_2$).
 
 
 
