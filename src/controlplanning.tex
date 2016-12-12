@@ -54,45 +54,48 @@ This paper investigates the control of robots with variable gear-ratio actuators
 
 From the control perspective, automating the gear-ratio selection in a robotic context is a new and challenging problem. Gear-shifting is a very non-linear process and the plant becomes a hybrid dynamical system if the usable gear-ratios are a set of discrete values. In simple scenarios, the gear-ratio selection can be based on simple principles. For instance, for a system running at a steady speed, the best gear-ratio can be selected based on efficiency. Alternatively, for rapid acceleration, the gear-ratio may be selected based on the actuator-load inertia matching \cite{giberti_effects_2010} \cite{chen_generalized_1991}. A multi-DoF robot, however, experiences diverse types of forces acting simultaneously. These include gravity, friction, and inertial forces as well as Coriolis and centrifugal forces. Hence, it is challenging to find a general control policy for selecting gear-ratios for the multitude of dynamically interacting actuators in the robotics context. Mixed-integer programming has been used to generate optimal open-loop trajectories of complex dynamical system with both continuous torque and discrete gear-selection input variables \cite{gerdts_solving_2005}. However, open-loop trajectories can be unstable and new trajectories must be computed for each initial goal and target pair. Dynamic programming was used to generate feedback laws for torque and gear-ratio selection in simple systems \cite{girard_practical_2016}. However, this technique is computationally expensive, it does not scale well to high-dimensional systems, and it required a significant amount of offline computation for each different goal position. Here in this paper, a model-based approach is proposed, with the advantage of scaling to high-dimensional robotics system. The method is applied to trajectory tracking, and the entire trajectory and gear-ratio control law is synthesized so that small actuators can dynamically lift a heavy load. The focus will be on systems where the gear-ratio options are limited to a discrete set, but the proposed principle and control algorithms are also applicable to robots with continuously variable transmissions.
 
+\newpage
 
-\section{Modeling}
+\section{Modeling Variable Gear-Ratio Actuators}
 \label{sec:model}
 
 \begin{flushright}
-\textit{"With four parameters I can fit an elephant, and with five I can make him wiggle his trunk."} \\ \emph{John von Neumann}
+{%\footnotesize %\small
+\textit{"With four parameters I can fit an elephant, and with five \\ I can make him wiggle his trunk."}
+ }
+ \emph{-- John von Neumann}
 \end{flushright}
 
 
-Variable gear-ratios can be modeled as variable transformer elements, using the bond-graph terminology. This representation provides a clear physical understanding of the effect of gear-ratio even in a non-linear multi-DoF system. Furthermore, this modeling approach facilitates the implementation of a real-time optimization in the proposed controller. Limitations are discussed at section \ref{sec:limitation}.
+In this section, a simple approach is proposed for modeling robot using variable gear-ratio actuators. Variable transmission are modeled as variable transformer elements, using the bond-graph terminology. This representation allows for a clear physical understanding of the effect of gear-ratio even for non-linear $n$-DoF systems. Furthermore, this modeling approach facilitates the implementation of a real-time optimization in the proposed controller. Limitations are discussed at section \ref{sec:limitation}.
 
-\begin{table}[htbp]
-	\centering
-		\begin{tabular}{ c c l }
-		
-        \hline \hline
-			$H$             &  :  & External inertia matrix \\
-			$D$             &  :  & External damping matrix \\
-			$C$             &  :  & External Coriolis/Centrifugal forces matrix  \\
-			$\vec{f}_g$     &  :  & External gravitational forces vector  \\
-			$\vec{d  }$     &  :  & External disturbances forces vector  \\
-			$R$             &  :  & Gear-ratio matrix (diagonal) \\
-			$I$             &  :  & Intrinsic actuator inertia matrix (diagonal) \\
-			$B$             &  :  & Intrinsic actuator damping matrix (diagonal) \\
-			$\vec{\tau}$    &  :  & Electromagnetic motor torques  \\
-			$\vec{q}$       &  :  & Joint coordinates position vector  \\
-			$\vec{w}$       &  :  & Actuator coordinates velocity vector  \\
-			$J$             &  :  & task-space coordinates / joint coordinates jacobian matrix\\
-			%&\text{Secondary variables:  \\
-			$\vec{f}$       &  :  & Net transmitted forces (joint coordinates) \\
-			$\vec{\tau}'$   &  :  & Net transmitted forces (actuators coordinates) \\
-			$\vec{\tau}_I$  &  :  & Sum of intrinsic forces  \\
-			$\vec{\tau}_E$  &  :  & Sum of extrinsic forces  \\
-		\hline \hline
-        \end{tabular}		
-        \caption{Nomenclature}	% Table caption must be placed on top of the table %
-		
-	\label{tab:nom}
-\end{table}
+%\begin{table}[htbp]
+	%\centering
+		%\begin{tabular}{ c c l }
+		%
+        %\hline \hline
+			%$H$             &  :  & External inertia matrix \\
+			%$D$             &  :  & External damping matrix \\
+			%$C$             &  :  & External Coriolis/Centrifugal forces matrix  \\
+			%$\vec{f}_g$     &  :  & External gravitational forces vector  \\
+			%$\vec{d  }$     &  :  & External disturbances forces vector  \\
+			%$R$             &  :  & Gear-ratio matrix (diagonal) \\
+			%$I$             &  :  & Intrinsic actuator inertia matrix (diagonal) \\
+			%$B$             &  :  & Intrinsic actuator damping matrix (diagonal) \\
+			%$\vec{\tau}$    &  :  & Electromagnetic motor torques  \\
+			%$\vec{q}$       &  :  & Joint coordinates position vector  \\
+			%$\vec{w}$       &  :  & Actuator coordinates velocity vector  \\
+			%$J$             &  :  & task-space coordinates / joint coordinates jacobian matrix\\
+			%%&\text{Secondary variables:  \\
+			%$\vec{f}$       &  :  & Net transmitted forces (joint coordinates) \\
+			%$\vec{\tau}'$   &  :  & Net transmitted forces (actuators coordinates) \\
+			%$\vec{\tau}_I$  &  :  & Sum of intrinsic forces  \\
+			%$\vec{\tau}_E$  &  :  & Sum of extrinsic forces  \\
+		%\hline \hline
+        %\end{tabular}		
+        %\caption{Nomenclature}	% Table caption must be placed on top of the table %
+	%\label{tab:nom}
+%\end{table}
 
 \subsubsection{1-DoF system}
 \label{sec:1DOFSystem}
@@ -118,7 +121,7 @@ If the actuator's intrinsic resistive forces $\tau_I$ are approximated to a line
 %
 where the effect of the gear ratio can be seen clearly; increasing $R$ attenuates the external dynamic terms $\tau_{E}$ but amplify the intrinsic actuator losses $\tau_{I}$ for a given trajectory.
 
-\subsubsection{Generalization to n-DoF manipulators}
+\subsubsection{Generalization to $\boldsymbol{n}$-DoF manipulators}
 \label{sec:GeneralizationToNDOFManipulators}
 
 To generalize the above model to a $n$-DoF system with $n$ actuators, the load-side dynamics is considered as a generic form of manipulator equations where each port is connected to an independent actuator through a network of transformers. 
@@ -280,7 +283,7 @@ The proposed closed-loop controller, shown in Fig. \ref{fig:bbb}, is based on th
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.40\textwidth]{dq.png}
-	\caption{The R* algorithm can be interpreted graphically, as selecting the gear-ratio for which the natural acceleration vector is the closet to the desired acceleration vector $\vec{\ddot{q}}_r$ (after scaling the distance with the inertia), in order to minimize the necessary torques to apply on the system.}
+	\caption[R* algorithm graphical interpretation]{The R* algorithm can be interpreted graphically, as selecting the gear-ratio for which the natural acceleration vector is the closet to the desired acceleration vector $\vec{\ddot{q}}_r$ (after scaling the distance with the inertia), in order to minimize the necessary torques to apply on the system.}
 	\label{fig:dq}
 \end{figure}
 
