@@ -1,9 +1,14 @@
-\chapter{Optimal dynamic selection of gear-ratios}  % to exploit or attenuate the external load dynamics
+\chapter{Optimal Dynamic Selection of Gear-ratios}  % to exploit or attenuate the external load dynamics
 \label{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}
 
+%\begin{flushright}
+%\textit{"With four parameters I can fit an elephant, and with five I can make him wiggle his trunk."} \\ \emph{John von Neumann}
+%\end{flushright}
+
 \begin{flushright}
-"With four parameters I can fit an elephant, and with five I can make him wiggle his trunk." \\ \emph{John von Neumann}
+\textit{"He will win who knows when to fight and when not to fight."} \\ \emph{Sun Tzu}
 \end{flushright}
+
 
 The transmission gear-ratio that couples an actuator to a load has a significant effect upon the behavior of the actuator-load system. With a large reduction ratio, the load-side dynamics has no significant effect because it is attenuated by the factor of the square of the gear ratio. The net load acting on the actuator is mostly its own intrinsic load, including rotor inertia and friction. In contrast, with a small reduction ratio or a direct drive system \cite{asada_direct-drive_1987}, the behavior is usually dominated by the load-side dynamics which consist of highly non-linear inertial and gravitational forces for robotics manipulators. Sometime it can be advantageous to exploit the load-side dynamics: gravity may push the robot in a desired direction, dissipative torques induced on the actuator side may be small despite high-speed motion on the load side, etc. In other situations, however, it may be advantageous to be isolated from the load-side dynamics and external disturbances. For example, bearing a large load or moving it slowly against gravity requires a large reduction ratio.
 
@@ -52,6 +57,10 @@ From the control perspective, automating the gear-ratio selection in a robotic c
 
 \section{Modeling}
 \label{sec:model}
+
+\begin{flushright}
+\textit{"With four parameters I can fit an elephant, and with five I can make him wiggle his trunk."} \\ \emph{John von Neumann}
+\end{flushright}
 
 
 Variable gear-ratios can be modeled as variable transformer elements, using the bond-graph terminology. This representation provides a clear physical understanding of the effect of gear-ratio even in a non-linear multi-DoF system. Furthermore, this modeling approach facilitates the implementation of a real-time optimization in the proposed controller. Limitations are discussed at section \ref{sec:limitation}.
