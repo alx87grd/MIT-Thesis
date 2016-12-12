@@ -691,6 +691,27 @@ b_T  w_o = 0 \quad \forall u \in \Re
 \end{align}
 
 
+\subsection{Equivalence to a two-speed transmission}
+
+Assuming a only M1 is used during high-speed mode and only motor M2 is used during high-force mode ( i.e. the control input is either $\tau_1$ or $\tau_2$ according to the mode) and additionally if the two motors are identical, then the behavior is equivalent to a motor with a two-speed transmission. 
+
+From an outer-loop point of view, if the commanded torque to the DSDM actuator is routed this way:
+
+\begin{align}
+\tau_1 = \tau \quad \tau_2 = 0    \quad \text{if} k=0 \\
+\tau_1 = 0    \quad \tau_2 = \tau \quad \text{if} k=1
+\end{align}
+
+Then the equation of motions for each operating mode are:
+
+
+and they can be reduced the same structure :
+
+
+where only the gear-ratio is different. This would thus be equivalent to the system illustrated at Fig. XX, and the corresponding equation of motion:
+
+
+
 \section{Control algorithms}
 
 \begin{figure}[H]
