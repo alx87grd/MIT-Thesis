@@ -2,6 +2,83 @@
 \label{sec:proofs}
 
 
+\section{Simplified equation of motion for diagonal $R$}
+\label{sec:Rdiagndof}
+
+Here the derivation of the simplified form of equations of motion, where intrinsic and extrinsic forces are two separate terms, is derived for arbitrary $n$-DoF fully actuated robots.
+
+\paragraph{Assumptions} 
+
+Two assumptions are necessary for this form. First, that a coordinates system can be selected so that the gear-ratio matrix $R$ is diagonal for any selected operating mode:
+%
+\begin{align}
+R_{i,j} = 0 \quad \forall \; i \neq j
+\end{align}
+%
+
+Second, that dynamic forces related to viscous damping and inertial forces from the rotor side are linear with respect to rotor velocity:
+%
+\begin{align}
+\vec{\tau}_{rotor-inertia} = I \ddot{\vec{q}}  \quad  \vec{\tau}_{rotor-damping} = B \dot{\vec{q}}
+\end{align}
+%
+
+Note that additionally, in all cases, matrix $I$ and $D$ are diagonal since motor rotors are not coupled directly. 
+
+\paragraph{Derivation}
+
+Starting from the general, eq. XX, the EoM are:
+%
+\begin{align}
+H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g }
+		= R^T  \left[ 
+		\vec{ \tau } - I \vec{ \dot{w} } - B \vec{ w }       
+		\right]
+\end{align}
+%
+Then substituting motor velocity to joint coordinates using the kinematic relation, eq. XX,
+%
+\begin{align}
+H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g }
+		&= R^T  \left[ 
+		\vec{ \tau } - I R \vec{ \ddot{q} } - B R\vec{ \dot{q} }       
+		\right] \\
+H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g }
+		&= R^T \vec{ \tau } - R^T I R \vec{ \ddot{q} } - R^T B R \vec{ \dot{q} }  
+\end{align}
+%
+Then because $R$, $I$ and $B$ matrix are diagonal, they can be permuted and also $R^T=R$. Hence, the EoM can be rearranged:
+%
+\begin{align}
+H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g }
+		&= R \vec{ \tau } - R R I \vec{ \ddot{q} } - R R B \vec{ \dot{q} }  
+\end{align}
+%
+Then, assuming the robotic system is fully actuated, the R matrix is square and invertible. Then multiplying by $R^{-1}$ from the left on both side:
+%
+\begin{align}
+R^{-1} \left[ H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \right]
+		&= \vec{ \tau } - R I \vec{ \ddot{q} } - R B \vec{ \dot{q} }  
+\end{align}
+%
+Then rearranging:
+%
+\begin{align}
+R^{-1} \left[ H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \right]
+		&= \vec{ \tau } - R  \left[ I \vec{ \ddot{q} } + B \vec{ \dot{q} }  \right]
+\end{align}
+%
+and thus obtain the desired final form:
+%
+\begin{align}
+\vec{ \tau } &=  R^{-1} \underbrace{ \left[ H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \right] }_{\vec{\tau}_E}
+ + R \underbrace{ \left[ I \vec{ \ddot{q} } + B \vec{ \dot{q} }  \right]}_{\vec{\tau}_I}
+\end{align}
+%
+
+
+
+
 \section{Optimal gear-ratio along a known trajectory}
 \label{sec:optgearproof}
 

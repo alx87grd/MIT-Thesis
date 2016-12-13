@@ -6,8 +6,9 @@
 %\end{flushright}
 
 \begin{flushright}
-\textit{"He will win who knows when to fight and when not to fight."} \\ \emph{Sun Tzu}
+\textit{"He will win who knows when to fight and when not to fight."} \\ \emph{-- Sun Tzu}
 \end{flushright}
+\vspace{10pt}
 
 
 The transmission gear-ratio that couples an actuator to a load has a significant effect upon the behavior of the actuator-load system. With a large reduction ratio, the load-side dynamics has no significant effect because it is attenuated by the factor of the square of the gear ratio. The net load acting on the actuator is mostly its own intrinsic load, including rotor inertia and friction. In contrast, with a small reduction ratio or a direct drive system \cite{asada_direct-drive_1987}, the behavior is usually dominated by the load-side dynamics which consist of highly non-linear inertial and gravitational forces for robotics manipulators. Sometime it can be advantageous to exploit the load-side dynamics: gravity may push the robot in a desired direction, dissipative torques induced on the actuator side may be small despite high-speed motion on the load side, etc. In other situations, however, it may be advantageous to be isolated from the load-side dynamics and external disturbances. For example, bearing a large load or moving it slowly against gravity requires a large reduction ratio.
@@ -65,7 +66,7 @@ From the control perspective, automating the gear-ratio selection in a robotic c
  }
  \emph{-- John von Neumann}
 \end{flushright}
-
+\vspace{+10pt}
 
 In this section, a simple approach is proposed for modeling robot using variable gear-ratio actuators. Variable transmission are modeled as variable transformer elements, using the bond-graph terminology. This representation allows for a clear physical understanding of the effect of gear-ratio even for non-linear $n$-DoF systems. Furthermore, this modeling approach facilitates the implementation of a real-time optimization in the proposed controller. Limitations are discussed at section \ref{sec:limitation}.
 
@@ -175,10 +176,18 @@ In most practical cases, each actuator has its independent variable transmission
 %
 The main assumption of the proposed model is that gear-ratios are considered as independent control inputs, neglecting all the dynamics and delays associated with the transition of gear ratio. Physically this implies that the kinetic energy of the system may be discontinuous at a gear-shift since the energy necessary for the transition is not considered. In the case of a car transmission, the engine speed is synchronized to the wheel speed before engaging the next gears. This model would not keep track of the energy used for accelerating or braking the engine during the synchronization process. This model can be used if the gear-shift process is fast compared to the dynamics of the robots and if the energetic losses due to the gear-shift are negligibly small. In addition this model also assumes that all motor rotors are in an inertial reference frame, neglecting gyroscopic effects, which may be induced when the axes of motor rotors are rotated.
 
+\newpage
 
 \section{Model-based control approach}
 \label{sec:HierachicalControlApproach}
 
+
+\begin{flushright}
+\textit{"If you know the enemy and know yourself, you need \\ not fear the result of a hundred battles."}  \emph{-- Sun Tzu}
+\end{flushright}
+\vspace{+10pt}
+
+In this section, control algorithms relying on a dynamic model of a robot and its load are proposed.
 
 \subsection{Optimal Gear ratio along a trajectory}
 
@@ -300,10 +309,14 @@ Because the control effort during gear-shifts is neglected in the model, using t
 \subsection{Trajectory planning}
 \label{sec:SamplingBasedTrajectoryPlanner}
 
+\newpage
 
 \section{Dynamic programming approach}
 \label{sec:DynamicProgrammingAproach}
 
+\begin{flushright}
+\small"The true logic of this world is in the calculus of probabilities." \\ \emph{-- James Clerk Maxwell}
+\end{flushright}
 
 
 \begin{figure}[H]
@@ -376,7 +389,7 @@ Because the control effort during gear-shifts is neglected in the model, using t
 				\subfloat[Minimum energy]{
 				\includegraphics[width=0.32\textwidth]{ppe.pdf}
 				\label{fig:phase_plane_energy}}
-        \caption{Closed loop behavior with the optimal policy illustrated in the phase plane}\label{fig:phase_plane}
+        \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane}\label{fig:phase_plane}
 \end{figure}
 
 \subsection{Reinforcement Learning}
