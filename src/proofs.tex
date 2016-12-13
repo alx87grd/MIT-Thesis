@@ -82,9 +82,46 @@ and thus obtain the desired final form:
 \section{Optimal gear-ratio along a known trajectory}
 \label{sec:optgearproof}
 
+Starting from the EoM, eq. XXX, assuming that the robot is fully actuated and viscous forces linear in speed, it is possible to derive closed form expression for the optimal gear-ratio.
+
 
 \subsection{Single DoF}
 \label{sec:optgearproof1}
+
+Starting with the EoM in inverse dynamic form (from eq. XXX):
+%
+\begin{align}
+\tau  &=  \frac{\tau_E}{R} + R \tau_I
+\end{align}
+%
+Using a quadratic cost function to minimize:
+%
+\begin{align}
+J &=  \tau^2
+\end{align}
+%
+
+Finding the gear-ratio that minimize this cost can be formulated as:
+%
+\begin{align}
+R* &=  \argmin_R J \\
+   &   s.t. R \in \Re  \quad  R > 0
+\end{align}
+%
+A non-real value would have no physical sense. A negative $R$ value would be physically possible, for instance the reverse gear in a gear. However, for symmetric electric motors, in the sense that they behave the same way for any sign of torque and speed, there should be no gain obtained by changing the direction of the motor velocity.
+
+\paragraph{Derivation}
+
+Finding the appex:
+
+%
+\begin{align}
+0 &= \frac{ \partial J }{ \partial R  } = 2 \tau \frac{ \tau }{ \partial R }
+\end{align}
+%
+
+
+
 
 
 \subsection{Multiple DoF}
