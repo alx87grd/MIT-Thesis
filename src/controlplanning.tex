@@ -21,24 +21,24 @@ This paper aims to explore the potentials of the actuator transmissions that can
 Fig. \ref{fig:bigpicture} illustrates a simplified 1-DoF robotic manipulator where an electric motor is coupled to a pendulum through a gearbox with a gear-ratio $R$.
 
 \begin{figure}[H]
- \vspace{-10pt}
+ %\vspace{-10pt}
 	\centering
-		\includegraphics[width=0.75\textwidth]{bigpicture.png}
+		\includegraphics[width=0.75\textwidth]{gearratioeffect.pdf}
 	\caption{Effect of the gear ratio on the dynamics}
-	\vspace{-10pt}
+	%\vspace{-10pt}
 	\label{fig:bigpicture}
 \end{figure}
 
 As illustrated by phase portraits in Fig. \ref{fig:pp}, if $R$ is small then the dynamic behavior of the system is dominated by the non-linear pendulum dynamics (Fig. \ref{fig:pp1}), but if $R$ is very large, the behavior is dominated by the intrinsic inertia of the actuator, leading to the double-integrator behavior (Fig. \ref{fig:pp2}).
 
 \begin{figure}[H]
-				\vspace{-10pt}
+				%\vspace{-10pt}
         \centering
 				\subfloat[ Reduction ratio $R$=1 ]{ %extrinsic dynamics
-				\includegraphics[width=0.40\textwidth]{pp1_hand.png}
+				\includegraphics[width=0.40\textwidth]{pp1_hand.pdf}
 				\label{fig:pp1}}
         \subfloat[Reduction ratio $R$=10 ]{ % intrinsic dynamics
-				\includegraphics[width=0.40\textwidth]{pp10_hand.png}
+				\includegraphics[width=0.40\textwidth]{pp10_hand.pdf}
 				\label{fig:pp2}}
         \caption{Phase portraits illustrating the dynamical behavior}
 				\label{fig:pp}
@@ -105,7 +105,7 @@ Fig. \ref{fig:bondgraph1} shows the bond graph model of the 1-DoF robot in Fig. 
 
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.60\textwidth]{bondgraph1.jpg}
+		\includegraphics[width=0.60\textwidth]{bondgraph1.pdf}
 	\caption{Model of a 1-DoF robot with a variable gear-ratio actuator}
 	\label{fig:bondgraph1}
 \end{figure}
@@ -129,8 +129,8 @@ To generalize the above model to a $n$-DoF system with $n$ actuators, the load-s
 %
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.70\textwidth]{bondgraph.jpg}
-	\vspace{-10pt}
+		\includegraphics[width=0.80\textwidth]{bondgraph.pdf}
+	%\vspace{-10pt}
 	\caption{Model of a $n$-Dof robot with variable actuator-joint coupling}
 	\label{fig:bondgraph}
 \end{figure}
@@ -281,13 +281,13 @@ However, if the number of options $l$ is reasonably small, then every possible o
 
 The proposed closed-loop controller, shown in Fig. \ref{fig:bbb}, is based on the Computed Torque technique \cite{asada_robot_1986}, but includes an optimization step to compute and select the optimal gear-ratios. The idea is as follow, first compute a necessary acceleration $\ddot{\vec{q}}_r$ to guarantee convergence on the trajectory. Then given the actual position $\vec{q}$, actual speed $\dot{\vec{q}}$ and desired acceleration $\ddot{\vec{q}}_r$ compute the optimal gear-ratios $R^*$, as described previously for a known trajectory, and apply the corresponding necessary torques $\vec{\tau}^*$. As illustrated, the model-based estimation of extrinsic and intrinsic forces can optionally be improved by using a disturbance observer. The salient feature of the R* controller is that the optimal gear-ratio is selected based on state-feedback, i.e. even in situations not foreseen in the planner that generated the nominal trajectory. For instance, if a disturbance pushes the robot in a state where the robot faces a large gravitational force requiring a large gear-ratio, the controller will automatically select it. Similarly if facing a contact forces, if it is included in the model or estimated with a disturbance observer, the R* controller will automatically select the appropriate gear-ratio. Fig. \pageref{fig:dq} offer a graphical interpretation of the R* algorithm in the phase plane. 
 
-\begin{figure*}[t]
+\begin{figure}[t]
 	\centering
-		\includegraphics[width=0.95\textwidth]{Rstar_block_big.png}
+		\includegraphics[width=0.99\textwidth]{Rstar_block_big.pdf}
 	\caption{R* Computed Torque Controller}
 	%\vspace{-10pts}
-	\label{fig:bbb}
-\end{figure*}
+	\label{fig:Rstar_block_big}
+\end{figure}
 
 \begin{figure}[htp]
 	\centering
