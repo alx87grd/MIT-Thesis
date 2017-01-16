@@ -70,8 +70,31 @@ Here in this paper, a model-based approach is proposed, with the advantage of sc
 
 The focus will be on systems where the gear-ratio options are limited to a discrete set, but the proposed principle and control algorithms are also applicable to robots with continuously variable transmissions.
 
+TODO incorporate this:
 
 Discrete mode of operations are present in many system, such as powertrains with multiple gear ratios, pneumatic or hydraulic systems equipped with on/off valves and special actuators \cite{leach_linear_2012}\cite{Wolfgang_novel_2015}\cite{lee_finger_2013}. Considering the global behavior of such systems, including the mode selection, lead to a hybrid dynamical model. Most optimal control techniques are based on either variational approaches or some form of gradient descent to find a trajectory that minimize a cost function \cite{betts_practical_2010}. Hence those techniques cannot be used directly to optimize discrete variables. An interesting approach to get around this problem is to use the switching instants as optimization parameters instead \cite{xu_optimal_2004}\cite{majdoub_hybrid_2010}. However, to use this approach a sequence of operating modes must be predefined first. Mixed-integer programming has also been used to generate optimal open-loop trajectories of dynamical system with both continuous and discrete input variables \cite{richards_spacecraft_2002} \cite{gerdts_solving_2005}. However, open-loop trajectories can be unstable and new trajectories must be computed for each initial condition. Hence, from a practical point of view, techniques generating feedback policies are preferable. Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it only works for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table.
+
+
+\newpage
+
+\section{Control architecture}
+\label{sec:arch}
+
+TODO incorporate this:
+
+The proposed control architecture, shown in Fig. XXX, consists of three hierarchical control loops. First, a trajectory generation algorithm synthesizing dynamic trajectories that meets performance requirements for reaching desired states. Second, a closed-loop trajectory following controller consisting of a feedback law computing actuator torques $\vec{\tau}$ and gear-ratios $R$ based on the measured full state of the robot. Finally at the lowest level, independent actuator controllers executing low-level hardware commands in response to given torques and gear-ratio set-points. 
+
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.70\textwidth]{arch_traj.pdf}
+	\caption{Proposed hierarchical control architecture}
+	\label{fig:control_achitecture}
+\end{figure}
+
+
+
+The main scope of this paper is the trajectory following controller: the design of a feedback law optimizing gear-ratios and computing torque commands in real-time. For the trajectory generation, motion planning algorithms can be applied to optimize the overall trajectory \cite{lavalle_planning_2006}.  The low-level controllers would be specific to the type of actuator used in the system. It is assumed that they would track the desired torque/force and handle the gear-shifting process when receiving a new gear-ratio set-point. 
+
 
 \newpage
 
@@ -116,22 +139,14 @@ In this section, a simple approach is proposed for modeling robot using variable
 	%\label{tab:nom}
 %\end{table}
 
-\subsubsection{1-DoF system}
+\subsection{1-DoF system}
 \label{sec:1DOFSystem}
 
-Fig. \ref{fig:bondgraph1} shows the bond graph model of the 1-DoF robot in Fig. \ref{fig:bigpicture}, including dissipative forces.
-
-\begin{figure}[htp]
-	\centering
-		\includegraphics[width=0.60\textwidth]{bondgraph1.pdf}
-	\caption{Model of a 1-DoF robot with a variable gear-ratio actuator}
-	\label{fig:bondgraph1}
-\end{figure}
-
-If the actuator's intrinsic resistive forces $\tau_I$ are approximated to a linear quantity, the equations of motion (EoM) can be written as:
+First, a generic 1-DoF robot with a variable transmission is considered for simplicity. If the actuator's intrinsic resistive forces $\tau_I$ are approximated to a linear quantity, the equations of motion (EoM) can be written as:
 %
 \begin{align}
-	\underbrace{\left[	H \ddot{q} + D \dot{q} + mg\sin( q )	\right]}_{\tau_{E}(\ddot{q},\dot{q},q)}
+  H \ddot{q} + D \dot{q} + g( q )	&= R  \left[ \tau - I \dot{w} - B w	\right] \\
+	\underbrace{\left[	H \ddot{q} + D \dot{q} + g( q )	\right]}_{\tau_{E}(\ddot{q},\dot{q},q)}
 	&= R \tau - R^2
 	\underbrace{\left[ I \ddot{q} + B \dot{q}	\right]}_{\tau_{I}(\ddot{q},\dot{q})} \\
 	\tau &= 	\frac{\tau_{E}(\ddot{q},\dot{q},q)}{R} + R \; \tau_{I}(\ddot{q},\dot{q})
@@ -139,11 +154,27 @@ If the actuator's intrinsic resistive forces $\tau_I$ are approximated to a line
 \end{align}
 %
 where the effect of the gear ratio can be seen clearly; increasing $R$ attenuates the external dynamic terms $\tau_{E}$ but amplify the intrinsic actuator losses $\tau_{I}$ for a given trajectory.
+%
+Variable gear-ratios can be modeled as variable transformer elements, using the bond-graph terminology. Fig. \ref{fig:bondgraph1} shows a bond-graph representation of the model.
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.70\textwidth]{bondgraph1.pdf}
+	\caption{Model of a 1-DoF robot with a variable gear-ratio actuator}
+	\label{fig:bondgraph1}
+\end{figure}
 
-\subsubsection{Generalization to $\boldsymbol{n}$-DoF manipulators}
+
+\subsection{Generalization to $\boldsymbol{n}$-DoF manipulators}
 \label{sec:GeneralizationToNDOFManipulators}
 
-To generalize the above model to a $n$-DoF system with $n$ actuators, the load-side dynamics is considered as a generic form of manipulator equations where each port is connected to an independent actuator through a network of transformers. 
+To generalize the above model to a $n$-DoF system with $n$ actuators, the load-side dynamics is considered as a generic form of manipulator equations where each port is connected to an independent actuator through a network of transformers. The network of transformers can be view as a type of coordinate transformation relating effort (force or torque) and flow (velocity or angular velocity) on the load side ($\vec{f}$,$\dot{\vec{q}}$) to those on the actuator output side ($\vec{\tau}'$,$\vec{w}$):
+%
+\begin{align}
+	\vec{ f } = R^T \vec{\tau}' \quad  \quad R \dot{ \vec{q} } = \vec{w}
+ \label{eq:coortransform}
+\end{align}
+%
+where $R$ is a $n$ by $n$ matrix consisting of all the transformer ratios. 
 %
 \begin{figure}[htp]
 	\centering
@@ -152,15 +183,8 @@ To generalize the above model to a $n$-DoF system with $n$ actuators, the load-s
 	\caption{Model of a $n$-Dof robot with variable actuator-joint coupling}
 	\label{fig:bondgraph}
 \end{figure}
-%
-The network of transformers can be view as a type of coordinate transformation relating effort (force or torque) and flow (velocity or angular velocity) on the load side ($\vec{f}$,$\dot{\vec{q}}$) to those on the actuator output side ($\vec{\tau}'$,$\vec{w}$):
-%
-\begin{align}
-	\vec{ f } = R^T \vec{\tau}' \quad  \quad R \dot{ \vec{q} } = \vec{w}
- \label{eq:coortransform}
-\end{align}
-%
-where $R$ is a $n$ by $n$ matrix consisting of all the transformer ratios. The EoM are then given by:
+
+The EoM are then given by:
 %
 \begin{align}
 	&\underbrace{ H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ f }_g  + \vec{ d }}_{ \vec{\tau}_{E}(\ddot{\vec{q}},\dot{\vec{q}},\vec{q},\vec{d})}
@@ -170,14 +194,14 @@ where $R$ is a $n$ by $n$ matrix consisting of all the transformer ratios. The E
  \label{eq:eom_ndof}
 \end{align}
 %
-Note that, in the case of locomotion or manipulation where the robot interacts with environment by physically contacting it, the dynamic model $\vec{\tau}_{E}$ must reflect the contact conditions, either by considering contact forces as known disturbances $\vec{ d }$ or by formulating $\vec{\tau}_{E}(\ddot{\vec{q}},\dot{\vec{q}},\vec{q})$ as a hybrid dynamical system. In the latter case, multiple dynamic equations associated with individual contact conditions must be constructed and used in real time.
+Note that, in the case of locomotion or manipulation where the robot interacts with the environment by physically contacting it, the dynamic model $\vec{\tau}_{E}$ must reflect the contact conditions, either by computing contact forces using constraint equations or by formulating $\vec{\tau}_{E}$ as a hybrid dynamical system.
 
 In most practical cases, each actuator has its independent variable transmission and, thereby, the $R$ matrix will be diagonal and each diagonal value can be selected independently. Assuming this situation, the EoM can be simplified to a form, similar to the scalar case, illustrating the effect of the gear ratios matrix $R$: 
 %
 \begin{align}
 	\vec{\tau} &= R^{-1} 
 	\underbrace{ 
-	\vec{\tau}_{E}(\ddot{\vec{q}},\dot{\vec{q}},\vec{q},\vec{d}) 
+	\vec{\tau}_{E}(\ddot{\vec{q}},\dot{\vec{q}},\vec{q}) 
 	}_{\text{External load dynamics}}
 	+ R 
 	\underbrace{ 
@@ -189,10 +213,42 @@ In most practical cases, each actuator has its independent variable transmission
  \label{eq:eom_ndof2}
 \end{align}
 %
-\subsubsection{Limitation of the simplified model}
+The derivation of this simplified form is available in the Appendix \ref{sec:Rdiagndof}.
+
+\subsection{Limitation of the simplified model}
 \label{sec:limitation}
 %
-The main assumption of the proposed model is that gear-ratios are considered as independent control inputs, neglecting all the dynamics and delays associated with the transition of gear ratio. Physically this implies that the kinetic energy of the system may be discontinuous at a gear-shift since the energy necessary for the transition is not considered. In the case of a car transmission, the engine speed is synchronized to the wheel speed before engaging the next gears. This model would not keep track of the energy used for accelerating or braking the engine during the synchronization process. This model can be used if the gear-shift process is fast compared to the dynamics of the robots and if the energetic losses due to the gear-shift are negligibly small. In addition this model also assumes that all motor rotors are in an inertial reference frame, neglecting gyroscopic effects, which may be induced when the axes of motor rotors are rotated.
+The main assumption of the proposed model is that gear-ratios are considered as independent control inputs, neglecting all the dynamics and delays associated with the transition of gear-ratios. Physically this implies that the kinetic energy of the system may be discontinuous at a gear-shift since the energy necessary for the transition is not considered. In the case of a car transmission for instance, this model would not keep track of the energy used for accelerating or braking the engine during the synchronization process. This model can be used if the gear-shift process is fast compared to the dynamics of the robots and if the energetic losses due to the gear-shift are negligibly small. In addition this model also assumes that all motor rotors are in an inertial reference frame, neglecting gyroscopic effects, which may be induced when the axes of motor rotors are rotated.
+
+\subsection{Uncertainty}
+\label{sec:uncertainty}
+
+Two observations are made regarding the effect of the gear-ratios on disturbances. First, considering modeling errors and external forces on the extrinsic side as unknown generalized forces $\vec{d}$, the EoM given by eq. \eqref{eq:eom_ndof2} becomes:
+\begin{align}
+	\vec{\tau} &= R^{-1} 
+	\vec{\tau}_{E}(\ddot{\vec{q}},\dot{\vec{q}},\vec{q}) 
+	+ R 
+	\vec{\tau}_{I}(\ddot{\vec{q}},\dot{\vec{q}})
+    + R^{-1}
+    \underbrace{ 
+	\vec{d}
+	}_{\text{Disturbances}}    
+ \label{eq:eom_ndof3}
+\end{align}
+where it is assumed that the actuators are accurately modeled. Note that the effect of the disturbances is inversely proportional to the gear-ratios, and thereby attenuated when using large gear-ratios. 
+
+Second, large gear-ratios also decrease the sensitivity of the system to uncertainty. The error of computed accelerations will be attenuated with large gear-ratios because of the larger  actuator inertia reflected to the extrinsic side:
+\begin{align}
+	\vec{\ddot{q}}_e &= \vec{\ddot{q}} - \vec{\ddot{q}}_r = 
+	\left[ 
+    H + R^T I_a R
+	\right]^{-1}
+    \vec{d}
+ \label{eq:sens}
+\end{align}
+%
+Hence, selecting large gear-ratios makes the system less sensitive to uncertainty on the extrinsic side.
+
 
 \newpage
 
@@ -205,7 +261,7 @@ The main assumption of the proposed model is that gear-ratios are considered as 
 \end{flushright}
 \vspace{+10pt}
 
-In this section, control algorithms relying on a dynamic model of a robot and its load are proposed.
+In this section, control algorithms relying on a dynamic model of a robot and its load are proposed. Here, a methodology is presented to synthesize feedback laws, for both the torques and gear-ratios input variable, to follow a trajectory with minimal effort. 
 
 \subsection{Optimal Gear ratio along a trajectory}
 
@@ -214,7 +270,13 @@ This section analyzes the optimal gear-ratio at each instant along a known traje
 \subsubsection{Selection criteria}
 \label{sec:GearSelectionCriteria}
 
-The two main advantages of changing gear-ratio are 1) lowering the necessary torque to follow a trajectory and 2) modifying the effective impedance reflected on the environment. Optimization for reducing torque can be done by minimizing $\vec{\tau}^T \vec{\tau}$ at each point along the trajectory. Optimization for reflected impedance can be done by minimizing the difference between desired task-space impedance and the actual one, which is directly affected by the matrix $R$. For instance, the end-point inertia matrix contains the gear ratios: 
+The two main advantages of changing gear-ratio are 1) lowering the necessary torque to follow a trajectory and 2) modifying the effective impedance reflected on the environment. 
+
+\paragraph{Torque}
+Optimization for reducing torque can be done by minimizing $\vec{\tau}^T \vec{\tau}$ at each point along the trajectory. 
+
+\paragraph{Impedance}
+Optimization for reflected impedance can be done by minimizing the difference between desired task-space impedance and the actual one, which is directly affected by the matrix $R$. For instance, the end-point inertia matrix contains the gear ratios: 
 %
 \begin{align}
 	M = [J(\vec{q})^T]^{-1} \big [ \underbrace{ R^T I R }_{\text{Actuator contribution}} + H( \vec{q} ) \big ] J(\vec{q})^{-1}
@@ -227,7 +289,7 @@ Another point of practical importance is that the rotor speed should be constrai
  The optimal gear-ratio is determined by minimizing the total actuator torques and, optionally, the difference in end-point impedance:
 %
 \begin{align}
-	R^{*}(\ddot{\vec{q}},\dot{\vec{q}},\vec{q},\vec{d}) &= \operatornamewithlimits{argmin}\limits_{R} \left[ \vec{\tau}^T \vec{\tau} + \alpha \| M_{d} - M \| \right]  \\
+	R^{*}(\ddot{\vec{q}},\dot{\vec{q}},\vec{q}) &= \operatornamewithlimits{argmin}\limits_{R} \left[ \vec{\tau}^T \vec{\tau} + \alpha \| M_{d} - M \| \right]  \\
 	& \text{s.t}  \quad R \dot{\vec{q}} \leq \vec{w}_{max} 
 \label{eq:rmin_general}
 \end{align}
@@ -235,22 +297,123 @@ Another point of practical importance is that the rotor speed should be constrai
 where $\alpha$ is a parameter to set the trade-off between minimizing motor torques and matching the desired end-point inertia.
 %
 For a 1-DoF system, the optimal gear ratio leading to minimal torque, not considering any velocity constraints, at a given instant on a trajectory is given by
-
+%
 \begin{align}
-	R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \tau^2 \right] = \sqrt{ \left | \frac{\tau_{E}(\ddot{q},\dot{q},q,d)}{\tau_{I}(\ddot{q},\dot{q})} \right |   } 
+	R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \tau^2 \right] = \sqrt{ \left | \frac{\tau_{E}(\ddot{q},\dot{q},q)}{\tau_{I}(\ddot{q},\dot{q})} \right |   } 
 \label{eq:aaa}
 \end{align}
+%
+The derivation is available in the Appendix \ref{sec:optgearproof1}.
 
 Similarly for a multi-DoF system, if $R$ is a diagonal matrix, the optimal gear-ratios can be obtained independently for each axis:
+%
 \begin{align}
 	%R^{*} = \operatornamewithlimits{argmin}\limits_{R} \left[  \vec{\tau}^T \vec{\tau} \right] \Rightarrow 
-	[R^*]_{ii} = \sqrt{ \left | \frac{ [\vec{\tau}_{E}(\ddot{\vec{q}},\dot{\vec{q}},\vec{q},\vec{d})]_i }{ [\vec{\tau}_{I}(\ddot{\vec{q}},\dot{\vec{q}})]_i } \right | }
+	[R^*]_{ii} = \sqrt{ \left | \frac{ [\vec{\tau}_{E}(\ddot{\vec{q}},\dot{\vec{q}},\vec{q})]_i }{ [\vec{\tau}_{I}(\ddot{\vec{q}},\dot{\vec{q}})]_i } \right | }
  \label{eq:rmin2}
 \end{align}
+%
+The derivation is available in the Appendix \ref{sec:optgearproofn}.
 
 Note that large gravitational forces or external disturbances, only present in $\vec{\tau}_{E}$, will usually lead to larger optimal gear-ratios, unless they cancel-out other forces in a way that makes $\vec{\tau}_{E}$ smaller. If inertial or viscous forces, present both in $\vec{\tau}_{E}$ and $\vec{\tau}_{I}$, dominate, then the optimal gear-ratio will be a compromise such that extrinsic and intrinsic forces are balanced, a form of impedance matching. The optimal gear ratio given by \eqref{eq:rmin2} includes both gravity, inertial and viscous effects as well as all other effects, hence it can be applied to any arbitrary dynamic situations.
 
 \newpage
+
+
+
+\subsection{Trajectory following controllers}
+
+\subsubsection{R* Computed Torque}
+\label{sec:RobustTrajectoryFollowingController}
+
+
+The proposed closed-loop controller, shown in Fig. \ref{fig:Rstar_block_big}, is based on the Computed Torque technique \cite{asada_robot_1986}, but includes an optimization step to compute and select the optimal gear-ratios. The idea is as follow, first compute a necessary acceleration $\ddot{\vec{q}}_r$ to guarantee convergence on the trajectory. Then given the actual position $\vec{q}$, actual speed $\dot{\vec{q}}$ and desired acceleration $\ddot{\vec{q}}_r$ compute the optimal gear-ratios $R^*$, as described previously for a known trajectory, and apply the corresponding necessary torques $\vec{\tau}^*$. As illustrated, the model-based estimation of extrinsic and intrinsic forces can optionally be improved by using a disturbance observer. The salient feature of the R* controller is that the optimal gear-ratio is selected based on state-feedback, i.e. even in situations not foreseen in the planner that generated the nominal trajectory. For instance, if a disturbance pushes the robot in a state where the robot faces a large gravitational force requiring a large gear-ratio, the controller will automatically select it. Similarly if facing a contact forces, if it is included in the model or estimated with a disturbance observer, the R* controller will automatically select the appropriate gear-ratio. Fig. \pageref{fig:dq} offer a graphical interpretation of the R* algorithm in the phase plane. 
+
+\begin{figure}[t]
+	\centering
+		\includegraphics[width=0.99\textwidth]{Rstar_block_big.pdf}
+	\caption{R* Computed Torque Controller}
+	%\vspace{-10pts}
+	\label{fig:Rstar_block_big}
+\end{figure}
+
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.40\textwidth]{dq.png}
+	\caption[R* algorithm graphical interpretation]{The R* algorithm can be interpreted graphically, as selecting the gear-ratio for which the natural acceleration vector is the closet to the desired acceleration vector $\vec{\ddot{q}}_r$ (after scaling the distance with the inertia), in order to minimize the necessary torques to apply on the system.}
+	\label{fig:dq}
+\end{figure}
+
+\subsubsection{Robust Control}
+\label{sec:robustcontrol}
+
+In general Computed Torque Control is susceptible to modeling uncertainties and disturbances. This section presents two approaches to improving robustness: Adaptation and Sliding Mode Control. 
+
+\paragraph{Adaptation}
+If the uncertainty is structured as unknown model parameters in the extrinsic dynamics, the term represented by $\vec{\tau}_E$, then traditional adaptation schemes can be used for estimating the unknown parameters. Then, if adaptation converge to the correct computed torque, then the computed best gear-ratios will also converge to the true optimal gear-ratios:
+\begin{align}
+	\hat{\vec{\tau}}_E \rightarrow \vec{\tau}_E 
+    \quad \Rightarrow \quad 
+    \hat{R}^* \rightarrow R^*
+ \label{eq:adapt}
+\end{align}
+
+\paragraph{Sliding Mode Control}
+
+Alternatively, if the uncertainty (disturbances, noise and modeling errors) is bounded, Sliding Mode Control can be applied to improving robustness. %the gear-ratio selection can also be used to minimize the torques required to guarantee convergence to the trajectory. 
+Introducing intermediary variables defined as:
+\begin{align}
+	\vec{q}_e        = \vec{q} - \vec{q}_d  \quad \quad
+	\vec{s}          = \dot{\vec{q}}_e + \lambda \vec{q}_e \quad \quad
+  \vec{\ddot{q}}_r = \ddot{\vec{q}}_d - \dot{\vec{q}}_e
+ \label{eq:slidingvar}
+\end{align}
+
+the computed torque, eq. \eqref{eq:eom_ndof2}, is modified to the following sliding mode control law: 
+\begin{align}
+	\vec{\tau} &=  R^{-1} 
+	\vec{\tau}_{E}(\ddot{\vec{q}}_r,\dot{\vec{q}},\vec{q}) 
+	+ R 
+	\vec{\tau}_{I}(\ddot{\vec{q}}_r,\dot{\vec{q}})
+    + R^{-1} G sgn( \vec{s} ) 
+ \label{eq:slidingctl}
+\end{align}
+Convergence to the desired trajectory, despite the uncertainty, can be guaranteed using the Lyapunov function $V=\vec{s}^T \vec{s}$. The sliding condition is guarantee \cite{asada_robot_1986}, for any selected gear-ratios, if the discontinuous gain is set to:
+\begin{align}
+	G &= \left[ H + R^T I_a R \right] diag( \vec{k} ) \\ k_{i} &> \max \left| \left(  \left[ H + R^T I_a R \right]^{-1} \vec{d} \right)_{i} \right|
+ \label{eq:slidingcond}
+\end{align}
+%
+If the gear-ratio is selected to minimize the sliding mode torque, eq. \eqref{eq:slidingctl}, instead of the computed torque, eq. \eqref{eq:eom_ndof2}, then naturally larger gear-ratio  will be selected in response to large uncertainty. For instance, for a 1-DoF case:
+\begin{align}
+	R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \tau^2 \right] = \sqrt{ \left | \frac{\tau_{E}(\ddot{q}_r,\dot{q},q) + | d |_{max} \, sgn( s ) }{\tau_{I}(\ddot{q}_r,\dot{q})} \right |   } 
+\label{eq:rstar_sliding}
+\end{align}
+Hence, if no disturbance is expected ($| d |_{max}=0$) gear-ratio selection is unaffected, but when large disturbances are expected ( $| d |_{max}$ is large) torque minimization naturally leads to selecting large gear-ratios.
+%
+
+
+
+\subsubsection{Numerical Optimization}
+
+If some of the assumptions used in the previous section are not valid or if the gear-ratios are limited to a few discrete choices, then the optimization must be computed numerically. The minimum needed is to have a model of the inverse dynamic, which could include any non-linearity, in the form:
+\begin{align}
+	\vec{\tau}  = f( \vec{\ddot{q}} , \vec{\dot{q}} , \vec{q} , \vec{d} , R ) 
+\end{align}
+In the situation of discrete gear-ratios, this lead to a combinatorial optimization problems, adding a constraint on the gear selection in the form of:
+\begin{align}
+	%R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[  \vec{\tau}^T  \vec{\tau} + \alpha \| M_{d} - M \|  \right] \quad \\
+	&  R \in \{R_1,R_2, ... , R_l\} 
+\end{align}
+However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly. For instance, for the robot presented in this paper, see Fig. \ref{fig:arm_proto}, there is 3 actuators each with 2 gear-ratio options, leading to $l=2^3=8$ possible matrix $R$.
+
+
+
+\subsubsection{Heuristic approach to minimize gearshift}
+
+Because the control effort during gear-shifts is neglected in the model, using the proposed controller can lead to rapid switching between gear-ratios in certain situations. To avoid this undesirable behavior, it is proposed to add hysteresis to the controller: the gear-ratio is only changed if the difference of computed torque, between using the optimal and the previously selected gear-ratio, is greater than a minimum torque threshold, and also if the elapsed time since the last change is greater than a minimum delay. 
+
+
 
 \subsubsection{Examples}
 \label{sec:Examples}
@@ -275,53 +438,14 @@ In the situation where the robot is not moving and fighting against gravity, the
 \end{align}
 In this static case, the largest possible gear-ratio is the optimal choice. 
 
-
-\subsubsection{Numerical Optimization}
-
-If some of the assumptions used in the previous section are not valid or if the gear-ratios are limited to a few discrete choices, then the optimization must be computed numerically. The minimum needed is to have a model of the inverse dynamic, which could include any non-linearity, in the form:
+\paragraph{Resisting disturbances}
+%
+In the situation where there is no gravity and the robot is not moving, but disturbances are expected, minimizing the sliding mode torque (eq. \eqref{eq:rstar_sliding}) would also lead to the conclusion that the largest possible gear-ratio is the optimal choice.
 \begin{align}
-	\vec{\tau}  = f( \vec{\ddot{q}} , \vec{\dot{q}} , \vec{q} , \vec{d} , R ) 
+	R^{*}  = \sqrt{ \left | \frac{ 0 + | d |_{max} \, sgn( s ) }{ 0 } \right |   }  = \sqrt{  \frac{| d |_{max} }{ 0 } }\rightarrow \infty
+ \label{eq:gravrejection}
 \end{align}
-In the situation of discrete gear-ratios, this lead to a combinatorial optimization problems, adding a constraint on the gear selection in the form of:
-\begin{align}
-	%R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[  \vec{\tau}^T  \vec{\tau} + \alpha \| M_{d} - M \|  \right] \quad \\
-	&  R \in \{R_1,R_2, ... , R_l\} 
-\end{align}
-However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly. For instance, for the robot presented in this paper, see Fig. \ref{fig:arm_proto}, there is 3 actuators each with 2 gear-ratio options, leading to $l=2^3=8$ possible matrix $R$.
 
-
-
-\subsection{Trajectory following controllers}
-
-\subsubsection{R* Computed Torque}
-\label{sec:RobustTrajectoryFollowingController}
-
-
-The proposed closed-loop controller, shown in Fig. \ref{fig:bbb}, is based on the Computed Torque technique \cite{asada_robot_1986}, but includes an optimization step to compute and select the optimal gear-ratios. The idea is as follow, first compute a necessary acceleration $\ddot{\vec{q}}_r$ to guarantee convergence on the trajectory. Then given the actual position $\vec{q}$, actual speed $\dot{\vec{q}}$ and desired acceleration $\ddot{\vec{q}}_r$ compute the optimal gear-ratios $R^*$, as described previously for a known trajectory, and apply the corresponding necessary torques $\vec{\tau}^*$. As illustrated, the model-based estimation of extrinsic and intrinsic forces can optionally be improved by using a disturbance observer. The salient feature of the R* controller is that the optimal gear-ratio is selected based on state-feedback, i.e. even in situations not foreseen in the planner that generated the nominal trajectory. For instance, if a disturbance pushes the robot in a state where the robot faces a large gravitational force requiring a large gear-ratio, the controller will automatically select it. Similarly if facing a contact forces, if it is included in the model or estimated with a disturbance observer, the R* controller will automatically select the appropriate gear-ratio. Fig. \pageref{fig:dq} offer a graphical interpretation of the R* algorithm in the phase plane. 
-
-\begin{figure}[t]
-	\centering
-		\includegraphics[width=0.99\textwidth]{Rstar_block_big.pdf}
-	\caption{R* Computed Torque Controller}
-	%\vspace{-10pts}
-	\label{fig:Rstar_block_big}
-\end{figure}
-
-\begin{figure}[htp]
-	\centering
-		\includegraphics[width=0.40\textwidth]{dq.png}
-	\caption[R* algorithm graphical interpretation]{The R* algorithm can be interpreted graphically, as selecting the gear-ratio for which the natural acceleration vector is the closet to the desired acceleration vector $\vec{\ddot{q}}_r$ (after scaling the distance with the inertia), in order to minimize the necessary torques to apply on the system.}
-	\label{fig:dq}
-\end{figure}
-
-
-\paragraph{Heuristic approach to minimize switching}
-
-Because the control effort during gear-shifts is neglected in the model, using the proposed controller can lead to rapid switching between gear-ratios in certain situations. To avoid this undesirable behavior, it is proposed to add hysteresis to the controller: the gear-ratio is only changed if the difference of computed torque, between using the optimal and the previously selected gear-ratio, is greater than a minimum torque threshold, and also if the elapsed time since the last change is greater than a minimum delay. 
-
-\subsubsection{R* Sliding Mode Controller}
-
-\subsubsection{Heuristic approach to minimize gearshift}
 
 
 \subsection{Trajectory planning}
@@ -520,7 +644,7 @@ Fig. \ref{fig:u0_LQR_approx} shows the resulting continuous control policy $\hat
         \includegraphics[width=0.45\textwidth]{u1aq.pdf}
 				\label{fig:u0_LQR_approx}}
         \subfloat[Phase plane behavior]{
-				\includegraphics[width=0.45\textwidth]{pp2q.pdf}
+				\includegraphics[width=0.40\textwidth]{pp2q.pdf}
 				\label{fig:phase_plot_lqr}}
         \caption{Approximated control laws and resulting behavior}\label{fig:approx}
 \end{figure}
@@ -529,23 +653,132 @@ Fig. \ref{fig:u0_LQR_approx} shows the resulting continuous control policy $\hat
 The resulting behavior with the control law of eq.\eqref{eq:uhat} is illustrated in the phase plane at Fig. \ref{fig:phase_plot_lqr}, where the arrows illustrate the state derivative throughout the state space. The blue arrows illustrate the natural dynamic of the system and the red arrows illustrate the closed behavior with the control policy of eq.\eqref{eq:uhat}. At high speed with the small reduction ratio, the controller only takes small actions illustrated by the fact that red arrows only have small deviation compared to blue arrows. However at low speed, the large reduction ratio is used to drastically change the natural behavior of the system, illustrated by the large red arrows. 
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Simulation Results}
 \label{sec:shift_sim}
 
+
+
 \subsection{Model-based controller}
+
+
+In this section, the advantages of dynamically changing the gear-ratios, using the R* computed torque controller, are illustrated using simulations of two robots: first a 1-DoF pendulum, then a 3-DoF arm. Both robots are considered having VGA with two possible gear-ratios: 1:1 or 1:10. Reference low-torque trajectories to reach target positions are computed offline using a sample-based search algorithm \cite{lavalle_planning_2006}. 
+%
+The first simulated experiment uses the robot of Fig. \ref{fig:bigpicture}, but here considering dissipative forces in the actuators, with the task of reaching the up-right position starting at the bottom. Fig. \ref{fig:sim1} shows the robot tracking the reference low-torque trajectory, where at first the robot accumulates energy, using the 1:1 gear-ratio, and then finishes the motion using the 1:10 gear-ratio. When the gravitational forces are pushing advantageous toward the trajectory the controller select the 1:1 gear-ratio, but when it is advantageous to fight the intrinsic actuator dynamics instead, the 1:10 gear-ratio is selected. 
+
+%
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.75\textwidth]{sim1.pdf}
+	\caption{1-DoF robot simulation: states and inputs trajectory}
+	\label{fig:sim1}
+\end{figure}
+%
+%
+%\begin{figure}[htp]
+				%\vspace{-10pt}
+        %\centering
+				%\subfloat[ Reduction ratio $R$=1 ]{ %extrinsic dynamics
+				%\includegraphics[width=0.23\textwidth]{simpp1.pdf}
+				%\label{fig:pp1s}}
+        %\subfloat[Reduction ratio $R$=10 ]{ % intrinsic dynamics
+				%\includegraphics[width=0.23\textwidth]{simpp2.pdf}
+				%\label{fig:pp2s}}
+        %\caption{Trajectory superposed with natural dynamics vectors}
+				%\label{fig:pps}
+%\end{figure}
+%
+%\begin{figure}[htp]
+	%\centering
+		%\includegraphics[width=0.38\textwidth]{simpp1.pdf}
+	%\caption{Trajectory superposed with natural dynamics vectors with R=1}
+	%\label{fig:simpp1}
+%\end{figure}
+%
+%\begin{figure}[htp]
+	%\centering
+		%\includegraphics[width=0.38\textwidth]{simpp2.pdf}
+	%\caption{Trajectory superposed with natural dynamics vectors with R=10}
+	%\label{fig:simpp2}
+%\end{figure}
+%
+In the second experiment, a 3-DoF manipulator is tasked with going from configuration A to configuration B with the 3D trajectory shown at Fig. \ref{fig:3d_traj}. For this robot the controller is actively selecting the best gear-ratios matrix $R$ out of the possible $2^3=8$ options. Fig. \ref{fig:3d_u} shows the control inputs activity. During the initial falling-down phase, at around $t=1$, the robot is using 1:1 gear-ratios for all actuators, leveraging gravitational torques. In contrast, during the final lifting phase, at around $t=6$, the robot is using 1:10 gear-ratios for all actuators. 
+%
+%
+%
+\begin{figure}[htp]
+	\centering
+		%\includegraphics[width=0.45\textwidth]{3dtraj.jpg}
+		\includegraphics[width=0.75\textwidth]{3d_traj.pdf}
+	\caption{ 3-DoF robot simulation: 3D trajectory }
+	\label{fig:3d_traj}
+\end{figure}
+%
+%\begin{figure}[htp]
+	%\centering
+		%\includegraphics[width=0.40\textwidth]{u_no4.pdf}
+	%\caption{ 3-DoF robot simulation: control inputs trajectory where \textit{Mode} represent the index of the selected gear-ratio matrix }
+	%\label{fig:3d_u}
+%\end{figure}
+%
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.75\textwidth]{3d_u.pdf}
+	\caption{ 3-DoF robot simulation: control inputs trajectory}
+	\label{fig:3d_u}
+\end{figure}
+%%
+%
+
+
 
 
 \subsection{Value iteration}
 
 
+
+
+\subsection{Comparison}
+
+
+To evaluate the performance gain of actively changing the gear-ratio, simulations with fixed gear-ratios are conducted where a regular computed torque controller tracks the same trajectories. Results are summarized in TABLE \ref{tab:MaximumTorqueComparison}, in terms of maximum absolute torque, which relates to the required size and weight of motors, and integral of torque squared, which relates to power consumption. Active gear-ratio selection is found to greatly improve both metrics, especially for the 3-DoF robot trajectory where the arm must both achieve high-speeds and also sustain a constant gravitational load at the final configuration. Note that in those simulations high-velocity with 1:10 reductions is inhibited by friction in the motors, no maximum rotor velocity is enforced. For the 3-DoF trajectory, active gear-shifting is found to reduce the maximum torque required by a factor two and the integral of the torque square by a factor 10, compared to any of the fixed-gear options. Those results show the potential of using variable gear-ratio transmissions for huge improvements in terms of actuator size and power consumption. Moreover, here in the simulations, the load was always the same manipulator in different dynamic situations. As discussed in section \ref{sec:app}, if the load dynamics is radically changing because of different contact situations with the environment, the performance gain of changing the gear-ratio could be even greater. 
+%
+\begin{table}[htp]
+	\centering
+		\begin{tabular}{ c c c c }
+		\hline
+		     & Fixed gear & Fixed gear & Active gearshifting \\
+			& 1:1 &  1:10 &  1:1 or 1:10 \\
+		\hline \hline
+		\multicolumn{4}{c}{ Max Absolute Torque [Nm] } \\
+		\hline \hline
+		1-link robot  & 15 & 88 & 12 \\	
+		3-link robot  & 24 & 42 & 12 \\	
+		\hline \hline
+		\multicolumn{4}{c}{ Torque squared integral $\int{ ( \vec{\tau}^T \vec{\tau} ) dt }$ } \\
+		\hline \hline
+		1-link robot  & 377  & 8133 & 226  \\	
+		3-link robot  & 2774 & 3617 & 295  \\	
+		\hline \hline
+		\end{tabular}
+	\caption{Required torque comparison}
+	\label{tab:MaximumTorqueComparison}
+	\vspace{-20pt}
+\end{table}
+%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \section{Experiments Results}
 \label{sec:shift_exp}
 
-\subsection{Dynamic motions}
-\label{sec:DynamicMotions}
+\subsection{Model-based controller}
 
-
-Here a trajectory following experiments using the last DoF of the robot only is presented. A 1.5 Kg load is mounted on the end-effector, and the task is to bring it from the bottom position ($q=-\pi$) to the up-right position ($q=0$) using as little torques as possible. An RRT trajectory planning algorithm is used to search for a low torque trajectory reaching the goal, see Fig. \ref{fig:exp_rrt}. Then the R* Computed Torque Controller is used to track the reference trajectory. The experimental results are shown in Fig. \ref{fig:exp_traj} and a video of this experiment is also available in the multimedia attachment. 
+First a trajectory following experiments using the last DoF of the robot only is presented. A 1.5 Kg load is mounted on the end-effector, and the task is to bring it from the bottom position ($q=-\pi$) to the up-right position ($q=0$) using as little torques as possible. An RRT trajectory planning algorithm is used to search for a low torque trajectory reaching the goal, see Fig. \ref{fig:exp_rrt}. Then the R* Computed Torque Controller is used to track the reference trajectory. The experimental results are shown in Fig. \ref{fig:exp_traj} and a video of this experiment is also available in the multimedia attachment. 
 %
 \begin{figure}[htp]
 	\centering
@@ -563,3 +796,24 @@ Here a trajectory following experiments using the last DoF of the robot only is 
 \end{figure}
 %
 Results show that the robot is using its 1:23 gear-ratio to accumulate kinetic energy by swinging the arm link back and forth. Also the R* controller selects the 1:474 gear-ratio automatically to attenuate the load dynamics, when the actuator has to force the robot to stay with the trajectory.  Interestingly, the reference trajectory was planned so the robot would accumulate enough kinetic energy to swing straight up with the last swing. However, in the experiment, the dissipative forces are greater than anticipated by the planner, and the last swing is too small (the robot almost stop at $q=-0.9$ at $t=2.6$ in Fig. \ref{fig:exp_traj}). Then, the R* controller automatically engage the large 1:474 gear-ratio, to continue converging on the desired trajectory with much smaller torques than those required if keeping using the 1:23 gear-ratio in this situation (no momentum and a large gravitational force to overpower). This illustrates that including the gear-ratio selection in the feedback loop also increase the robustness of the system. Without the 1:474 gear-ratio option, tracking would have failed as the computed torque with 1:23 in this situation was greater than the maximum allowable motor torque.
+
+Fig. \ref{fig:rob} shows four additional experiments for demonstrating how disturbance rejection can be improved by using the sliding mode version of the R* controller. Here the controller is only given a simple fixed point-target in all cases. First, when a low uncertainty bound is given to the controller, the robot can reach its target when unloaded (a) but failed when an unknown (to the controller) 0.4 Kg load is added to the end-effector (b). However, when a larger uncertainty bound is given, the robot can reach its target in both cases, unloaded (c) and loaded (d). Note that the discontinuous torque required to guarantee convergence despite disturbances is greatly reduced when down-shifting to a large gear-ratio at low speeds. For an improved performance, smoothing techniques should be implemented to avoid exciting the unmodeled high-frequency modes. Videos of all the experiments discussed above, and additional demonstrations are available in the media attachment.
+
+\begin{figure}[htp]
+				%\vspace{-10pt}
+        \centering
+				\hspace{-10pt}
+				\subfloat[]{ % intrinsic dynamics
+				\includegraphics[width=0.30\textwidth]{fig16a.pdf} }
+				\hspace{-5pt}
+        \subfloat[]{ % intrinsic dynamics
+				\includegraphics[width=0.20\textwidth]{fig16b.pdf} }
+				\hspace{-5pt}
+				\subfloat[]{ % intrinsic dynamics
+				\includegraphics[width=0.20\textwidth]{fig16c.pdf} }
+				\hspace{-5pt}
+				\subfloat[]{ % intrinsic dynamics
+				\includegraphics[width=0.20\textwidth]{fig16d.pdf} }
+        \caption{Experiments with sliding mode version of the R* controller }
+				\label{fig:rob}
+\end{figure}
