@@ -78,7 +78,7 @@ and thus obtain the desired final form:
 
 
 
-
+\newpage
 \section{Optimal gear-ratio along a known trajectory}
 \label{sec:optgearproof}
 
@@ -97,7 +97,7 @@ Starting with the EoM in inverse dynamic form (from eq. XXX):
 Using a quadratic cost function to minimize:
 %
 \begin{align}
-J &=  \tau^2
+J &=  \tau^2 = \frac{\tau_E^2}{R^2} + 2 \tau_E \tau_I + R^2 \tau_I^2
 \end{align}
 %
 
@@ -105,23 +105,100 @@ Finding the gear-ratio that minimize this cost can be formulated as:
 %
 \begin{align}
 R^* &=  \operatornamewithlimits{argmin}\limits_{R} J \\
-   &   \text{s.t.} R \in \Re  \quad  R > 0
+   &   \text{s.t.} \quad R \in \Re  \quad \& \quad R > 0
 \end{align}
 %
-A non-real value would have no physical sense. A negative $R$ value would be physically possible, for instance the reverse gear in a car. However, for symmetric electric motors, in the sense that they behave the same way for any sign of torque and speed, there should be no gain obtained by changing the direction of the motor velocity.
+A non-real value would have no physical sense. A negative $R$ value would be physically possible, for instance the reverse gear in a car. However, for symmetric electric motors, in the sense that they behave the same way for any sign of torque and speed, there should be no gain obtained by changing the direction of the motor velocity. This can be seen as the cost function is symetric with respect to $R$:
+%
+\begin{align}
+J(R) = J( -R )
+\end{align}
+%
 
 \paragraph{Derivation}
 
-Finding the minimum:
-
+First finding the partial derivative of the cost $J$ with respect to $R$:
 %
 \begin{align}
-0 &= \frac{ \partial J }{ \partial R  } = 2 \tau \frac{ \tau }{ \partial R }
+\frac{ \partial J }{ \partial R  } &=  2 \tau \frac{ \partial \tau }{ \partial R } = 2 \left( \frac{\tau_E}{R} + R \tau_I \right) \left( -\frac{\tau_E}{R^2} + \tau_I \right) \\
+\frac{ \partial J }{ \partial R  } &= 2 \left( R \tau_I^2 - \frac{\tau_E^2}{R^3} \right)
+\end{align}
+%
+Then the second derivative:
+%
+\begin{align}
+\frac{ \partial^2 J }{ \partial R^2  } &= 2 \left( \tau_I^2 + 3 \frac{\tau_E^2}{R^4} \right)
+\end{align}
+%
+Hence, on the domain of interest, the second derivative is always positive:
+%
+\begin{align}
+\frac{ \partial^2 J }{ \partial R^2  } >= 0  \quad \forall \quad R \in (0,+\infty)
+\end{align}
+%
+Thus the cost function $J$ is convex in the desired interval of possible $R$ values. The minimum of the function can thus be found by solving for the point where the first derivative is equal to zero:
+%
+\begin{align}
+0 &= \frac{ \partial J }{ \partial R  } = 2 \left( R \tau_I^2 - \frac{\tau_E^2}{R^3} \right) \\
+R \tau_I^2 &= \frac{\tau_E^2}{R^3} 
+\end{align}
+%
+Since $R>0$, it is possible to multiply both side by $R$, leading to
+%
+\begin{align}
+R^4 \tau_I^2 &= \tau_E^2
+\end{align}
+%
+Then, assuming a non-degenerative case of $\tau_I \neq 0$, it leads to
+%
+\begin{align}
+R^4  &= \frac{\tau_E^2}{\tau_I^2} \\
+R^2  &= \pm \sqrt{ \frac{\tau_E^2}{\tau_I^2} } = \pm \frac{\tau_E}{\tau_I} \\
+R    &= \pm \sqrt{ \pm \frac{\tau_E}{\tau_I} } 
+\end{align}
+%
+Then, the only real and positive solution to this equation is given by:
+%
+\begin{align}
+R    &= \sqrt{ \left| \frac{\tau_E}{\tau_I} \right|} 
 \end{align}
 %
 
+\paragraph{Solution}
 
+The minimal cost value is thus obtain with the optimal gear-ratio value:
+%
+\begin{align}
+R^*    &= \sqrt{ \left| \frac{\tau_E}{\tau_I} \right|} 
+\end{align}
+%
+Which lead to the minimum cost:
+%
+\begin{align}
+J^*    &=  2 \tau_E \tau_I  + 2 \left| \tau_E \tau_I \right| 
+\end{align}
+%
+Note that the the minimized cost is zero when extrinsic and intrinsic forces have opposite signs.
 
+\paragraph{Degenerative cases}
+If the intrinsic forces are equal to zero, then the cost tends towards zero as the gear-ratio $R$ tends toward $\infty$:
+%
+\begin{align}
+\tau_I = 0 \quad \& \quad R \rightarrow \infty \quad \Rightarrow \quad J \rightarrow 0
+\end{align}
+%
+If the extrinsic forces are equal to zero, then the cost tends towards zero as the gear-ratio $R$ tends toward zero:
+%
+\begin{align}
+\tau_E = 0 \quad \& \quad R \rightarrow 0 \quad \Rightarrow \quad J \rightarrow 0
+\end{align}
+%
+If both the extrinsic forces and intrinsic forces are equal to zero, then the cost is zero for any gear-ratio:
+%
+\begin{align}
+\tau_E = 0 \quad \& \quad \tau_I = 0 \quad \Rightarrow \quad J = 0  \quad \forall R
+\end{align}
+%
 
 
 \subsection{Multiple DoF}
