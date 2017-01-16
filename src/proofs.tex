@@ -204,7 +204,76 @@ If both the extrinsic forces and intrinsic forces are equal to zero, then the co
 \subsection{Multiple DoF}
 \label{sec:optgearproofn}
 
+Starting with the EoM in inverse dynamic form (from eq. XXX):
+%
+\begin{align}
+\vec{ \tau } &=  R^{-1} \vec{\tau}_E + R \vec{\tau}_I
+\end{align}
+%
+Using the following quadratic cost function:
+%
+\begin{align}
+J &=  \vec{ \tau }^T \vec{ \tau }
+\end{align}
+%
+Finding the gear-ratios matrix $R$ that minimize this cost can be formulated as
+%
+\begin{align}
+R^* &=  \operatornamewithlimits{argmin}\limits_{R} J \\
+    &   \text{s.t.} \quad R_{i,j} \in \Re  \quad \& \quad R_{i,j} > 0  \quad \& \quad 
+\end{align}
+%
 
+\paragraph{Derivation}
+
+Using index notation, the EoM and cost function can be written as:
+%
+\begin{align}
+\vec{ \tau } =  R^{-1} \vec{\tau}_E + R \vec{\tau}_I \quad &\Rightarrow \quad \tau_i = \sum_j{ \left[ R^{-1}\right]_{i,j} \tau_j^E + R_{i,j} \tau_j^I }\\
+J =  \vec{ \tau }^T \vec{ \tau } \quad &\Rightarrow \quad J = \sum_i{ \tau_i^2 }
+\end{align}
+%
+Note that here, superscript instead of subscript are used to identify extrinsic and intrinsic forces, to avoid confusion with indexes. Then the properties due to the diagonality of matrix $R$ can be used:
+%
+\begin{align}
+R_{i,j}                    &= 0 \quad \forall \quad i \neq j \\
+\left[ R^{-1}\right]_{i,j} &= 0 \quad \forall \quad i \neq j \\
+\left[ R^{-1}\right]_{i,i} &= \left( R_{i,i}  \right)^{-1}
+\end{align}
+%
+Then the equations can be simplified to:
+%
+\begin{align}
+\tau_i &= \left( R_{i,i}  \right)^{-1} \tau_i^E + R_{i,i} \tau_i^I \\
+J      &= \sum_i{ \left[  \left( R_{i,i}  \right)^{-1} \tau_i^E + R_{i,i} \tau_i^I   \right]^2 }
+\end{align}
+%
+By inspection, it is possible to see that the cost $J$ is the sum of $n$ independent terms (one per DoF), and that given the assumptions those terms are independent. Hence, the cost $J$ can be minimized by minimizing individually each term with the appropriate $R_{i,i}$. The solution for minimizing each of those term is identical to the one for a single DoF robot, see section \ref{sec:optgearproof1}. Leading to 
+%
+\begin{align}
+R_{i,i}^* = \sqrt{\left| \frac{\tau_i^E}{\tau_i^I}\right|}
+\end{align}
+%
+
+\paragraph{Solution}
+The optimal gear-ratio matrix, is thus constructed from independent solutions on each DoF:
+%
+\begin{align}
+R^* = \left \{
+\begin{array}[pos]{l}
+	R^*_{i,j} = \sqrt{\left| \frac{\tau_i^E}{\tau_i^I}\right|} \quad \forall \quad i = j \\
+	R^*_{i,j} = 0                                              \quad \forall \quad i \neq j
+\end{array} \right
+\end{align}
+%
+Leading to the following total minimum cost:
+%
+\begin{align}
+J^*   &= 2 \sum_i{ \left[ \tau_i^E \tau_i^I + \left| \tau_i^E \tau_i^I \right| \right] }
+\end{align}
+%
+
+\newpage
 \section{Stability Proofs}
 \label{sec:stabproofs}
 
