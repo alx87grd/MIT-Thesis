@@ -80,18 +80,23 @@ Discrete mode of operations are present in many system, such as powertrains with
 \section{Control architecture}
 \label{sec:arch}
 
+\begin{figure}[H]
+				%\vspace{-10pt}
+        \centering
+				\subfloat[ Model-based approach ]{ %extrinsic dynamics
+				\includegraphics[width=0.45\textwidth]{archi3.png}
+				\label{fig:archi3}}
+				\hspace{+10pt}
+        \subfloat[ Dynamic programming approach ]{ % intrinsic dynamics
+				\includegraphics[width=0.45\textwidth]{archi2.png}
+				\label{fig:archi2}}
+        \caption{Proposed Control Architectures}
+				\label{fig:controlarchitectures}
+\end{figure}
+
 TODO incorporate this:
 
 The proposed control architecture, shown in Fig. XXX, consists of three hierarchical control loops. First, a trajectory generation algorithm synthesizing dynamic trajectories that meets performance requirements for reaching desired states. Second, a closed-loop trajectory following controller consisting of a feedback law computing actuator torques $\vec{\tau}$ and gear-ratios $R$ based on the measured full state of the robot. Finally at the lowest level, independent actuator controllers executing low-level hardware commands in response to given torques and gear-ratio set-points. 
-
-\begin{figure}[htp]
-	\centering
-		\includegraphics[width=0.70\textwidth]{arch_traj.pdf}
-	\caption{Proposed hierarchical control architecture}
-	\label{fig:control_achitecture}
-\end{figure}
-
-
 
 The main scope of this paper is the trajectory following controller: the design of a feedback law optimizing gear-ratios and computing torque commands in real-time. For the trajectory generation, motion planning algorithms can be applied to optimize the overall trajectory \cite{lavalle_planning_2006}.  The low-level controllers would be specific to the type of actuator used in the system. It is assumed that they would track the desired torque/force and handle the gear-shifting process when receiving a new gear-ratio set-point. 
 

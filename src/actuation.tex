@@ -58,7 +58,7 @@ Other dual-motor actuators have been proposed in the literature, with different 
 				\subfloat[Macro-Micro \cite{morrell_parallel-coupled_1998}]{
         \includegraphics[width=0.45\textwidth]{macromicro.png}
 				\label{fig:HF}}
-        \subfloat[Variable stiffness]{
+        \subfloat[Variable stiffness \cite{jafari_new_2014}]{
 				\includegraphics[width=0.45\textwidth]{VSA.png}
 				\label{fig:HS}}
         \caption{Dual-motor architectures}\label{fig:dualmotoractuators}
@@ -227,6 +227,15 @@ Fig. \ref{fig:dynamics} shows a lumped-parameter dynamic model of a DSDM when th
 	\caption{Lumped-parameter dynamic model of a DSDM}
 	\label{fig:dynamics}
 \end{figure}
+
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.65\textwidth]{dynamics_bond.jpg}
+	\caption{Bond-graph dynamic model of a DSDM}
+	\label{fig:dynamics_bond}
+\end{figure}
+
+
 
 It is then assumed that low-level high-bandwidth current controller will be used, and electromagnetic torques $\tau_i = k_m i_i$ are going to be considered directly as inputs to the system. Applying Newton's law on each ports yields the following equations of motions:
 %
