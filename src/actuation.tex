@@ -48,8 +48,31 @@ It will be a significant breakthrough if a type of multiple speed transmission c
 \paragraph{Variable Gear-ratio Actuators} 
 While variable gear-ratio actuators have been studied extensively for automobile power-trains, they have not yet been fully investigated in robotics, despite significant potential gains. A few instance of research in that direction were made for legged locomotion \cite{hirose_design_1991}, grasping robotic hands \cite{shin_robot_2012} and actuators \cite{hirose_development_1999} \cite{byeong-sang_kim_improved_2007}\cite{tahara_high-backdrivable_2011}. While those works are highly promising, no gear shifting methodology for generic robot actuator in arbitrary dynamic situation are proposed. 
 
-\paragraph{Novel Contribution} The presented actuator work in this chapter, address the issue of improving available power and efficiency over a wide range of operating speeds, which has rarely been addressed in the robotics literature. Also, the proposed multiple gear-ratios actuator is an alternative approach to impedance variation that can achieve many order-of-magnitude changes. The main novel contribution is the methodology for gear shifting that is adapted to a robotics context. A mechanical architecture where two motors are coupled using a 3-ports gearbox and a brake is used. Similar dual-motor architectures have been used in hybrid car powertrains and actuators , but not in a the context of addressing gear shifting issues, i.e. the control of transitions between discrete operating modes. Here this architecture is used in conjunction with a novel controller to provide full control of the output during gear shifting, which is a key enabling feature for robotic applications. A preliminary version of this work have been published in \cite{girard_two-speed_2015}, but this chapter include a more throughout analysis and new algorithms for managing impacts. 
+\paragraph{Novel Contribution} The presented actuator work in this chapter, address the issue of improving available power and efficiency over a wide range of operating speeds, which has rarely been addressed in the robotics literature. Also, the proposed multiple gear-ratios actuator is an alternative approach to impedance variation that can achieve many order-of-magnitude changes. The main novel contribution is the methodology for gear shifting that is adapted to a robotics context. A mechanical architecture where two motors are coupled using a 3-ports gearbox and a brake is used. Similar dual-motor architectures have been used in hybrid car powertrains and actuators, but not in a the context of addressing gear shifting issues, i.e. the control of transitions between discrete operating modes. Here this architecture is used in conjunction with a novel controller to provide full control of the output during gear shifting, which is a key enabling feature for robotic applications. A preliminary version of this work have been published in \cite{girard_two-speed_2015}, but this chapter include a more throughout analysis and new algorithms for managing impacts. 
 
+%\paragraph{Other dual-motor actuators} 
+Other dual-motor actuators have been proposed in the literature, with different goals and architectures.. TODO
+%
+\begin{figure}[H]
+        \centering
+				\subfloat[Macro-Micro \cite{morrell_parallel-coupled_1998}]{
+        \includegraphics[width=0.45\textwidth]{macromicro.png}
+				\label{fig:HF}}
+        \subfloat[Variable stiffness]{
+				\includegraphics[width=0.45\textwidth]{VSA.png}
+				\label{fig:HS}}
+        \caption{Dual-motor architectures}\label{fig:dualmotoractuators}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.90\textwidth]{variableimpedanceactuators.jpg}
+	\caption{Different approaches for variable impedance actuators}
+	\label{fig:variableimpedanceactuators}
+\end{figure}
+
+\newpage
 
 \section{Dual-Speed Dual-Motor architecture}
 \label{sec:DSDM}
