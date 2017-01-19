@@ -70,7 +70,7 @@ Many dual-motor actuators have been proposed in the literature \cite{tagliamonte
 \end{figure}
 
 
-Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuator model illustrating the conceptual differences between many approaches. Variable stiffness actuators can use a variable transmission placed between a compliant element and the load, where it influence the reflected output stiffness but not the steady-state power transmission characteristics. By varying the transmission between the motor and the load, the 
+Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuator model illustrating the conceptual differences between many approaches. Variable stiffness actuators can use a variable transmission placed between a compliant element and the load, where it influence the reflected output stiffness but not the steady-state power-transmission characteristics. Macro-micro actuators have a fixed reflected output stiffness, but the advantage is that the additional direct-drive motor on the output makes possible to emulate a wide-range of output impedance. The proposed approach in the thesis is different, here it is the transmission between the motor and the load that is varied, like in a car transmission. The main advantage is regarding efficient power transmission, enabling small motors to make full use of the power at high speed and at low speed. Macro-micro actuators and VSA have no advantages over a regular electric motor regarding this aspect of range of speed at which power can be transmitted. On the other hand, macro-micro and VSA have the ability to store and release potential energy in their compliant element, which is not the case with VGA. Regarding, natural reflected impedance, both VSA and VGA have the ability to change it. One fundamental difference is that VGA can only attenuate or amplify the natural inertia and friction of the rotor, while VSA can only modify its reflected stiffness. 
 
 \begin{figure}[htp]
 	\centering
@@ -79,9 +79,7 @@ Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuato
 	\label{fig:variableimpedanceactuators}
 \end{figure}
 
-Similar dual-motor architectures have been used in hybrid car powertrains and actuators, but not in a the context of addressing gear shifting issues, i.e. the control of transitions between discrete operating modes. Here this architecture is used in conjunction with a novel controller to provide full control of the output during gear shifting. A preliminary version of this work have been published in \cite{girard_two-speed_2015}, but this chapter include a more throughout analysis and new algorithms for managing impacts. 
-
-
+Regarding the dual-motor architecture used in the proposed VGA design. Similar architectures have been used in hybrid car powertrains and special actuators, but not in a the context of addressing gear shifting issues, i.e. the control of transitions between discrete operating modes. Here this architecture is used in conjunction with a novel controller to provide full control of the output during gear shifting. A preliminary version of this work have been published in \cite{girard_two-speed_2015}, but this chapter include a more throughout analysis and new algorithms for managing impacts. 
 
 
 \newpage
