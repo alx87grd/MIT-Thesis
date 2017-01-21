@@ -80,25 +80,39 @@ Discrete mode of operations are present in many system, such as powertrains with
 \section{Control architecture}
 \label{sec:arch}
 
+This chapter proposed control schemes to dynamically select the optimal gear-ratios online. The focus is on feedback policies, that can react quickly to the states of the robot, and engage the appropriate gear-ratio with minimal delays (in the order of 10-50 ms). Two approaches are investigated and illustrated at Fig. \ref{fig:controlarchitectures}. 
+
 \begin{figure}[H]
 				%\vspace{-10pt}
         \centering
+				\subfloat[ Dynamic programming approach ]{ % intrinsic dynamics
+				\includegraphics[width=0.45\textwidth]{archi2.png}
+				\label{fig:archi2}}
+				\hspace{+10pt}
 				\subfloat[ Model-based approach ]{ %extrinsic dynamics
 				\includegraphics[width=0.45\textwidth]{archi3.png}
 				\label{fig:archi3}}
-				\hspace{+10pt}
-        \subfloat[ Dynamic programming approach ]{ % intrinsic dynamics
-				\includegraphics[width=0.45\textwidth]{archi2.png}
-				\label{fig:archi2}}
         \caption{Proposed Control Architectures}
 				\label{fig:controlarchitectures}
 \end{figure}
 
-TODO incorporate this:
+The architecture of both control approaches is designed so the control signal is a torque and a gear-ratio for each actuator. Hence, it is assumed that low-level VGA controllers handle tracking the torque setpoint and the gear-shifting process. This is analogous to a situation where the robot would be a car with a semi-automatic transmission, and designing policies for the driver where the two control inputs are a throttle level a and shift-up/shift-down signal. The low-level VGA controllers would be specific to the type of actuator used in the system. For the particular case where the VGA are DSDM actuators, the low-lever controllers would be the control laws described in Chapter \ref{sec:MultipleSpeedActuationTechnology}. The architecture difference is that, for the dynamic programming approach given a goal (a target robot configuration $\vec{q}_{target}$) a feedback policy is generated directly. However, for the model-based approach the high-level controller is separated into two levels. A feedback policy for trajectory tracking and a open-loop motion planning algorithm a generate a reference trajectory to reach the goal. 
 
-The proposed control architecture, shown in Fig. XXX, consists of three hierarchical control loops. First, a trajectory generation algorithm synthesizing dynamic trajectories that meets performance requirements for reaching desired states. Second, a closed-loop trajectory following controller consisting of a feedback law computing actuator torques $\vec{\tau}$ and gear-ratios $R$ based on the measured full state of the robot. Finally at the lowest level, independent actuator controllers executing low-level hardware commands in response to given torques and gear-ratio set-points. 
+\paragraph{Trajectory Generation} Algorithm synthesizing a dynamic trajectory ($\ddot{\vec{q}}(:)$,$\dot{\vec{q}}(:)$,$\vec{q}(:)$) that meets performance requirements for reaching the target robot configuration $\vec{q}_{target}$ starting at the actual robot configuration $\vec{q}$. Computation time in the order of 1-10 sec depending the robot complexity. 
 
-The main scope of this paper is the trajectory following controller: the design of a feedback law optimizing gear-ratios and computing torque commands in real-time. For the trajectory generation, motion planning algorithms can be applied to optimize the overall trajectory \cite{lavalle_planning_2006}.  The low-level controllers would be specific to the type of actuator used in the system. It is assumed that they would track the desired torque/force and handle the gear-shifting process when receiving a new gear-ratio set-point. 
+\paragraph{Low-level actuator controller} Independent actuator controllers executing low-level hardware commands in response to given torques and gear-ratio set-points
+
+\paragraph{Trajectory following controller} A function that compute torques and gear-ratios as a function of the robot actual states  and the time ($\dot{\vec{q}}(:)$,$\vec{q}(:)$, $t$)
+
+\paragraph{Global feedback policy} A function that compute torques and gear-ratios as a function of the robot actual states ($\dot{\vec{q}}(:)$,$\vec{q}(:)$). Can be executed online in closed-loop at a high sampling-rate in the order of 1 kHz. However synthesis of the policy require a learning phase that require multiple hours of computation. 
+
+
+
+%TODO incorporate this:
+
+%The proposed control architecture, shown in Fig. XXX, consists of three hierarchical control loops. First, a trajectory generation algorithm synthesizing dynamic trajectories that meets performance requirements for reaching desired states. Second, a closed-loop trajectory following controller consisting of a feedback law computing actuator torques $\vec{\tau}$ and gear-ratios $R$ based on the measured full state of the robot. Finally at the lowest level, independent actuator controllers executing low-level hardware commands in response to given torques and gear-ratio set-points. 
+
+%The main scope of this paper is the trajectory following controller: the design of a feedback law optimizing gear-ratios and computing torque commands in real-time. For the trajectory generation, motion planning algorithms can be applied to optimize the overall trajectory \cite{lavalle_planning_2006}.   It is assumed that they would track the desired torque/force and handle the gear-shifting process when receiving a new gear-ratio set-point. 
 
 
 \newpage
