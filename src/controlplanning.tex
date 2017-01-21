@@ -98,14 +98,39 @@ This chapter proposed control schemes to dynamically select the optimal gear-rat
 
 The architecture of both control approaches is designed so the control signal is a torque and a gear-ratio for each actuator. Hence, it is assumed that low-level VGA controllers handle tracking the torque setpoint and the gear-shifting process. This is analogous to a situation where the robot would be a car with a semi-automatic transmission, and designing policies for the driver where the two control inputs are a throttle level a and shift-up/shift-down signal. The low-level VGA controllers would be specific to the type of actuator used in the system. For the particular case where the VGA are DSDM actuators, the low-lever controllers would be the control laws described in Chapter \ref{sec:MultipleSpeedActuationTechnology}. The architecture difference is that, for the dynamic programming approach given a goal (a target robot configuration $\vec{q}_{target}$) a feedback policy is generated directly. However, for the model-based approach the high-level controller is separated into two levels. A feedback policy for trajectory tracking and a open-loop motion planning algorithm a generate a reference trajectory to reach the goal. 
 
-\paragraph{Trajectory Generation} Algorithm synthesizing a dynamic trajectory ($\ddot{\vec{q}}(:)$,$\dot{\vec{q}}(:)$,$\vec{q}(:)$) that meets performance requirements for reaching the target robot configuration $\vec{q}_{target}$ starting at the actual robot configuration $\vec{q}$. Computation time in the order of 1-10 sec depending the robot complexity. 
+\paragraph{Trajectory Generation} Algorithm synthesizing a dynamic trajectory that meets performance requirements for reaching the target robot configuration starting at the actual robot configuration: 
+%
+\begin{align}
+  \ddot{\vec{q}}_d(:),\dot{\vec{q}}_d(:),\vec{q}_d(:) = f_{planner}(\vec{q}_{target}, \vec{q})
+	\label{eq:trajgen}
+\end{align}
+%
+Computation time is in the order of 1-10 sec depending the robot complexity. Hence, this step is done offline in advance, or alternatively in closed-loop by re-planning continuously but at a very low rate. 
 
-\paragraph{Low-level actuator controller} Independent actuator controllers executing low-level hardware commands in response to given torques and gear-ratio set-points
+\paragraph{Low-level actuator controller} Independent actuator controllers executing low-level hardware commands in response to given torques and gear-ratio set-points. For the particular case of a DSDM actuator the controller compute 
+%
+\begin{align}
+  M1_{pwm} , M2_{pwm} , Brake_{pwm} = f_{DSDM}(\tau_i, R_{ii})
+	\label{eq:low-level-dsdm}
+\end{align}
+%
 
-\paragraph{Trajectory following controller} A function that compute torques and gear-ratios as a function of the robot actual states  and the time ($\dot{\vec{q}}(:)$,$\vec{q}(:)$, $t$)
+\paragraph{Trajectory following controller} A function that compute torques and gear-ratios as a function of the robot actual states and the time:
+%
+\begin{align}
+  \vec{\tau}, R = f_{ctl}(\dot{\vec{q}}, \vec{q} , t)
+	\label{eq:trajctl}
+\end{align}
+%
+ The function is synthesized based on a dynamic model of the robot and a desired trajectory. This function can be executed in closed-loop at a high sampling-rate in the order of 1 kHz.
 
-\paragraph{Global feedback policy} A function that compute torques and gear-ratios as a function of the robot actual states ($\dot{\vec{q}}(:)$,$\vec{q}(:)$). Can be executed online in closed-loop at a high sampling-rate in the order of 1 kHz. However synthesis of the policy require a learning phase that require multiple hours of computation. 
-
+\paragraph{Global feedback policy} A function that compute torques and gear-ratios as a function of the robot actual states. Can be executed online in closed-loop at a high sampling-rate in the order of 1 kHz. However synthesis of the policy require a learning phase that require multiple hours of computation. 
+%
+\begin{align}
+  \vec{\tau}, R = f_{ctl}(\dot{\vec{q}}, \vec{q})
+	\label{eq:globctl}
+\end{align}
+%
 
 
 %TODO incorporate this:
