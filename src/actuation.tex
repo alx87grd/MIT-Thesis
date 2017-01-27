@@ -70,7 +70,7 @@ Many dual-motor actuators have been proposed in the literature \cite{tagliamonte
 \end{figure}
 
 
-Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuator model illustrating the conceptual differences between many approaches. Variable stiffness actuators can use a variable transmission placed between a compliant element and the load, where it influence the reflected output stiffness but not the steady-state power-transmission characteristics. Macro-micro actuators have a fixed reflected output stiffness, but the advantage is that the additional direct-drive motor on the output makes possible to emulate a wide-range of output impedance. The proposed approach in the thesis is different, here it is the transmission between the motor and the load that is varied, like in a car transmission. The main advantage is regarding efficient power transmission, enabling small motors to make full use of the power at high speed and at low speed. Macro-micro actuators and VSA have no advantages over a regular electric motor regarding this aspect of range of speed at which power can be transmitted. On the other hand, macro-micro and VSA have the ability to store and release potential energy in their compliant element, which is not the case with VGA. Regarding, natural reflected impedance, both VSA and VGA have the ability to change it. One fundamental difference is that VGA can only attenuate or amplify the natural inertia and friction of the rotor, while VSA can only modify its reflected stiffness. 
+Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuator model illustrating the conceptual differences between many approaches. Variable stiffness actuators use a variable transmission placed between a compliant element and the load, where it influence the reflected output stiffness but not the steady-state power-transmission characteristics. Macro-micro actuators have a fixed reflected output stiffness, but the advantage is that the additional direct-drive motor on the output makes possible to emulate a wide-range of output impedance. The proposed VGA actuators in this thesis is fundamentally different, it is the transmission between the motor and the load that is varied, like in a car transmission. The main advantage is regarding efficient power transmission, enabling small motors to make full use of their maximum power at high speed and at low speed. Macro-micro actuators and VSA have no advantages over a regular electric motor regarding the range of speed at which power can be transmitted. On the other hand, macro-micro and VSA have the ability to store and release potential energy in their compliant element, which is not the case with VGA. Regarding, natural reflected impedance, both VSA and VGA have the ability to change it. One fundamental difference is that VGA can only attenuate or amplify the natural inertia and friction of the rotor, while VSA can only modify its reflected stiffness. 
 
 \begin{figure}[htp]
 	\centering
@@ -79,7 +79,7 @@ Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuato
 	\label{fig:variableimpedanceactuators}
 \end{figure}
 
-Regarding the dual-motor architecture used in the proposed VGA design. Similar architectures have been used in hybrid car powertrains and special actuators, but not in a the context of addressing gear shifting issues, i.e. the control of transitions between discrete operating modes. Here this architecture is used in conjunction with a novel controller to provide full control of the output during gear shifting. A preliminary version of this work have been published in \cite{girard_two-speed_2015}, but this chapter include a more throughout analysis and new algorithms for managing impacts. 
+Regarding the dual-motor architecture used in the proposed VGA design. Similar architectures have been used in hybrid car powertrains and special actuators, but not in a the context of addressing gear shifting issues, i.e. the control of transitions between discrete operating modes. Here this architecture is used in conjunction with a novel controller to provide full control of the output during gear shifting. A preliminary version of this work have been published in \cite{girard_two-speed_2015}, but this chapter include a more throughout analysis and new algorithms for fast gear-shift even during impacts. 
 
 
 \newpage
@@ -152,8 +152,6 @@ Fig. \ref{fig:torquespeed} illustrates the operating range of the DSDM actuator 
 
 A DSDM actuator will be lighter than a single motor for applications with a wide range of operating speed. Suppose that an actuator must generate 10 W output power at two operating points: 0.5 Nm of torque at a speed of 20 rad/sec and 0.1 Nm at 100 rad/sec. A single EM motor that satisfies these requirements at both operating points tends to be oversized in terms of power, to reach both operating points, see Fig. \ref{fig:s1}. A DSDM actuator can reach the same operating points using two smaller motors with appropriate gear ratios, see Fig. \ref{fig:s2}. On the other hand the DSDM actuator uses more components: two motors instead of one, more gearing and an additional brake. The DSDM concept pays-off when the difference in speed between two required operating points becomes larger.  Fig. \ref{fig:1vs2} shows the estimated weight of actuators in relation to the ratio of operating speeds ($\lambda=\frac{w_1}{w_2}$), while the required power output is kept at 10 W. The actuator weight is computed assuming that the mass of each component is proportional to its maximum output torque, with values taken from commercially available components in the 10 - 100 watts range: 2 kg/Nm for motors, 0.1 kg/Nm for gearboxes and differentials and 0.2 kg/Nm for brakes \cite{maxon_motor_usa}. As shown in Fig. \ref{fig:1vs2}, the DSDM concept becomes advantageous when there is a large speed difference between the operating points. This is because only the gearbox and brake need to be scaled up for the DSDM actuator to meet the high torque requirement of the low-speed operating point, while the motor size must be increased for the single motor solution.
 
-
-
 \begin{figure}[H]
         \centering
 				\subfloat[One motor solution]{
@@ -172,6 +170,8 @@ A DSDM actuator will be lighter than a single motor for applications with a wide
 	\label{fig:1vs2}
 \end{figure}
 
+Note that a two-speed actuator using a single motor and a variable transmission similar to a car power-train could have an even larger weight advantage over a single-gear motor. However, this type of variable transmissions, using components such as dog clutch, synchronizers and friction clutches, would not exhibit the features required to change gear-ratio seamlessly in the dynamic situations encountered by robots, unlike the DSDM architecture.
+
 \subsection{Efficiency advantage}
 \label{sec:EffAdvantage}
 
@@ -181,8 +181,19 @@ Depend on motor type... TODO
 \subsection{Reliability advantage}
 \label{sec:RelAdvantage}
 
-TODO
+An additional secondary advantage of the DSDM architecture is that some minimum performance, illustrated by the green area at Fig. \ref{fig:torquespeed}, can be guaranteed even if either motor fail. Here failures leading to either jamming (rotor and stator stuck together) or freewheeling (motor cannot transmit any torque) are consider. 
 
+\paragraph{Jamming of M1}
+If M1 jams, then the situation is the same as if the brake would be engaged, and the capability of high-force mode can still available.
+
+\paragraph{Jamming of M2}
+If M2 jams, then M1 can still be used freely to move the output. The capability of high-speed are almost fully available, only the maximum speed is reduced as M2 is not available to add-up speed.
+
+\paragraph{Freewheeling of M1}
+If M1 is no longer able to transmit any torque, than if the brake is engaged all the capability of high-force mode are still available. 
+
+\paragraph{Freewheeling of M2}
+If M2 is no longer able to transmit any torque, M1 can still be used to move the output. Assuming the reduction stage of M2 is irreversible or barely backdrivable (meaning its associated moving part is the differential is still fixed and can sustain reaction forces) then the capability of high-speed are fully available.
 
 %\section{Fast and Seamless Gearshifts}
 %\label{sec:FastAndSeamlessGearshifts}
