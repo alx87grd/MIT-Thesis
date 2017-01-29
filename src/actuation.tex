@@ -41,41 +41,45 @@ It will be a significant breakthrough if a type of multiple speed transmission c
 
 \paragraph{Classical Actuators} Traditional robots generally use actuators that behave as displacement-sources because of their high intrinsic impedance. These include geared EM motors and hydraulics cylinders. Using a force sensor, it is possible to control the output force with this type of actuators, but the bandwidth is rather limited. To guarantee the stability of the force-feedback scheme only half the intrinsic inertia can be canceled \cite{hogan_impedance_2004}. Since 70's, roboticists have been attempting to build actuators that can behave naturally as a force-source such as series-elastic actuators, pneumatic cylinder and air-muscles \cite{hanafusa_stable_1977}\cite{pratt_series_1995}. However, because of the physical limitation of compliant transmission materials, the achievable bandwidth is limited and precise position control is hardly achievable. Direct drive EM actuators are the best force-source actuators with high fidelity, high bandwidth, and have been used for high-speed robots \cite{asada_direct-drive_1987} and more recently small legged robots \cite{kenneally_design_2016}. However, the very low force density \cite{hollerbach_comparative_1992} and low efficiency at low speeds make them impractical for most mobile robot applications, just holding a payload with static torques require continuous currents in the motors leading to a large energy consumption even though no mechanical work is done. 
 
-TODO: Add more detail on power characteristic
+Regarding power-throughput, as discussed before and illustrated at Fig. \ref{fig:emcurve}, electromagnetic actuators are typically characterized by a flat force curve for most of their range of speed, leading to maximum power been only available at high velocity. Fluidic actuator are typically characterized by a force curves doping quadratically with velocity (related to pressure losses in valves orifices), as illustrated at Fig. \ref{fig:fluidiccurve}. All in all, EM and fluidic actuators cannot transmits their maximum power over their full range of speed, and variable transmission can make their power be available on a much wider range of speed.
 
 \begin{figure}[htb]
         \centering
 				\subfloat[Electromagnetic transducer]{
-				\includegraphics[width=0.40\textwidth]{EM_curve.png}}
+				\includegraphics[width=0.40\textwidth]{EM_curve.png}
+				\label{fig:emcurve}
+				}
         \subfloat[Fluidic transducer]{
-				\includegraphics[width=0.40\textwidth]{fluid_curve.png}}
+				\includegraphics[width=0.40\textwidth]{fluid_curve.png}
+				\label{fig:fluidcurve}
+				}
         \caption{Typical force-speed curve of actuators}\label{fig:powercurves}
 \end{figure}
 
-\paragraph{Variable Impedance Actuators} Force-source type of actuator are desirable for interaction tasks, for instance grasping, manipulation and locomotion, since the interaction force can be controlled. On the other hand, actuators with non-back-drivable mechanisms have the advantage for pure position controlled tasks, disturbance rejection and statically bearing large load without any power consumption. Since both small and large intrinsic impedances are advantageous in different scenario, several group have developed variable intrinsic impedance actuators, such as based on variable stiffness spring \cite{tonietti_design_2005}, antagonist non-linear devices \cite{koganezawa_antagonistic_2006}, a series-compliance that can be locked with a brake \cite{leach_linear_2012} and dual-motors in serial configuration \cite{kim_serial-type_2010}. Furthermore, so-called macro-micro actuators, can improve the bandwidth of force-source type of actuators by exploiting the high-bandwidth of a small actuator in parallel, allowing for wider-range impedance control and improved position control \cite{morrell_parallel-coupled_1998}.
+\paragraph{Variable Impedance Actuators} Force-source type of actuator are desirable for interaction tasks, for instance grasping, manipulation and locomotion, since the interaction force can be controlled. On the other hand, actuators with non-back-drivable mechanisms have the advantage for pure position controlled tasks, disturbance rejection and statically bearing large load without any power consumption. Since both small and large intrinsic impedances are advantageous in different scenario, several group have developed variable intrinsic impedance actuators, such as based on variable stiffness spring \cite{tonietti_design_2005}, antagonist non-linear devices \cite{koganezawa_antagonistic_2006}, a series-compliance that can be locked with a brake \cite{leach_linear_2012} and dual-motors in serial configuration \cite{kim_serial-type_2010}. Furthermore, so-called macro-micro actuators, can improve the bandwidth of force-source type of actuators by exploiting the high-bandwidth of a small actuator in parallel, allowing for wider-range impedance control and improved position control \cite{morrell_parallel-coupled_1998}. Regarding power throughput however, all these technologies are still limited by force-speed characteristic of their main transducer (generally a geared electric motor). Hence, those designs do not solve the problem of efficient power transmission over a wide range of speed.
 
-\paragraph{Vehicle Powertrains} While the actuator work in robotics have been focused on impedance and bandwidth issues, in the powertrain field the torque-speed matching issue is predominant, since power density and efficiency are critical for mobile systems. The idea of using multiple gear ratios with electric motors has been explored occasionally, to improve efficiency and power density \cite{mckeegan_antonovs_2011}. A twin motor configuration has been proposed for smooth gear shifting, where each motor shifts at a different timing \cite{bologna_electric_2014}. Also, a dual motor configuration using a planetary coupling and non-back-drivable worm-gears was proposed for a mobile robot powertrain \cite{lee_new_2012}. Multiple gear-ratio powertrains provide effective solutions for torque-speed matching, but are not adapted to make gear shifts while interacting with dynamic environments and a new gear shifting methodology adapted to robotics is needed.
-
-TODO add graph regarding gear-shift quality
-
+\paragraph{Vehicle Powertrains} While the actuator work in robotics have been focused on impedance and bandwidth issues, in the powertrain field the torque-speed matching issue is predominant, since power density and efficiency are critical for mobile systems. The idea of using multiple gear ratios with electric motors has been explored occasionally, to improve efficiency and power density \cite{mckeegan_antonovs_2011}. A twin motor configuration has been proposed for smooth gear shifting, where each motor shifts at a different timing \cite{bologna_electric_2014}. Also, a dual motor configuration using a planetary coupling and non-back-drivable worm-gears was proposed for a mobile robot powertrain \cite{lee_new_2012}. Multiple gear-ratio powertrains provide effective solutions for torque-speed matching, but are not adapted to make gear shifts while interacting with dynamic environments. Fig. \ref{fig:forcefidelity} shows typical transmitted force profile during gear-shifts with powertrain shifting mechanisms. Simplest manual transmission using dog clutch do not transmit torque at all during a shift, while more advance systems such as dual-clutch transmission can supply torque during the transition, but with poor fidelity compared to what is typically expected from an actuator in a robotic context.
+%
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.90\textwidth]{forcefidelity.png}
 	\caption{Force profile during a gear-shift with powertrain gear-shifting mecanisms}
 	\label{fig:forcefidelity}
 \end{figure}
-
+%
+As illustrated at Fig. \ref{fig:typeloads}, force fidelity requirement for vehicle powertrain are not very important since the load is always a very large vehicle inertia which will act as a very strong low-pass filter. However, robotic system can be interacting with all kind of load without filtering characteristics. For instance, for a robot holding a large mass against gravity or compressing a spring, it would be catastrophic if the force drop during a gear-shift. The output needs to be always fully under control in those situations.
+%
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.90\textwidth]{typeloads.png}
 	\caption{Type of loads encountered by vehicle powertrain vs. robot actuators}
 	\label{fig:typeloads}
 \end{figure}
-
+Hence, powertrain technologies cannot be applied directly to general purpose robotic system.
 
 
 \paragraph{Variable Gear-ratio Actuators} 
-While variable gear-ratio actuators have been studied extensively for automobile power-trains, they have not yet been fully investigated in robotics, despite significant potential gains. A few instance of research in that direction were made for legged locomotion \cite{hirose_design_1991}, grasping robotic hands \cite{shin_robot_2012} and actuators \cite{hirose_development_1999} \cite{byeong-sang_kim_improved_2007}\cite{tahara_high-backdrivable_2011}. While those works are highly promising, no gear shifting methodology for generic robot actuator in arbitrary dynamic situation are proposed. 
+While variable gear-ratio actuators (VGA) have been studied extensively for automobile power-trains, they have not yet been fully investigated in robotics, despite significant potential gains. A few instance of research in that direction were made for legged locomotion \cite{hirose_design_1991}, grasping robotic hands \cite{shin_robot_2012} and actuators \cite{hirose_development_1999} \cite{byeong-sang_kim_improved_2007}\cite{tahara_high-backdrivable_2011}. While those works are highly promising, no gear shifting methodology for generic robot actuator in arbitrary dynamic situation are proposed. 
 
 \subsection{Novel Contribution}
 %\paragraph{Novel Contribution} 
@@ -84,8 +88,6 @@ The presented actuator in this chapter, address the issue of improving available
 \subsection{Related works}
 %\paragraph{Other dual-motor actuators} 
 Many dual-motor actuators have been proposed in the literature \cite{tagliamonte_double_2012}, with different goals and architectures. So called macro-micro actuators, see Fig. \ref{fig:macromicro}, are essentially series-elastic actuators equipped with an additional small motor directly attached to the output. Variable stiffness actuators (VSA), see Fig. \ref{fig:vsa}, are also series elastic actuators where a small motor can modulate either the spring directly or the transmission between the spring and the output.
-
-
 %
 \begin{figure}[htp]
         \centering
@@ -97,8 +99,7 @@ Many dual-motor actuators have been proposed in the literature \cite{tagliamonte
 				\label{fig:vsa}}
         \caption{Dual-motor architectures}\label{fig:dualmotoractuators}
 \end{figure}
-
-
+%
 Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuator model illustrating the conceptual differences between many approaches. Variable stiffness actuators use a variable transmission placed between a compliant element and the load, where it influence the reflected output stiffness but not the steady-state power-transmission characteristics. Macro-micro actuators have a fixed reflected output stiffness, but the advantage is that the additional direct-drive motor on the output makes possible to emulate a wide-range of output impedance. The proposed VGA actuators in this thesis is fundamentally different, it is the transmission between the motor and the load that is varied, like in a car transmission. The main advantage is regarding efficient power transmission, enabling small motors to make full use of their maximum power at high speed and at low speed. Macro-micro actuators and VSA have no advantages over a regular electric motor regarding the range of speed at which power can be transmitted. On the other hand, macro-micro and VSA have the ability to store and release potential energy in their compliant element, which is not the case with VGA. Regarding, natural reflected impedance, both VSA and VGA have the ability to change it. One fundamental difference is that VGA can only attenuate or amplify the natural inertia and friction of the rotor, while VSA can only modify its reflected stiffness. 
 
 \begin{figure}[htp]
