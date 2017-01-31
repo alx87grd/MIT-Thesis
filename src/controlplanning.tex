@@ -69,15 +69,9 @@ Open-loop trajectories can be unstable and if the system deviate from the origin
 
 One possible approach for closing the loop would be simply to re-plan trajectory continuously online. However, the rate at which this would be possible for hybrid robotic system would not be sufficient. Here we aim at having control policies that can react to a situation in factions of a second (~50 ms), for instance down-shifting as a robotic leg touch the ground. 
 
-Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it only works for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section 
+Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it only works for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section \ref{sec:DynamicProgrammingAproach}, which is an extention of work already published in a previous conferance paper \cite{girard_practical_2016}.
 
-
-Dynamic programming was used to generate feedback laws for torque and gear-ratio selection in simple systems \cite{girard_practical_2016}. However, this technique is computationally expensive, it does not scale well to high-dimensional systems, and it required a significant amount of offline computation for each different goal position. 
-
-
-Here in this paper, a model-based approach is proposed, with the advantage of scaling to high-dimensional robotics system. The method is applied to trajectory tracking, and the entire trajectory and gear-ratio control law is synthesized so that small actuators can dynamically lift a heavy load. 
-
-The focus will be on systems where the gear-ratio options are limited to a discrete set, but the proposed principle and control algorithms are also applicable to robots with continuously variable transmissions.
+An alternative model-based approach is proposed in section \ref{sec:HierachicalControlApproach} with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The work in the section is an extension of a journal paper, but present improved algorithms \cite{girard_leveraging_2017}.
 
 
 
@@ -302,6 +296,8 @@ Hence, selecting large gear-ratios makes the system less sensitive to uncertaint
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newpage
+
 \section{Dynamic programming approach}
 \label{sec:DynamicProgrammingAproach}
 
@@ -309,14 +305,16 @@ Hence, selecting large gear-ratios makes the system less sensitive to uncertaint
 \small"The true logic of this world is in the calculus of probabilities." \\ \emph{-- James Clerk Maxwell}
 \end{flushright}
 
-This paper address the design of global feedback laws, for both continuous and discrete inputs, that lead to a desired global behavior, which will be formulated as reaching a target while minimizing a cost function. A practical computational approach that put simplicity before absolute optimality is proposed. The technique could be used on any low-dimensional system for a wide range of control objectives. Here, this paper focus on demonstrating the approach for the task of driving a 11.4 kg (25 lbs) mass for point-to-point motions using the two-speed actuator shown at Fig. \ref{fig:proto_linear}. 
+The proposed approach in this section is to discretize the continuous control problem into a graph search problem, with transition probability, where the discrete input actions can be considered naturally. Then using dynamic programming to find global optimal feedback policies. 
 
-The proposed approach is to discretize the continuous control problem into a graph search problem where the discrete input actions can be considered naturally, and then use dynamic programming to find global optimal feedback policies. First, a simplified low-dimensional model of the controlled system is derived to keep the problem tractable. Second, the optimal control problem is solved using dynamic programming. Third, the resulting optimal policies are approximated with simple feedback laws, to conduct a stability analysis and also for the ease of implementation.
+%First, a simplified low-dimensional model of the controlled system is derived to keep the problem tractable. Second, the optimal control problem is solved using dynamic programming. Third, the resulting optimal policies are approximated with simple feedback laws, to conduct a stability analysis and also for the ease of implementation.
 
-The control problem of obtaining the global desired behavior is formulated as minimizing a scalar cost $J$ that is a function of the state trajectory $\underline{x}(:)$ and the inputs trajectory $\underline{u}(:)$, while constraining both states and inputs to be in their respective domains:
+\section{Problem formulation}
+
+The control problem of obtaining the global desired behavior is formulated as minimizing a scalar cost $J$ that is a function of the state trajectory $\vec{x}(:)$ and the inputs trajectory $\vec{u}(:)$, while constraining both states and inputs to be in their respective domains:
 \begin{align}
-	\operatornamewithlimits{min}\limits_{\underline{u}(:)} \; & J(\underline{x}(:),\underline{u}(:)) = \int g(\underline{x}(t),\underline{u}(t)) dt  \\
-	s.t. \quad & \underline{\dot{x}} = F(\underline{x}, \underline{u}) \\
+	\operatornamewithlimits{min}\limits_{\vec{u}(:)} \; & J(\vec{x}(:),\vec{u}(:)) = \int g(\vec{x}(t),\vec{u}(t)) dt  \\
+	s.t. \quad & \vec{\dot{x}} = F(\vec{x}, \vec{u}) \\
 	& u_1 \in [ -0.02 , 0.02 ] \quad (Nm) \\
 	& u_2 \in \{ 1 , 2 \} \\
 	& x_1 \in [ -150 , 150 ] \quad (mm) \\
@@ -324,30 +322,27 @@ The control problem of obtaining the global desired behavior is formulated as mi
 	\label{eq:min}
 \end{align}
 
-An additional constraint is imposed, when the output speed is greater than 20 mm/sec only the operating mode $u_1=1$ can be used (to limit motor speeds to 8000 RPM). Then three different additive cost functions are investigated; a quadratic cost function $g_q$ where error is weighted against control effort, a function corresponding $g_t$ to the minimal time problem and a function $g_e$ corresponding to thermal losses in the motors, leading to a simplified minimum wasted energy problem (neglecting mechanical losses).
+An additional constraint is imposed, when the output speed is greater than 20 mm/sec only the operating mode $u_1=1$ can be used (to limit motor speeds to 8000 RPM). 
+
+\section{Cost functions}
+
+Then three different additive cost functions are investigated; a quadratic cost function $g_q$ where error is weighted against control effort, a function corresponding $g_t$ to the minimal time problem and a function $g_e$ corresponding to thermal losses in the motors, leading to a simplified minimum wasted energy problem (neglecting mechanical losses).
 %
 \begin{align}
-	g_q(\underline{x},\underline{u}) &= w_1 \; x^2 + w_2 \; \dot{x}^2 + w_3 \; u_1^2
+	g_q(\vec{x},\vec{u}) &= w_1 \; x^2 + w_2 \; \dot{x}^2 + w_3 \; u_1^2
 	\label{eq:g_quad} \\
-	g_t(\underline{x},\underline{u}) &= 1
+	g_t(\vec{x},\vec{u}) &= 1
 	\label{eq:g_time} \\
-	g_e(\underline{x},\underline{u}) &= u_1^2 \quad  \propto \quad  \dot{Q}_{motor} = r I^2
+	g_e(\vec{x},\vec{u}) &= u_1^2 \quad  \propto \quad  \dot{Q}_{motor} = r I^2
 	\label{eq:g_e}
 \end{align}
 %
-
-\begin{figure}[H]
-	\centering
-		\includegraphics[width=0.45\textwidth]{blocks2.pdf}
-	\caption{Controller architecture}
-	\label{fig:blocks}
-\end{figure}
 
 
 \subsection{Value Iteration}
 \label{sec:VI}
 
-A dynamic programming algorithm, also known as value iteration, is used to find both the optimal cost-to-go function and optimal policies for an infinite horizon. The optimal control problem is numerically solved for the different three cost functions. The discretization parameters are as follow: the time step is 0.02 sec, the state space is discretized into an even 501 x 501 grid and the continuous torque is discretized into 51 discrete control options, for a total of 102 possible control actions including the mode selection. Artificial out-of-bound and on-target termination states are included to guarantee convergence \cite{DP}.
+A dynamic programming algorithm, also known as value iteration, is used to find both the optimal cost-to-go function and optimal policies for an infinite horizon. The optimal control problem is numerically solved for the different three cost functions. The discretization parameters are as follow: the time step is 0.02 sec, the state space is discretized into an even 501 x 501 grid and the continuous torque is discretized into 51 discrete control options, for a total of 102 possible control actions including the mode selection. Artificial out-of-bound and on-target termination states are included to guarantee convergence \cite{bertsekas_dynamic_2000}.
 
 \subsection{Reinforcement Learning}
 
@@ -431,44 +426,47 @@ For the minimum energy controller, interestingly the mode selection policy is no
 
 TODO Insert VI results for pendulum.
 
+
+
+
 \subsection{Feedback laws simplification}
 
 TODO Using regresstion to obtain analytical feedback laws...
 
-In this section, simplified algebraic control laws are extracted from the numerical map of optimal control actions for the quadratic cost controller. The dynamic programming algorithm outputs a list of optimal actions that is assumed are samples of a  map of optimal actions $\underline{u}^* = \pi^* ( \underline{x} )$. The goal is then to find a simplified map $\hat{\pi}( \underline{x} )$ based on the samples. Here a two-steps approach is used; first the state-space is segmented into zones based on the optimal discrete action $u_2$, then regression is used to compute the $u_1$ map independently in each zone. 
+In this section, simplified algebraic control laws are extracted from the numerical map of optimal control actions for the quadratic cost controller. The dynamic programming algorithm outputs a list of optimal actions that is assumed are samples of a  map of optimal actions $\vec{u}^* = \pi^* ( \vec{x} )$. The goal is then to find a simplified map $\hat{\pi}( \vec{x} )$ based on the samples. Here a two-steps approach is used; first the state-space is segmented into zones based on the optimal discrete action $u_2$, then regression is used to compute the $u_1$ map independently in each zone. 
 
 \subsubsection{1-DoF linear robot example}
 
 \paragraph{Segmentation}
 For the resulting optimal policy found at Fig. \ref{fig:u0_LQR}, three main zones can be identified. The boundaries are approximated by two lines at $\dot{x}= \pm \; 20 $, and the samples are separated into two groups:
 \begin{align}
-\left \{ \underline{u}^i , \underline{x}^i \right \} \rightarrow \text{Group 1} \quad \text{if} \; | \dot{x} | \geq 20 \\
-\left \{ \underline{u}^i , \underline{x}^i \right \} \rightarrow \text{Group 2} \quad \text{if} \; | \dot{x} | < 20
+\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 1} \quad \text{if} \; | \dot{x} | \geq 20 \\
+\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 2} \quad \text{if} \; | \dot{x} | < 20
 \end{align}
 
 For more complex segmentation, machine learning techniques could be used to perform the classification.
 
 \paragraph{Continuous maps}
 
-In each zones, the optimal continuous input $u_1^*$ is very close to a planar surface with exceptions when the input saturates or near the boundaries, see Fig. \ref{fig:u0_LQR}. Here, it is proposed to forgo absolute optimality and instead use the simplest control law that can globally approximate $u_1^*$ map. Hence, simple linear plane are fitted on the samples group by group. The regression is defined as follow, the dependent variable to approximate is $u_1$, the independent variables are the state coordinates $\underline{x}^T = [ x  \; \dot{x} ]$ and the parameter vector is $\underline{\alpha}^T = [ k_p  \; k_d ]$. Hence the continuous control variable $\hat{u}_1$ is approximated with the following linear map:
+In each zones, the optimal continuous input $u_1^*$ is very close to a planar surface with exceptions when the input saturates or near the boundaries, see Fig. \ref{fig:u0_LQR}. Here, it is proposed to forgo absolute optimality and instead use the simplest control law that can globally approximate $u_1^*$ map. Hence, simple linear plane are fitted on the samples group by group. The regression is defined as follow, the dependent variable to approximate is $u_1$, the independent variables are the state coordinates $\vec{x}^T = [ x  \; \dot{x} ]$ and the parameter vector is $\vec{\alpha}^T = [ k_p  \; k_d ]$. Hence the continuous control variable $\hat{u}_1$ is approximated with the following linear map:
 \begin{align}
-\hat{u}_1 = \underline{\alpha}^T \underline{x} = k_p  x + k_d \dot{x}
+\hat{u}_1 = \vec{\alpha}^T \vec{x} = k_p  x + k_d \dot{x}
 \end{align}
-which is essentially a simple proportional-derivative control law. Then the parameters are estimated using a least-square criterion, $\underline{\alpha}_1$ using the samples in group 1 and $\underline{\alpha}_2$ samples in group 2. Then combining the segmentation and both linear maps, the global control policy is approximated with the following law:
+which is essentially a simple proportional-derivative control law. Then the parameters are estimated using a least-square criterion, $\vec{\alpha}_1$ using the samples in group 1 and $\vec{\alpha}_2$ samples in group 2. Then combining the segmentation and both linear maps, the global control policy is approximated with the following law:
 \begin{align}
-\underline{ \hat{u}} &= \hat{\pi} ( \underline{x} )
+\vec{ \hat{u}} &= \hat{\pi} ( \vec{x} )
  = \left \{ 
 	\begin{array}{c}
 	\left[
 	\begin{array}{c}
-		 \underline{\alpha}_1^T \underline{x} \\
+		 \vec{\alpha}_1^T \vec{x} \\
 		 1 
 	\end{array} 
 	\right] 		
 	\text{if} \; | \dot{x} | \geq 20 \\ \\
 		 \left[
 		\begin{array}{c}
-		 \underline{\alpha}_2^T \underline{x} \\ 
+		 \vec{\alpha}_2^T \vec{x} \\ 
 		 2
 	\end{array}
 		 \right]
@@ -517,7 +515,7 @@ The resulting behavior with the control law of eq.\eqref{eq:uhat} is illustrated
 
 In this section, control algorithms relying on a dynamic model of a robot and its load are proposed. Here, a methodology is presented to synthesize feedback laws, for both the torques and gear-ratios input variable, to follow a trajectory with minimal effort. 
 
-\subsection{Optimal Gear ratio along a trajectory}
+\subsection{Optimal gear-ratios along a trajectory}
 
 This section analyzes the optimal gear-ratio at each instant along a known trajectory. 
 
