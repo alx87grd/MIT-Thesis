@@ -99,30 +99,54 @@ For car transmissions, gear-ratio typical range start with a ~3:1 reduction for 
 \subsubsection{Characteristic of transducer and driven load}
 
 \emph{Electromagnetic transducer vs. internal combustion engine characteristics }
-
+%
 Internal combustion engine have an efficient power-output on a narrow range of speed, hence transmission require many gear-ratio options (modern cars use up to 11! []) to keep the engine at its optimal velocity for any vehicle speed. Moreover, internal combustion engines cannot produce torque at low speed and car transmission must be equipped with a disengaging clutch.  Electric motor are much more flexible and their is less constraints for the design of adapted variable transmission. 
 
-\newline
+%\newline
 \emph{Car dynamics vs. robot dynamics }
-
-On the other hand, for car power-train the driven load is always a large inertia and is thus naturally attenuating any discontinuity in torque during a gear-shift. However, this is not the case in a general robotic context. 
+%
+For car power-trains the driven load is always a large inertia and is thus naturally attenuating any discontinuity in torque during a gear-shift. However, this is not the case in a general robotic context. 
 
 \subsubsection{Mutli-DoF systems}
 
 Last and most fundamental difference, is that this thesis explore variable transmission for multi-DoF systems like robotic arms. While for vehicle power-train the system is always single-axis.
 
+
+All in all, for car power-train the solution is generally something similar to the selection of possible gear-ratios $R$ shown at eq. \eqref{eq:rangestypicalcar}, i.e. single axis, total range variation of about 400\% and small jump between successive gear-ratio.  
 \begin{align}
-	\text{Car} \quad R \in \{3,2,1.4,1,0.8\} \quad \quad 
-	\text{Robot with VGA} \quad R \in 
-	\left \{ 
-	\begin{array}{c}
+	\text{Car:} \quad R \in \{3,2,1.4,1,0.8\} 
+ \label{eq:rangestypicalcar}
+\end{align}
+
+With proposed solution for robotic system, the gear-ratio options would be characterized by multiple-DoF, only two gear-options par axis and large difference between gear-ratio of one or more order-of-magnitude. A typical selection of gear-ratio for a 2 DoF robot is illustrate at \eqref{eq:rangestypicalrobot}.
+\begin{align}
+	\text{Robot:} \quad R \in 
+	\left \{
 	\left[
-	\begin{array}{c}
-		 \vec{\alpha}_1^T \vec{x} \\
-		 1 
+	\begin{array}{c c}
+	474 & 0 \\ 0 & 474
 	\end{array} 
 	\right]
- \label{eq:rangestypical}
+	,
+	\left[
+	\begin{array}{c c}
+	474 & 0 \\ 0 & 23
+	\end{array} 
+	\right]
+	,
+	\left[
+	\begin{array}{c c}
+	23 & 0 \\ 0 & 474
+	\end{array} 
+	\right]
+	,
+	\left[
+	\begin{array}{c c}
+	23 & 0 \\ 0 & 23
+	\end{array} 
+	\right]
+	\right \}
+ \label{eq:rangestypicalrobot}
 \end{align}
 
 
