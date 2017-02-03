@@ -49,7 +49,7 @@ These two operating conditions, high speed at low torque vs. high torque at low 
 \label{sec:ProposedSolutionRobotsUsingMultipleGearRatioActuators}
 
 
-To meet the power requirement of all operating points with small actuators, it is proposed to use electric motors coupled to a gearbox where the gear-ratio can be drastically changed online, see Fig. \ref{fig:2s}. 
+To meet the power requirement of all operating points with small actuators, it is proposed to use electric motors coupled to a gearbox where the gear-ratio can be drastically changed online, see Fig. \ref{fig:2s}. Then using those Variable Gear-ratio Actuator (VGA) on the many joint of robotic systems, see Fig. \ref{fig:vgarobots}.
 
 \begin{figure}[htb]
         \centering
@@ -58,6 +58,12 @@ To meet the power requirement of all operating points with small actuators, it i
         \subfloat[discrete operating modes]{
 				\includegraphics[width=0.45\textwidth]{1DOFmodes.png}}
         \caption{Variable gear-ratio actuator with two discrete options}\label{fig:2s}
+\end{figure}
+
+\begin{figure}[htb]
+        \centering
+				\includegraphics[width=0.75\textwidth]{TODO.png}
+        \caption{Robotic arm equiped with variable gear-ratio actuators}\label{fig:vgarobots}
 \end{figure}
 
 
@@ -118,7 +124,9 @@ All in all, for car power-train the solution is generally something similar to t
  \label{eq:rangestypicalcar}
 \end{align}
 
-With proposed solution for robotic system, the gear-ratio options would be characterized by multiple-DoF, only two gear-options par axis and large difference between gear-ratio of one or more order-of-magnitude. A typical selection of gear-ratio for a 2 DoF robot is illustrate at \eqref{eq:rangestypicalrobot}.
+With proposed solution for robotic system, the gear-ratio options would be characterized by multiple-DoF, only two gear-options par axis and large difference between gear-ratio of one or more order-of-magnitude. A typical selection of gear-ratio for a 2 DoF robot is illustrate at \eqref{eq:rangestypicalrobot}. Note that section \ref{sec:model} will discuss why gear-ratios for a multi-DoF system are represented with a matrix.
+
+%
 \begin{align}
 	\text{Robot:} \quad R \in 
 	\left \{
@@ -184,8 +192,20 @@ The second major contribution of this thesis, is the development of intelligent 
 
 \subsection{Prototypes}
 
+Two generation of DSDM actuators
+
+A custo light-weight 3-DoF robotic arm
+
+A prototype climbing robots
+
 
 \subsection{Theoretical}
+
+DSDM control law exploiting the nullspace
+
+Modeling approach and representation for multi-DoF system with variable transmission
+
+
 
 
 \subsection{Simulations}
