@@ -98,37 +98,36 @@ For a multiple DoF mechanism, the speed/force properties are directional. Typica
 
 Here differences from issues faced in the context of car power-train variable transmissions are emphasized.
 
-\subsubsection{Range of required gear-ratio}
-
+\paragraph{Range of required gear-ratio}
+%
 For car transmissions, a typical gear-ratio range start with a ~3:1 reduction for the first gear and the last gear-ratio is an overdrive of about ~0.8:1. For robotic applications, the explored idea in this thesis is a much wider range between gear-ratio (one order-of-magnitude). For instance, the one built actuator prototype has a first gear with a 474:1 reduction and a second (and last) gear with a 23:1 reduction. 
 
-\subsubsection{Characteristic of transducer and driven load}
+%\subsubsection{Characteristic of transducer and driven load}
 
-\emph{Electromagnetic transducer vs. internal combustion engine characteristics }
+\paragraph{Electromagnetic transducer vs. internal combustion engine characteristics }
 %
 Internal combustion engine have an efficient power-output on a narrow range of speed, hence transmission require many gear-ratio options (modern cars use up to 11! []) to keep the engine at its optimal velocity for any vehicle speed. Moreover, internal combustion engines cannot produce torque at low speed and car transmission must be equipped with a disengaging clutch.  Electric motor are much more flexible and their is less constraints for the design of adapted variable transmission. 
 
 %\newline
-\emph{Car dynamics vs. robot dynamics }
+\paragraph{Car dynamics vs. robot dynamics }
 %
 For car power-trains the driven load is always a large inertia and is thus naturally attenuating any discontinuity in torque during a gear-shift. However, this is not the case in a general robotic context. 
 
-\subsubsection{Mutli-DoF systems}
-
+\paragraph{Mutli-DoF systems}
+%
 Last and most fundamental difference, is that this thesis explore variable transmission for multi-DoF systems like robotic arms. While for vehicle power-train the system is always single-axis.
 
-
-All in all, for car power-train the solution is generally something similar to the selection of possible gear-ratios $R$ shown at eq. \eqref{eq:rangestypicalcar}, i.e. single axis, total range variation of about 400\% and small jump between successive gear-ratio.  
-\begin{align}
-	\text{Car:} \quad R \in \{3,2,1.4,1,0.8\} 
- \label{eq:rangestypicalcar}
-\end{align}
-
-With proposed solution for robotic system, the gear-ratio options would be characterized by multiple-DoF, only two gear-options par axis and large difference between gear-ratio of one or more order-of-magnitude. A typical selection of gear-ratio for a 2 DoF robot is illustrate at \eqref{eq:rangestypicalrobot}. Note that section \ref{sec:model} will discuss why gear-ratios for a multi-DoF system are represented with a matrix.
-
+\paragraph{Solutions}
+%
+All in all, for car power-train the solution is generally something similar to the selection of possible gear-ratios $R$ shown at eq. \eqref{eq:rangestypical}, i.e. single axis, total range variation of about 400\% and small jump between successive gear-ratio. With proposed solution for robotic system, the gear-ratio options would be characterized by multiple-DoF, only two gear-options par axis and large difference between gear-ratio of one or more order-of-magnitude. A typical selection of gear-ratio for a 2 DoF robot is illustrated at \eqref{eq:rangestypical}. Note that section \ref{sec:model} will discuss why gear-ratios for a multi-DoF system are represented with a matrix.
 %
 \begin{align}
-	\text{Robot:} \quad R \in 
+  \text{Car:}& \quad R \in \{ 3 , 2 , 1.4 , 1 , 0.8 \} 
+	%%
+	\\
+	%%
+	\text{Robot:}& \quad R \in 
+	\scriptsize
 	\left \{
 	\left[
 	\begin{array}{c c}
@@ -154,7 +153,7 @@ With proposed solution for robotic system, the gear-ratio options would be chara
 	\end{array} 
 	\right]
 	\right \}
- \label{eq:rangestypicalrobot}
+ \label{eq:rangestypical}
 \end{align}
 
 
@@ -166,9 +165,10 @@ With proposed solution for robotic system, the gear-ratio options would be chara
 Gear shifting is more technically challenging in robotics applications than in vehicle applications. For powertrains, the load is mostly a large inertia, while for robots, the loads may exhibit a rich range of dynamics including spring-like and damper-like loads. Hence, unlike vehicle applications, leaving the load free momentarily during transitions (from one gear-ratio to another) is not acceptable in the context of robotics. Moreover, many robotic applications would benefit from having order-of-magnitudes difference between the possible gear-ratios, i.e. a wider range of ratio than what is typical in vehicle power-train. Hence, an effective gear shifting methodology adapted to robotics is needed, allowing for fast and seamless transitions between very different gear-ratios under diverse load conditions.
 
 \paragraph{When to use what gear-ratio?}
-From the control perspective, automating the gear-ratio selection in a robotic context is a new and challenging problem. Gear-shifting is a very non-linear process and the plant becomes a hybrid dynamical system if the usable gear-ratios are a set of discrete values. Hence, no classical control approach can be applied directly to handle the additional gear-ratio selection control input. In simple scenarios, the gear-ratio selection can be based on simple principles. However, to handle the generalize problem of the gear-ratio selection for multi-DoF robots, that experience diverse types of forces acting simultaneously and coupling between each axis, new methodologies are needed to generate trajectories and feedback laws that would use effectively all the gear-ratios options and exploit their advantages.
+From the control perspective, automating the gear-ratio selection in a robotic context is a new and challenging problem. Gear-shifting is a very non-linear process and the plant becomes a hybrid dynamical system if the usable gear-ratios are a set of discrete values. Hence, no classical control approach can be applied directly to handle the additional gear-ratio selection control input. In simple scenarios, the gear-ratio selection can be based on simple principles. However, to handle the generalized problem of the gear-ratio selection for multi-DoF robots, that experience diverse types of forces acting simultaneously and coupling between each axis, new methodologies are needed to generate trajectories and feedback laws that would use effectively all the gear-ratios options and exploit their advantages.
 
 
+\newpage
 
 \section{Original contributions}
 \label{sec:contribution}
@@ -188,6 +188,7 @@ The second major contribution of this thesis, is the development of intelligent 
 \section{Main results}
 \label{sec:mainresults}
 
+This thesis was invention-driven. 
 
 
 \subsection{Prototypes}
@@ -207,13 +208,18 @@ Modeling approach and representation for multi-DoF system with variable transmis
 
 
 
-
 \subsection{Simulations}
+
+Demonstration of the advantage of dynamic gear-selection with simulation of multi-DoF robots following trajectories 
 
 
 \subsection{Experiments}
 
+Demonstration of features of VGA with the DSDM prototypes
 
+Demonstration of fast gear-shifts in many dynamic situations
+
+Software implementation and experimental evaluation of all proposed control algorithms
 
 
 \section{Organization of the thesis}
