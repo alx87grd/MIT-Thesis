@@ -309,7 +309,7 @@ The proposed approach in this section is to discretize the continuous control pr
 
 %First, a simplified low-dimensional model of the controlled system is derived to keep the problem tractable. Second, the optimal control problem is solved using dynamic programming. Third, the resulting optimal policies are approximated with simple feedback laws, to conduct a stability analysis and also for the ease of implementation.
 
-\section{Problem formulation}
+\subsection{Problem formulation}
 
 The control problem of obtaining the global desired behavior is formulated as minimizing a scalar cost $J$ that is a function of the state trajectory $\vec{x}(:)$ and the inputs trajectory $\vec{u}(:)$, while constraining both states and inputs to be in their respective domains:
 \begin{align}
@@ -324,7 +324,7 @@ The control problem of obtaining the global desired behavior is formulated as mi
 
 An additional constraint is imposed, when the output speed is greater than 20 mm/sec only the operating mode $u_1=1$ can be used (to limit motor speeds to 8000 RPM). 
 
-\section{Cost functions}
+\subsection{Cost functions}
 
 Then three different additive cost functions are investigated; a quadratic cost function $g_q$ where error is weighted against control effort, a function corresponding $g_t$ to the minimal time problem and a function $g_e$ corresponding to thermal losses in the motors, leading to a simplified minimum wasted energy problem (neglecting mechanical losses).
 %
