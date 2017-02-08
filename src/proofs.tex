@@ -279,13 +279,68 @@ J^*   &= 2 \sum_i{ \left[ \tau_i^E \tau_i^I + \left| \tau_i^E \tau_i^I \right| \
 
  
 \subsection{R* Computed Torque Controller}
-\label{sec:stabrstar}
+\label{sec:stabrstar1}
 
 
 \subsection{R* Sliding Mode Controller}
-\label{sec:stabrstar}
+\label{sec:stabrstar2}
 
 
-\section{Chattering Bounds}
+\section{Chattering Bounds with Rollout Gear-selection}
 \label{sec:chat}
+
+This section provides minimum delay guarantees for successive gear-shift when using the Rollout gear-selection scheme. 
+
+First, using the Rollout approach the optimal gear-ratio mode $k^*$ selection is done as follow:
+%
+\begin{align}
+k^*(t)   &= \operatornamewithlimits{argmin}\limits_{k} \left[ J_k(t) + Q \, [[ k \neq k_{previous}]] \, \right]
+\label{eq:rolloutsimple}
+\end{align}
+%
+where $J_k(t)$ is the computed cost over the simulated trajectory over the time horizon $h$ using the gear-ration mode $k$. If the minimize cost is the squared actuator torque then:
+%
+\begin{align}
+J_k(t) = \int_{t}^{t+h}{  \vec{\tau}_k^T \vec{\tau}_k \, d\hat{t} }
+\end{align}
+%
+where $\vec{\tau}_k$ is the computed torque in predictive simulation with the base policy when using the gear-ratio mode $k$. The variable $\hat{t}$ is use to represent time in the simulation.  An additional instantaneous cost $Q$ is added when the gear-ratio mode is changed. 
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.9\textwidth]{rollouttrajs.png}
+	\caption{Real trajectory and simulated virtual trajectory in the Rollout controller}
+	\label{fig:rollouttrajs}
+\end{figure}
+
+
+\subsection{On a trajectory}
+\label{sec:chat1}
+
+Here a minimum time delay between a back-and-forth gear-shift sequence is derived for the situation where the robot has converged on a trajectory and is staying on the trajectory. In that case, it is assumed that both the simulation trajectory and the real system follow the same desired trajectory, see Fig. \ref{fig:costontrajrollout}.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.90\textwidth]{costontrajrollout.png}
+	\caption{Rollout controller behavior on a given trajectory}
+	\label{fig:costontrajrollout}
+\end{figure}
+
+It can be shown that if the computed torque $\vec{\tau}_k$ has an upper bound, then there is a minimum delay $\Delta t$ between a back-and-forth gear-shift sequence. Hence, no arbitrary fast chattering between gear-ratio is possible. 
+
+\paragraph{Proof} 
+
+Without lost of generality, lets assume a gear shift sequence where the robot is first using mode $i$, then shift to mode $j$ at time $t$ and then shift back to mode $i$ at time $t+\Delta t$. If such a sequence happened while using the gear-ratio selection law given by eq. \eqref{eq:rolloutsimple}, then some inequality must be satisfied:
+\begin{align}
+J_i(t)          + Q >& J_j(t) \\
+J_j(t+\Delta t) + Q >& J_i(t+\Delta t)
+\end{align}
+
+
+
+
+
+\subsection{Arbitrary}
+\label{sec:chat2}
 
