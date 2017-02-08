@@ -501,25 +501,13 @@ The resulting behavior with the control law of eq.\eqref{eq:uhat} is illustrated
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 \newpage
 
-\section{Model-based control approach}
-\label{sec:HierachicalControlApproach}
-
-
-\begin{flushright}
-\textit{"If you know the enemy and know yourself, you need \\ not fear the result of a hundred battles."}  \emph{-- Sun Tzu}
-\end{flushright}
-\vspace{+10pt}
-
-In this section, control algorithms relying on a dynamic model of a robot and its load are proposed. Here, a methodology is presented to synthesize feedback laws, for both the torques and gear-ratios input variable, to follow a trajectory with minimal effort. 
-
-\subsection{Optimal gear-ratios along a trajectory}
+\section{Optimal gear-ratios along a trajectory}
 
 This section analyzes the optimal gear-ratio at each instant along a known trajectory. 
 
-\subsubsection{Selection criteria}
+\subsection{Selection criteria}
 \label{sec:GearSelectionCriteria}
 
 The two main advantages of changing gear-ratio are 1) lowering the necessary torque to follow a trajectory and 2) modifying the effective impedance reflected on the environment. 
@@ -537,7 +525,7 @@ Optimization for reflected impedance can be done by minimizing the difference be
 %
 Another point of practical importance is that the rotor speed should be constrained to be lower than their maximum velocity. This is to avoid infeasible gear shifts. For example, attempting to shift to a low gear at an extremely high speed is impossible. 
 
-\subsubsection{Optimization}
+\subsection{Optimization Formulation}
  The optimal gear-ratio is determined by minimizing the total actuator torques and, optionally, the difference in end-point impedance:
 %
 \begin{align}
@@ -548,6 +536,9 @@ Another point of practical importance is that the rotor speed should be constrai
 %
 where $\alpha$ is a parameter to set the trade-off between minimizing motor torques and matching the desired end-point inertia.
 %
+
+\subsection{Minimal Torque Solution}
+
 For a 1-DoF system, the optimal gear ratio leading to minimal torque, not considering any velocity constraints, at a given instant on a trajectory is given by
 %
 \begin{align}
@@ -569,13 +560,92 @@ The derivation is available in the Appendix \ref{sec:optgearproofn}.
 
 Note that large gravitational forces or external disturbances, only present in $\vec{\tau}_{E}$, will usually lead to larger optimal gear-ratios, unless they cancel-out other forces in a way that makes $\vec{\tau}_{E}$ smaller. If inertial or viscous forces, present both in $\vec{\tau}_{E}$ and $\vec{\tau}_{I}$, dominate, then the optimal gear-ratio will be a compromise such that extrinsic and intrinsic forces are balanced, a form of impedance matching. The optimal gear ratio given by \eqref{eq:rmin2} includes both gravity, inertial and viscous effects as well as all other effects, hence it can be applied to any arbitrary dynamic situations.
 
+
+\subsection{Reduction to impedance matching}
+\label{sec:impreduc}
+
+In simplified situation where there is only on type of force acting on the system, the general solution reduce to a case of impedance matching. For instance if only inertial forces are involves:
+%
+\begin{align}
+	R^{*}  = \sqrt{ \left | \frac{H \ddot{q} }{ I \ddot{q} } \right |   } = \sqrt{ \frac{H}{I}}  \quad\Rightarrow\quad  {R^{*}}^2 I = H
+ \label{eq:impmatchingHI}
+\end{align}
+%
+Hence the optimal gear-ratio is the one for which the external load inertia is equal to the reflected actuator inertia. Also, if only linear dissipative forces are involves:
+%
+\begin{align}
+	R^{*}  = \sqrt{ \left | \frac{D \dot{q} }{ B \dot{q} } \right |   } = \sqrt{ \frac{D}{B}}  \quad\Rightarrow\quad  {R^{*}}^2 B = D
+ \label{eq:impmatchingDB}
+\end{align}
+%
+Then the optimal gear-ratio is the one for which the external damping coefficient is equal to the effective actuator damping coefficient reflected to the output. 
+
+Note that those optimal solution are only valid locally. In general for robotic systems, $H$ and $D$ are state dependent. 
+
+
+\subsection{Examples}
+\label{sec:Examples}
+
+Here eq. \eqref{eq:aaa} is applied to the robot in Fig. \ref{fig:bigpicture} in simple scenarios. 
+
+\paragraph{Acceleration from rest} 
+
+When the robot accelerates from rest with no viscous forces, the optimal gear ratio at the up-right position, where no gravity acts, is given by:
+\begin{align}
+	R^{*}  = \sqrt{ \left | \frac{H \ddot{q} }{ I \ddot{q} } \right |   } = \sqrt{ \frac{H}{I}}
+ \label{eq:impmatching}
+\end{align}
+In this situation, the problem is reduced to impedance matching for two inertial loads. The optimal gear ratio minimizing the torque for a given acceleration is the one for which the load inertia and the motor reflected inertia are the same.
+
+\paragraph{Supporting gravity without moving}
+
+In the situation where the robot is not moving and fighting against gravity, then the optimal gear ratio is:
+\begin{align}
+	R^{*}  = \sqrt{ \left | \frac{ \vec{g} }{ 0 } \right |   } \rightarrow \infty
+ \label{eq:gravrejection}
+\end{align}
+In this static case, the largest possible gear-ratio is the optimal choice. 
+
+
+\paragraph{Coasting} 
+
+In the situation where a robot maintains a constant speed, assuming the output load is purely inertial and not dissipative ($D=0$) but that there is friction in the motors:
+%
+\begin{align}
+	R^{*}  = \sqrt{ \left | \frac{D \dot{q} }{ B \dot{q} } \right |   } = \sqrt{ \frac{D}{B}} \rightarrow 0
+ \label{eq:impmatching}
+\end{align}
+%
+In this situation, to avoid dissipative motor forces it is best to have the smallest possible gear-ratio. In the limit, this correspond to completely disconnect the load from the actuator.
+
+%\paragraph{Resisting disturbances}
+%%
+%In the situation where there is no gravity and the robot is not moving, but disturbances are expected, minimizing the sliding mode torque (eq. \eqref{eq:rstar_sliding}) would also lead to the conclusion that the largest possible gear-ratio is the optimal choice.
+%\begin{align}
+	%R^{*}  = \sqrt{ \left | \frac{ 0 + | d |_{max} \, sgn( s ) }{ 0 } \right |   }  = \sqrt{  \frac{| d |_{max} }{ 0 } }\rightarrow \infty
+ %\label{eq:gravrejection}
+%\end{align}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \newpage
 
+\section{Model-based Controllers}
+\label{sec:HierachicalControlApproach}
 
 
-\subsection{Trajectory following controllers}
+\begin{flushright}
+\textit{"If you know the enemy and know yourself, you need \\ not fear the result of a hundred battles."}  \emph{-- Sun Tzu}
+\end{flushright}
+\vspace{+10pt}
 
-\subsubsection{R* Computed Torque}
+
+In this section, control algorithms relying on a dynamic model of a robot and its load are proposed. Methodologies are proposed to synthesize feedback laws, for both the torques and gear-ratios input variable, to follow a trajectory with minimal effort. 
+
+
+\subsection{R* Computed Torque}
 \label{sec:RobustTrajectoryFollowingController}
 
 
@@ -596,7 +666,7 @@ The proposed closed-loop controller, shown in Fig. \ref{fig:Rstar_block_big}, is
 	\label{fig:dq}
 \end{figure}
 
-\subsubsection{Robust Control}
+\subsection{Robust Control}
 \label{sec:robustcontrol}
 
 In general Computed Torque Control is susceptible to modeling uncertainties and disturbances. This section presents two approaches to improving robustness: Adaptation and Sliding Mode Control. 
@@ -645,8 +715,9 @@ Hence, if no disturbance is expected ($| d |_{max}=0$) gear-ratio selection is u
 %
 
 
+\subsection{Implementation Aspects}
 
-\subsubsection{Numerical Optimization}
+\subsubsection{Numerical Online Optimization}
 
 If some of the assumptions used in the previous section are not valid or if the gear-ratios are limited to a few discrete choices, then the optimization must be computed numerically. The minimum needed is to have a model of the inverse dynamic, which could include any non-linearity, in the form:
 \begin{align}
@@ -660,56 +731,54 @@ In the situation of discrete gear-ratios, this lead to a combinatorial optimizat
 However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly. For instance, for the robot presented in this paper, see Fig. \ref{fig:arm_proto}, there is 3 actuators each with 2 gear-ratio options, leading to $l=2^3=8$ possible matrix $R$.
 
 
-
 \subsubsection{Heuristic approach to minimize gearshift}
 
 Because the control effort during gear-shifts is neglected in the model, using the proposed controller can lead to rapid switching between gear-ratios in certain situations. To avoid this undesirable behavior, it is proposed to add hysteresis to the controller: the gear-ratio is only changed if the difference of computed torque, between using the optimal and the previously selected gear-ratio, is greater than a minimum torque threshold, and also if the elapsed time since the last change is greater than a minimum delay. 
 
 
 
-\subsubsection{Examples}
-\label{sec:Examples}
-
-Here eq. \eqref{eq:aaa} is applied to the robot in Fig. \ref{fig:bigpicture} in simple scenarios. 
-
-\paragraph{Acceleration from rest} 
-
-When the robot accelerates from rest with no viscous forces, the optimal gear ratio at the up-right position, where no gravity acts, is given by:
-\begin{align}
-	R^{*}  = \sqrt{ \left | \frac{H \ddot{q} }{ I \ddot{q} } \right |   } = \sqrt{ \frac{H}{I}}
- \label{eq:impmatching}
-\end{align}
-In this situation, the problem is reduced to impedance matching for two inertial loads. The optimal gear ratio minimizing the torque for a given acceleration is the one for which the load inertia and the motor reflected inertia are the same.
-
-\paragraph{Supporting gravity without moving}
-
-In the situation where the robot is not moving and fighting against gravity, then the optimal gear ratio is:
-\begin{align}
-	R^{*}  = \sqrt{ \left | \frac{ f_g }{ 0 } \right |   } \rightarrow \infty
- \label{eq:gravrejection}
-\end{align}
-In this static case, the largest possible gear-ratio is the optimal choice. 
-
-\paragraph{Resisting disturbances}
-%
-In the situation where there is no gravity and the robot is not moving, but disturbances are expected, minimizing the sliding mode torque (eq. \eqref{eq:rstar_sliding}) would also lead to the conclusion that the largest possible gear-ratio is the optimal choice.
-\begin{align}
-	R^{*}  = \sqrt{ \left | \frac{ 0 + | d |_{max} \, sgn( s ) }{ 0 } \right |   }  = \sqrt{  \frac{| d |_{max} }{ 0 } }\rightarrow \infty
- \label{eq:gravrejection}
-\end{align}
+\subsection{Rollout Optimization}
 
 
 
-\subsection{Trajectory planning}
+
+\subsection{Guarantees}
+
+
+\subsubsection{Stability}
+
+Fixed target
+
+Convergence on desired trajectory
+
+
+\subsubsection{Chattering}
+
+
+If convergence is guaranteed, the zeno behavior is impossible unless the desired trajectory or point-target reside on a switching surface. 
+
+
+Minimum delay on a trajectory
+
+Minimum delay in arbitrary situations
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Trajectory planning}
 \label{sec:SamplingBasedTrajectoryPlanner}
 
-\newpage
+
 
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \section{Simulation Results}
 \label{sec:shift_sim}
 
