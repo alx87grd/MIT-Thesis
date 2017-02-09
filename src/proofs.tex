@@ -331,15 +331,69 @@ It can be shown that if the computed torque $\vec{\tau}_k$ has an upper bound, t
 
 \paragraph{Proof} 
 
-Without lost of generality, lets assume a gear shift sequence where the robot is first using mode $i$, then shift to mode $j$ at time $t$ and then shift back to mode $i$ at time $t+\Delta t$. If such a sequence happened while using the gear-ratio selection law given by eq. \eqref{eq:rolloutsimple}, then some inequality must be satisfied:
+Without lost of generality, lets assume a gear shift sequence where the robot is first using mode $i$, then shift to mode $j$ at time $t$ and then shift back to mode $i$ at time $t+\Delta t$. If such a sequence happened while using the gear-ratio selection law given by eq. \eqref{eq:rolloutsimple}, then the following inequality must have been satisfied:
+%
 \begin{align}
-J_i(t)          + Q >& J_j(t) \\
-J_j(t+\Delta t) + Q >& J_i(t+\Delta t)
+J_j(t)          + Q <& J_i(t)                  \\
+J_i(t+\Delta t) + Q <& J_j(t+\Delta t)
 \end{align}
-
-
-
-
+%
+Then to simplify the notation, integral cost on the trajectory is given by the following value for each three sections of interest:
+%
+\begin{align}
+J_k^A &= \int_{t}^{t+\Delta t}{\vec{\tau}_k^T \vec{\tau}_k  d\hat{t}} \\
+J_k^B &= \int_{t+\Delta t}^{t+h}{\vec{\tau}_k^T \vec{\tau}_k  d\hat{t}}  \\
+J_k^C &= \int_{t+h}^{t+\Delta t+h}{\vec{\tau}_k^T \vec{\tau}_k d\hat{t}}
+\end{align}
+%
+Then it is possible to express the computed cost of predictive simulation done at $\Delta t$ time difference by the sum of a identical part and a different part:
+%
+\begin{align}
+J_k(t)          &= \int_{t}^{t+h}{\vec{\tau}_k^T \vec{\tau}_k  d\hat{t}}  = J_k^A + J_k^B \\
+J_k(t+\Delta t) &= \int_{t+\Delta t}^{t+\Delta t+h}{\vec{\tau}_k^T \vec{\tau}_k  d\hat{t}} = J_k^B + J_k^C
+\end{align}
+%
+The difference between computed cost separated by $\Delta t$ is:
+%
+\begin{align}
+\Delta J_k = J_k(t+\Delta t) - J_k(t) &= J_k^C - J_k^A
+\end{align}
+%
+Now assuming there is an upper bound on instantaneous computed torque by the base policy (this will be discussed shortly), an upper bound also exist for the integral cost. Since the cost is quadratic the integral cost cannot be negative. Hence:
+%
+\begin{align}
+0 \leq J_k^C   \leq  \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
+0 \leq J_k^A   \leq  \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
+\end{align}
+%
+The cost variation is thus bounded is this range:
+%
+\begin{align}
+-\vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \leq \Delta J_k \leq \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t
+\end{align}
+%
+Using this it is possible to bound the time evolution of computed cost:
+%
+\begin{align}
+J_j(t+\Delta t) \leq J_j(t)  + \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
+J_i(t+\Delta t) \geq J_i(t)  - \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
+\end{align}
+%
+Finally it is possible to combine all those inequality, starting with the condition for the second gearshift:
+%
+\begin{align}
+J_i(t)  - \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t + Q \leq J_i(t+\Delta t) + Q &< J_j(t+\Delta t) \leq J_j(t)  + \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
+J_i(t) + Q &\leq J_j(t)  + 2 \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
+J_j(t) + 2 Q &\leq J_j(t)  + 2 \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
+Q &\leq \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t 
+\end{align}
+%
+Hence resulting in the desired inequality relating instantaneous cost and time between gear-shift:
+%
+\begin{align}
+\Delta t \geq \frac{Q}{\vec{\tau}_{max}^T \vec{\tau}_{max}}
+\end{align}
+%
 
 \subsection{Arbitrary}
 \label{sec:chat2}
