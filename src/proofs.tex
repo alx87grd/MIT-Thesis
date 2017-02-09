@@ -291,6 +291,7 @@ J^*   &= 2 \sum_i{ \left[ \tau_i^E \tau_i^I + \left| \tau_i^E \tau_i^I \right| \
 
 This section provides minimum delay guarantees for successive gear-shift when using the Rollout gear-selection scheme. 
 
+\paragraph{Problem setting}
 First, using the Rollout approach the optimal gear-ratio mode $k^*$ selection is done as follow:
 %
 \begin{align}
@@ -298,18 +299,46 @@ k^*(t)   &= \operatornamewithlimits{argmin}\limits_{k} \left[ J_k(t) + Q \, [[ k
 \label{eq:rolloutsimple}
 \end{align}
 %
-where $J_k(t)$ is the computed cost over the simulated trajectory over the time horizon $h$ using the gear-ration mode $k$. If the minimize cost is the squared actuator torque then:
+where $J_k(t)$ is the computed cost over the simulated trajectory over the time horizon $h$ using the gear-ration mode $k$. An additional instantaneous cost $Q$ is added when the gear-ratio mode is changed.
+
+The integral cost is given by:
 %
 \begin{align}
-J_k(t) = \int_{t}^{t+h}{  \vec{\tau}_k^T \vec{\tau}_k \, d\hat{t} }
+J_k(t) = \int_{t}^{t+h}{  C_k \, d\hat{t} }
 \end{align}
 %
-where $\vec{\tau}_k$ is the computed torque in predictive simulation with the base policy when using the gear-ratio mode $k$. The variable $\hat{t}$ is use to represent time in the simulation.  An additional instantaneous cost $Q$ is added when the gear-ratio mode is changed. 
+where $C_k$ is the instantaneous cost and $\hat{t}$ is the virtual time in the simulation. The instantaneous cost is a function of state and time. If the instantaneous cost is the squared actuator torques, then:
+%
+\begin{align}
+C_k =  \vec{\tau}_k^T \vec{\tau}_k
+\end{align}
+%
+where $\vec{\tau}_k$ is the computed torque in predictive simulation with the base policy when using the gear-ratio mode $k$.
 
+It will be assumed that and upper bound can be found for the instantaneous cost, in a domain of interest $D$, given the desired trajectory and the feedback policy:
+%
+\begin{align}
+C_k^{max} =  \operatornamewithlimits{max}\limits_{\vec{x},t \in D} C_k(\vec{x},t)
+\end{align}
+%
+Such a bound should always exist given reasonable assumptions:                  \\
+- Domain of interest $D$ constraint all states to finite values                 \\
+- Desired trajectory has bounded acceleration, speed and position values        \\
+- Absence of singularity where inertia matrix values can tend toward infinity   \\
+
+For instance, if using computed torque as base policy and a torque-squared criteria, the maximum instantaneous cost value is given by:
+%
+\begin{align}
+C_k^{max} =  |\vec{\tau}_{k}|_{max}^T |\vec{\tau}_{k}|_{max}
+\end{align}
+%
+where $|\vec{\tau}_{k}|_{max}$ is a vector of the highest possible computed joint torques in the domain of interest $D$.
+
+Fig. \ref{fig:rollouttrajs} gives a graphical support illutrating the 2D space, where at all time virtual trajectories branch-off the real robot trajectory.
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.9\textwidth]{rollouttrajs.png}
+		\includegraphics[width=0.8\textwidth]{rollouttrajs.png}
 	\caption{Real trajectory and simulated virtual trajectory in the Rollout controller}
 	\label{fig:rollouttrajs}
 \end{figure}
@@ -334,8 +363,8 @@ It can be shown that if the computed torque $\vec{\tau}_k$ has an upper bound, t
 Without lost of generality, lets assume a gear shift sequence where the robot is first using mode $i$, then shift to mode $j$ at time $t$ and then shift back to mode $i$ at time $t+\Delta t$. If such a sequence happened while using the gear-ratio selection law given by eq. \eqref{eq:rolloutsimple}, then the following inequality must have been satisfied:
 %
 \begin{align}
-J_j(t)          + Q <& J_i(t)                  \\
-J_i(t+\Delta t) + Q <& J_j(t+\Delta t)
+i \rightarrow j  \quad\text{at time}\quad t          &\quad\Rightarrow\quad J_j(t) + Q < J_i(t)                  \\
+j \rightarrow i  \quad\text{at time}\quad t+\Delta t &\quad\Rightarrow\quad J_i(t+\Delta t) + Q < J_j(t+\Delta t)
 \end{align}
 %
 Then to simplify the notation, integral cost on the trajectory is given by the following value for each three sections of interest:
