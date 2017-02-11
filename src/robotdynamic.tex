@@ -26,8 +26,8 @@ In this appendix, the nomenclature and equations used in this thesis are present
 			$H$             &  :  & Inertia matrix                                             & $n$ x $n$ \\
 			$D$             &  :  & Damping matrix                                             & $n$ x $n$ \\
 			$C$             &  :  & Coriolis/Centrifugal forces matrix                         & $n$ x $n$ \\
-			$B$             &  :  & Motor torques --> generalized forces matrix                & $n$ x $m$ \\
-			$R$             &  :  & Gear-ratio matrix (diagonal)                               & $m$ x $m$ \\
+			$B$             &  :  & Motor torques / generalized forces matrix                  & $n$ x $m$ \\
+			$R$             &  :  & Gear-ratio matrix                                          & $m$ x $m$ \\
 			$I$             &  :  & Intrinsic actuator inertia matrix (diagonal)               & $m$ x $m$ \\
 			$B$             &  :  & Intrinsic actuator damping matrix (diagonal)               & $m$ x $m$ \\
 			$J_a$           &  :  & actuator coordinates / joint coordinates Jacobian matrix   & $m$ x $n$ \\
@@ -155,7 +155,7 @@ Alternatively, it possible to solve for acceleration $\vec{\ddot{q}}$ and constr
 \end{align}
 
 
-\subsection{Impact forces}
+\subsection{Impact impulsive behavior}
 \label{sec:impact}
 %
 When the robot first enter contact with a fixed object, impulsive contact forces will act on the system. Integrating eq. \eqref{eq:manipulator_constraint} over the short impact interval gives:
