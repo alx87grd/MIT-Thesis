@@ -69,18 +69,16 @@ To meet the power requirement of all operating points with small actuators, it i
 
 The two main advantage of the VGA approach are: \textbf{good power output and efficiency for a wide range of output speeds} and \textbf{radical changes of intrinsic impedance} (goes with the square of the reduction ratio). 
 
-
-
 \subsection{Features of gear-shifting in a robotic context}
 
 \paragraph{Power output and efficiency over a wide range of speed}
 In many situation, using multiple gear ratios allows for the downsizing of the motors while still meeting required forces/speeds capabilities. A small lightweight actuator can generate large torques and move at high speed if equipped with both a large and a small gear-ratio. Furthermore, by actively selecting gearing ratios to keep motors in efficient regimes, the energy consumption of a robot can be greatly reduced. 
 
 \paragraph{Radical changes of reflected impedance}
-The gear-ratio has a radical effect on the output impedance of a robot; the motor inertia and viscous damping are reflected to the output proportionally with the square of the gearing ratio. Gear-shifting can thus also be used as an alternative approach to variable impedance actuation. A robot joint could be made back-drivable by selecting a small reduction ratio, to interact safely with the environment.  Alternatively, a joint could be made non-backdrivable by selecting a very large reduction ratio to hold a weight without consuming power.
+The gear-ratio has a radical effect on the output impedance of a robot; the motor inertia and viscous damping are reflected to the output proportionally with the square of the gearing ratio. Gear-shifting can thus also be used as an alternative approach to variable impedance actuation. A robot joint could be made back-drivable by selecting a small reduction ratio, to interact safely with the environment.  Alternatively, a joint could be made non-backdrivable by selecting a very large reduction ratio to resist easily external disturbances.
 
 \paragraph{Exploitation or attenuation of the external load dynamics}
-Changing the gear-ratio has a radical effect on the natural dynamics of a system. By changing dynamically the gear-ratio, it is possible to select the natural dynamic behavior that is most advantageous for a task. For instance, selecting a small reduction ratio to exploit gravitational forces pulling the robot in a desired direction, or on the other hand, selecting a large reduction ratio to be insensitive to external disturbances.
+Changing the gear-ratio has a radical effect on the natural dynamics of a system. By changing dynamically the gear-ratio, it is possible to select the natural dynamic behavior that is most advantageous for a task. For instance, selecting a small reduction ratio to exploit gravitational forces pulling the robot in a desired direction, or on the other hand, selecting a large reduction ratio to hold a heavy weight with small actuator torques.
 
 \paragraph{Directionality of properties}
 For a multiple DoF mechanism, the speed/force properties are directional. Typically the Jacobian of a mechanism is only a function of the configuration $J=J(\vec{q})$, but a mechanism using $m$ variable gear-ratio actuators with $n$ possible gear-ratio, the Jacobian (from actuator coordinates to task-space coordinates) would also be function of the gear-ratios selected, i.e. dependent on control inputs $\vec{u}$ : $J=J(\vec{q},\vec{u})$. Hence, for a given configuration there is $n^m$ manipulability ellipsoid option. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear-ratios would be picked to meet the task requirement.
@@ -106,7 +104,7 @@ For car transmissions, a typical gear-ratio range start with a ~3:1 reduction fo
 
 \paragraph{Electromagnetic transducer vs. internal combustion engine characteristics }
 %
-Internal combustion engine have an efficient power-output on a narrow range of speed, hence transmission require many gear-ratio options (modern cars use up to 11! []) to keep the engine at its optimal velocity for any vehicle speed. Moreover, internal combustion engines cannot produce torque at low speed and car transmission must be equipped with a disengaging clutch.  Electric motor are much more flexible and their is less constraints for the design of adapted variable transmission. 
+Internal combustion engine have an efficient power-output on a narrow range of speed, hence transmission require many gear-ratio options (modern cars use up to 11! \cite{goleski_multi-speed_2015}) to keep the engine at its optimal velocity for any vehicle speed. Moreover, internal combustion engines cannot produce torque at low speed and car transmission must be equipped with a disengaging clutch.  Electric motor are much more flexible and there is less constraints for the design of adapted variable transmission. 
 
 %\newline
 \paragraph{Car dynamics vs. robot dynamics }
@@ -115,11 +113,11 @@ For car power-trains the driven load is always a large inertia and is thus natur
 
 \paragraph{Mutli-DoF systems}
 %
-Last and most fundamental difference, is that this thesis explore variable transmission for multi-DoF systems like robotic arms. While for vehicle power-train the system is always single-axis.
+Last and most fundamental difference, this thesis explore the control of VGA in multi-DoF systems like robotic arms, while for vehicle power-train the system is always single-axis.
 
 \paragraph{Solutions}
 %
-All in all, for car power-train the solution is generally something similar to the selection of possible gear-ratios $R$ shown at eq. \eqref{eq:rangestypical}, i.e. single axis, total range variation of about 400\% and small jump between successive gear-ratio. With proposed solution for robotic system, the gear-ratio options would be characterized by multiple-DoF, only two gear-options par axis and large difference between gear-ratio of one or more order-of-magnitude. A typical selection of gear-ratio for a 2 DoF robot is illustrated at \eqref{eq:rangestypical}. Note that section \ref{sec:model} will discuss why gear-ratios for a multi-DoF system are represented with a matrix.
+All in all, for car power-train the solution is generally something similar to the selection of possible gear-ratios $R$ shown at eq. \eqref{eq:rangestypical}, i.e. single axis, limited total range variation of about and small jump between successive gear-ratio. With proposed solution for robotic system, the gear-ratio options would be characterized by multiple-DoF, only two gear-options per axis and order-of-magnitude difference between gear-ratio. A typical selection of gear-ratio for a 2 DoF robot is illustrated at \eqref{eq:rangestypical}. %Note that section \ref{sec:model} will discuss why gear-ratios for a multi-DoF system are represented with a matrix.
 %
 \begin{align}
   \text{Car:}& \quad R \in \{ 3 , 2 , 1.4 , 1 , 0.8 \} 
@@ -188,18 +186,18 @@ The second major contribution of this thesis, is the development of intelligent 
 \section{Results}
 \label{sec:mainresults}
 
-This thesis was invention-driven, focusing on demonstrating the viability and advantages of robotic systems using variable transmissions. 
+This thesis was invention-driven, focusing on demonstrating the viability and advantages of robotic systems using variable transmissions. A robotic arm prototype was developed implementing all the proposed design and control concept proposed in this thesis, from the DSDM actuator design up to computational controllers. 
 
-\subsection{Prototypes}
+\paragraph{Prototypes}
+%
+Two generations of DSDM actuator prototypes were designed, manufactured and tested. The first generation DSDM prototype consist of a linear actuator using a ball-screw output. The second generation consist of two actuated revolute joints equipped with the DSDM technology. A custom light-weight 3-DoF robotic arm using the DSDM actuator prototypes was also built. Moreover, a climbing robot prototype demonstrating a manufacturing robot solution concept motivating the need for VGA actuators was also designed and tested.
 
-Two generations of \emph{DSDM actuator prototypes} were designed, manufactured and tested. The first generation DSDM prototype consist of a linear actuator using a ball-screw output. The second generation consist of two actuated revolute joint equipped with the DSDM technology. 
-
-A \emph{custom light-weight 3-DoF robotic arm} using the DSDM actuator prototypes and all the proposed control algorithms in its control software was developed. 
-
-A \emph{climbing robot prototype} demonstrating a manufacturing robot solution concept motivating the need for VGA actuators was also designed, manufactured and tested.
+\paragraph{Software}
+%
 
 
-\subsection{Theoretical}
+
+\paragraph{Analytical}
 
 \emph{DSDM control laws} exploiting the nullspace leading to independent control of the internal DoF were developed. 
 
