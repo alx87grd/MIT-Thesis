@@ -569,13 +569,13 @@ During high-speed mode the behavior of the output is also dominated by a first-o
 
 Note that, if DSDM would be used on multi-DoF robots, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would be more complex: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected.
 
-\subsection{Hybridness due to Discrete Operating Modes and impacts}
+\subsection{Hybridness due to Discrete Operating Modes and Impacts}
 
 Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes of the system. During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the dynamic behavior is described by the Laplace transfer function given by eq. \eqref{eq:dsdm_output_HF}. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the dynamic behavior is described by state space equation given by eq. \eqref{eq:ss}.
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.65\textwidth]{operating_modes.png}
+		\includegraphics[width=0.95\textwidth]{operating_modes.png}
 	\caption{Discrete operating modes of the actuators TODO: update with jump map}
 	\label{fig:operatingmodes}
 \end{figure}
@@ -813,9 +813,16 @@ where only the gear-ratio is different. This would thus be equivalent to the sys
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.70\textwidth]{discrete_control_modes.png}
+		\includegraphics[width=0.90\textwidth]{operating_modes_ctl.png}
 	\caption{State machine of discrete control modes}
 	\label{fig:automaticflow}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.90\textwidth]{operating_modes_CL.png}
+	\caption{Hybrid Behavior in Closed-loop}
+	\label{fig:hybrid_closedloop}
 \end{figure}
 
 \subsection{High-force mode controller}
