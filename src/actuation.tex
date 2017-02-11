@@ -206,7 +206,7 @@ Note that a two-speed actuator using a single motor and a variable transmission 
 
 VGA actuators, including DSDM actuators, can transmit power more efficiently given various operating conditions. Electric motor efficiency is a function of velocity and applied torque. The efficiency map depends on the electric motor type (DC brushed, AC induction, DC brushless, etc). As a general rule, motors are typically more efficient in the upper-end of their velocity range. Hence, by using multiple gear-ratios, not only motors can be down-sized, but power transmission can be made more efficient. For instance, switching to a large gear-ratio to use a motor at its most efficient operating conditions. This efficiency advantage has been studied for electric cars equipped with multiple speed transmissions \cite{ren_effect_2009} \cite{holdstock_energy_2012} \cite{zhang_three-speed_2013} \cite{mckeegan_antonovs_2011}. This advantage is also of high interest for any mobile robot where on-board energy is limited. Any quantitative analysis of this benefit depends heavily on the specific of the type of motor used, the controller, the robotic system and the task executed by the robotic system. Section \ref{sec:shift_sim} will offer some quantivative simulation results regarding reduced energy consumption of robotic manipulator achieved using VGA actuators.
 
-Another significant efficiency advantage of DSDM actuators, over single-gear motors, is that high-speed mode can be backdrivable for interaction tasks while the high-force mode can be made non-backdrivable (using a irreversible large reduction for M2) in order to be able to hold an object against gravity without having to consume any electrical energy. A backdrivable single-gear motor will always have to supply electrical power just to sustain gravity forces, leading to zero efficiency for holding tasks. Hence, for a robot requiring backdrivability in some task and often holding objects against gravity, the efficiency gain could be huge. Note that some industrial robot arms use brake mounted on actuator outputs to address this type of energy consumption issue \cite{meike_energy_2011}.
+Another significant efficiency advantage of DSDM actuators over single-gear motors, is that high-speed mode can be backdrivable for interaction tasks while the high-force mode can be made non-backdrivable (using a irreversible large reduction for M2) in order to be able to hold an object against gravity without having to consume any electrical energy. A backdrivable single-gear motor will always have to supply electrical power just to sustain gravity forces, leading to zero efficiency for holding tasks. Hence, for a robot requiring backdrivability in some task and often holding objects against gravity, the efficiency gain could be huge. Note that some industrial robot arms use brake mounted on actuator outputs to address this type of energy consumption issue \cite{meike_energy_2011}.
 
 An additional advantage of the DSDM architecture, is that during high-speed operation, many combination of M1 and M2 velocity can lead to the same output velocity. Hence, this internal degree of freedom can be used to further optimize efficiency by distributing motor speeds to minimize the overall energy consumption. 
 
@@ -569,14 +569,14 @@ During high-speed mode the behavior of the output is also dominated by a first-o
 
 Note that, if DSDM would be used on multi-DoF robots, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would be more complex: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected.
 
-\subsection{Hybridness due to Discrete Operating Modes}
+\subsection{Hybridness due to Discrete Operating Modes and impacts}
 
 Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes of the system. During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the dynamic behavior is described by the Laplace transfer function given by eq. \eqref{eq:dsdm_output_HF}. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the dynamic behavior is described by state space equation given by eq. \eqref{eq:ss}.
 
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.65\textwidth]{operating_modes.png}
-	\caption{Discrete operating modes of the actuators}
+	\caption{Discrete operating modes of the actuators TODO: update with jump map}
 	\label{fig:operatingmodes}
 \end{figure}
 
@@ -697,10 +697,7 @@ Hence, M2 velocity will be unchanged and the velocity discontinuity of the outpu
 %\label{eq:dsdm_impact_res}
 %\end{align}
 
-
-
-
-\subsection{Nullspace of the system}
+\subsection{Nullspace of the system during high-speed mode}
 
 \subsubsection{Kinematic}
 
@@ -793,16 +790,16 @@ From an outer-loop point of view, if the commanded torque to the DSDM actuator i
 Then the equation of motions for each operating mode, eq. \eqref{eq:dsdm_output_HSw0} and eq. \eqref{eq:dsdm_output_HFw0},  are simplifyied to:
 
 \begin{align}
-\text{High-speed mode: } \quad \left[ I_o + R_1^2 I_1 \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_1 \right] \tau 
+\text{High-speed mode: } \quad \left[ I_o + R_1^2 I_1 \right] \dot{w}_o +  \left[ b_o \right] w_o  &= \left[ R_1 \right] \tau 
 \label{eq:dsdm_output_R1} \\
-\text{High-force mode: } \quad \left[ I_o + R_2^2 I_2 \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_2 \right] \tau 
+\text{High-force mode: } \quad \left[ I_o + R_2^2 I_2 \right] \dot{w}_o +  \left[ b_o \right] w_o  &= \left[ R_2 \right] \tau 
 \label{eq:dsdm_output_R2}
 \end{align}
 
 and they can be reduced the same structure :
 
 \begin{align}
-\left[ I_o + R_k^2 I_k \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_k \right] \tau \quad k \in {1,2}
+\left[ I_o + R_k^2 I_k \right] \dot{w}_o +  \left[ b_o \right] w_o  &= \left[ R_k \right] \tau \quad k \in {1,2}
 \label{eq:dsdm_output_R} 
 \end{align}
 

@@ -190,24 +190,20 @@ This thesis was invention-driven, focusing on demonstrating the viability and ad
 
 \paragraph{Prototypes}
 %
-Two generations of DSDM actuator prototypes were designed, manufactured and tested. The first generation DSDM prototype consist of a linear actuator using a ball-screw output. The second generation consist of two actuated revolute joints equipped with the DSDM technology. A custom light-weight 3-DoF robotic arm using the DSDM actuator prototypes was also built. Moreover, a climbing robot prototype demonstrating a manufacturing robot solution concept motivating the need for VGA actuators was also designed and tested.
+Two generations of DSDM actuator prototypes were designed, manufactured and tested. The first generation DSDM prototype consist of a linear actuator using a ball-screw output. The second generation consist of two actuated revolute joints equipped with the DSDM technology. A custom light-weight 3-DoF robotic arm using the DSDM actuator prototypes was also built. Moreover, a climbing robot prototype demonstrating a manufacturing robot concept motivating the need for VGA actuators was also designed and tested.
 
 \paragraph{Software}
 %
-A \emph{Python} library providing tools for planning trajectory, controlling and simulating the behavior of robots using VGA, and implementation all proposed novel controllers was developed \cite{girard_alx87grd/alexrobotics_????}. Additionally, ROS wrapper to use those algorithms online to control prototypes were also developped \cite{girard_alx87grd/dsdm_robotics_ros_????}.
+A \emph{Python} library providing tools for planning trajectory, controlling and simulating the behavior of robots using VGA, and implementing all proposed novel controllers was developed \cite{girard_github.com/alx87grd/alexrobotics_2017}. Additionally, ROS wrappers to use those algorithms online to control prototypes were also developped \cite{girard_github.com/alx87grd/dsdm_robotics_ros_2017}.
 
 
 \paragraph{Analytical}
 %
-DSDM control laws exploiting the nullspace leading to independent control of the internal DoF were developed. 
-
-Modeling approach and representation for multi-DoF system with variable transmission
-
+Control laws exploiting the nullspace of DSDM actuator, leading to independent control of the internal DoF were developed. A modeling approach and representation for multi-DoF system with variable transmission, with a special emphasis on instrinsic vs. extrinsic dynamic is proposed. A closed-form solution of optimal gear-ratio of $n$-DoF robotic system on a known trajectory is derived for a simplified scenario. Guarantee in terms of stability and chattering behavior are also derived for the proposed controllers.
 
 \paragraph{Simulations}
 %
-Demonstration of the advantage of dynamic gear-selection with simulation of multi-DoF robots following trajectories 
-
+The advantage of dynamic gear-selection is demonstrated using simulation of multi-DoF robotic arms. Comparison to equivalent robotic system using fixed-gear actuators to accomplish the same motion shows drastic improvement in terms of maximum necessary motor torque and integral cost metric related to energy consumption. 
 
 \paragraph{Experiments}
 %
@@ -217,6 +213,6 @@ Multiple experiments with actuator prototypes demonstrate the salient features o
 \section{Organization of the thesis}
 \label{sec:OrganisationOfTheThesis}
 
-First, chapter \ref{sec:VisionForAircraftManufacturingAutomation} discuss manufacturing applications that would benefict from the developped technologies in this thesis. Chapter \ref{sec:MultipleSpeedActuationTechnology} then present a variable gear-ratio actuator technology using a gear-shifting methodology adapted to robotics. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} explore the generalized problem of dynamic selection of gear-ratios for a robotic systems equipped with variable gear-reducer, and present control algorithms. Chapter \ref{sec:ExperimentalValidation} present the prototype robotic system that is used in all experiments throughout the thesis and discuss the mechanical design and the control system implementation. Chapter \ref{sec:casestudy} presents examples of using the proposed control algorithms in different situations.
+First, chapter \ref{sec:VisionForAircraftManufacturingAutomation} discuss manufacturing applications that would benefict from the developped technologies in this thesis. Chapter \ref{sec:MultipleSpeedActuationTechnology} then present a variable gear-ratio actuator technology, referred to as DSDM, using a gear-shifting methodology adapted to robotics. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} explore the generalized problem of dynamic selection of gear-ratios for a robotic systems equipped with variable gear-reducer, and present control algorithms. Chapter \ref{sec:ExperimentalValidation} present the prototype robotic system that is used in all experiments throughout the thesis and discuss the mechanical design and the control system implementation. Chapter \ref{sec:casestudy} presents examples of using the proposed control algorithms in different situations.
 
 
