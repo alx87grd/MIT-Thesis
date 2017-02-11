@@ -186,7 +186,7 @@ The second major contribution of this thesis, is the development of intelligent 
 \section{Results}
 \label{sec:mainresults}
 
-This thesis was invention-driven, focusing on demonstrating the viability and advantages of robotic systems using variable transmissions. A robotic arm prototype was developed implementing all the proposed design and control concept proposed in this thesis, from the DSDM actuator design up to computational controllers. 
+This thesis was invention-driven, focusing on demonstrating the viability and advantages of robotic systems using variable transmissions. A robotic arm prototype was developed implementing all the design and control concepts proposed in this thesis, from the DSDM actuator design up to computational controllers. 
 
 \paragraph{Prototypes}
 %
@@ -194,29 +194,24 @@ Two generations of DSDM actuator prototypes were designed, manufactured and test
 
 \paragraph{Software}
 %
-
+A \emph{Python} library providing tools for planning trajectory, controlling and simulating the behavior of robots using VGA, and implementation all proposed novel controllers was developed \cite{girard_alx87grd/alexrobotics_????}. Additionally, ROS wrapper to use those algorithms online to control prototypes were also developped \cite{girard_alx87grd/dsdm_robotics_ros_????}.
 
 
 \paragraph{Analytical}
-
-\emph{DSDM control laws} exploiting the nullspace leading to independent control of the internal DoF were developed. 
+%
+DSDM control laws exploiting the nullspace leading to independent control of the internal DoF were developed. 
 
 Modeling approach and representation for multi-DoF system with variable transmission
 
-A \emph{gear-ratio selection algorithm}
 
-\subsection{Simulations}
-
+\paragraph{Simulations}
+%
 Demonstration of the advantage of dynamic gear-selection with simulation of multi-DoF robots following trajectories 
 
 
-\subsection{Experiments}
-
-Demonstration of features of VGA with the DSDM prototypes
-
-Demonstration of fast gear-shifts in many dynamic situations
-
-Software implementation and experimental evaluation of all proposed control algorithms
+\paragraph{Experiments}
+%
+Multiple experiments with actuator prototypes demonstrate the salient features of VGA actuators and the ability of the DSDM technology to change gear-ratio quickly and seamlessly even in very dynamic situations. Experiments with a 1 and 2 DoF system, running the dynamic gear-ratio selection controller, recreate advantageous behaviors obtained in simulations and demonstrate the viability of the technology in real-world conditions.
 
 
 \section{Organization of the thesis}
