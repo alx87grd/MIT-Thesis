@@ -310,7 +310,7 @@ where $Z_i(s) = I_i s + b_i$ represents the mechanical impedance of the i-th por
 %
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.80\textwidth]{dynamics_block.png}
+		\includegraphics[width=0.70\textwidth]{dynamics_block.png}
 	\caption{Dynamics of a DSDM illustrated with a block diagram}
 	\label{fig:dynamics_block}
 \end{figure}
@@ -376,7 +376,11 @@ w_2     \\
 %\right]
 %\end{align}
 %
-The equation of motion can then be rearranged in the standard manipulator equation form, using $w_o$ and $w_1$ are generalized coordinates:
+The equation of motion can then be rearranged in the standard manipulator equation form, using $ \left[
+\begin{array}{c}
+w_o \\ w_1 
+\end{array}
+\right] = \vec{w} = \vec{\dot{q}} $ as generalized coordinates:
 %
 \begin{align}
 \underbrace{ 
@@ -409,7 +413,7 @@ w_o     \\
 w_1      \\
 \end{array}
 \right]}_{\vec{\dot{q}}}
-=
+= \\
 \underbrace{ 
 \left[
 \begin{array}{c c c}
@@ -442,10 +446,10 @@ R_1 & \frac{ I_0 }{ I_2 } (\frac{R_1}{R_2})^2 + R_1^2 \\
 %
 The equations can be converted to linear state space form:
 \begin{align}
-\underbrace{ \vec{\ddot{q}} }_{\dot{\vec{x}}}
+\underbrace{ \vec{\dot{w}} }_{\dot{\vec{x}}}
  &= 
 \underbrace{ \left[ -H^{-1} D \right] }_{F}
-\underbrace{ \vec{\dot{q}} }_{\vec{x}}
+\underbrace{ \vec{w} }_{\vec{x}}
 + 
 \underbrace{ \left[ H^{-1} B \right] }_{G}
 \underbrace{ \vec{\tau} }_{\vec{u}}
@@ -576,7 +580,7 @@ Note that, if DSDM would be used on multi-DoF robots, the left-hand side of equa
 
 \subsection{Hybridness due to Discrete Operating Modes and Impacts}
 
-Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes of the system. During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the dynamic behavior is described by the Laplace transfer function given by eq. \eqref{eq:dsdm_output_HFw0}. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the dynamic behavior is described by state space equation given by eq. \eqref{eq:ss}.
+Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of the system. During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the behavior is described by differential equations $f_1$. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the behavior is described by differential equations $f_1$. As illustrated, at the moment the brake is opened or closed, the discrete mode and the states also instantaneously change, according to some mapping (up-shift $h_u$ and down-shift $h_d$). It is also possible that during operation the actuator output hit an object leading to an impulsive behavior. This behavior is modeled by reset map $h_1$ and $h_2$. This hybrid model capture all the possibles behavior in the course of normal operation.
 
 \begin{figure}[H]
 	\centering
@@ -586,8 +590,92 @@ Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes
 \end{figure}
 
 
+Table \ref{tab:hybrid} outline each mapping given at Fig. \ref{fig:operatingmodes} to corresponding equations.
+
+\begin{table}[htbp]
+	\centering
+	\caption{Hybrid model: Continous equations and discrete jump maps}	% Table caption must be placed on top of the table %
+		\begin{tabular}{ c c c c }
+				\hline \hline
+				Situation           & Discrete Mode     & Mapping   & Equation of motions \\
+				\hline \hline
+				\multicolumn{4}{c}{ Continuous differential equations }\\
+        \hline
+			   High-Force Mode    & $k=1$             & $\dot{\vec{w}} = f_1(\vec{w})$  & given by eq. \eqref{eq:dsdm_output_HF} \\
+				 High-Speed Mode    & $k=2$             & $\dot{\vec{w}} = f_2(\vec{w})$  & given by eq. \eqref{eq:ss}             \\
+				\hline
+				\multicolumn{4}{c}{ Discrete gear-shift jump maps }\\
+				\hline
+				 Up-shift           & $k:1\rightarrow2$  & $\vec{w}^+= h_u(\vec{w}^-)$  &  given by eq. \eqref{eq:upshiftmap}\\
+				 Down-shift         & $k:2\rightarrow1$  & $\vec{w}^+= h_d(\vec{w}^-)$  &  given by eq. \eqref{eq:downshiftmap_ideal}\\
+				\hline
+				\multicolumn{4}{c}{ Output impact jump maps }\\
+				\hline
+				 Impact during HF   & $k:1\rightarrow1$  & $\vec{w}^+= h_1(\vec{w}^-)$  &  \\
+				 Impact during HS   & $k:2\rightarrow2$  & $\vec{w}^+= h_2(\vec{w}^-)$  &  \\
+		    \hline \hline
+        \end{tabular}		
+	\label{tab:hybrid}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Gear-shift events}
+
+\subsubsection{Up-Shift}
+
+During high-force mode, the single DoF is described by the variable $w_o$. Opening the brake release a constraint in the system and do not lead to any impulsive behavior. M1 rotor is simply suddenly free to move starting from rest. The mapping is thus giving by:
+\begin{align} 
+\left[
+\begin{array}{c}
+w_o^+ \\ w_1^+
+\end{array}
+\right] = h_u( w_o^- ) = 
+\left[
+\begin{array}{c}
+w_o^- \\ 0
+\end{array}
+\right]
+\label{eq:upshiftmap}
+\end{align}
+
+
+
+\subsubsection{Down-shift}
+
+For a down-shift the system goes from 2-DoF to 1-DoF, hence the sudden addition of a constraint (brake locked) can lead to an impulsive behavior. However, as it will be discuss in the next section, the controller will always make sure that M1 is at zero velocity before engaging the brake in order to avoid this impulsive behavior. 
+
+%\paragraph{Ideal case}
+
+In normal operation, M1 velocity will be brought to zero before engaging the brake and the mapping is thus smooth and given by:
+%
+\begin{align} 
+w_o^+ 
+ = h_d( \vec{w}^- ) = 
+w_o^- \quad \text{if} \quad w_1^-=0
+\label{eq:downshiftmap_ideal}
+\end{align}
+
+
+%\paragraph{Bad synchronization}
+%
+If the brake would be engaged with non-zero velocity, TODO
+\begin{align} 
+w_o^+ 
+ = h_d( \vec{w}^- ) = 
+w_o^- + TODO(w_1^-)
+\label{eq:downshiftmap_ideal}
+\end{align}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Impacts}
 \label{sec:model_impact}
+
+\subsubsection{High-speed mode impact}
 
 During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities will suddenly change, as a function of the full dynamic of the robot and the contact situation:
 %
@@ -663,6 +751,11 @@ Hence, M2 velocity will be unchanged and the velocity discontinuity of the outpu
 \label{eq:dsdm_impact_gen_delta_w1}
 \end{align}
 
+
+\subsubsection{High-force mode impact}
+
+TODO
+
 %\begin{figure}[H]
 	%\centering
 		%\includegraphics[width=0.70\textwidth]{dsdm_impact_model.png}
@@ -701,6 +794,13 @@ Hence, M2 velocity will be unchanged and the velocity discontinuity of the outpu
 %\Delta w_o  = - w_o^- \quad  \Delta w_1  = - R_1 w_o^-  \quad  \Delta w_2  = 0
 %\label{eq:dsdm_impact_res}
 %\end{align}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Nullspace of the system during high-speed mode}
 
