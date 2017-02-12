@@ -236,9 +236,18 @@ If M2 is no longer able to transmit any torque, M1 can still be used to move the
 \section{Modeling}
 \label{sec:mod}
 
+This section derives mathematical equations describing the behavior of a DSDM actuator for the purpose of designing adequate control laws. 
 
 \subsection{3-ports Planetary Gear Junction}
-As illustrated at Fig. \ref{fig:dualmotorconcept} a planetary gear box can be used to implement the differential junction. With the planet carrier connected to the output, M1 to the sun gear and M2 to the ring gear, the kinematic relation of the system is given by
+
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.85\textwidth]{planetary.png}
+	\caption{Planetary gear-box used as a 3-port junction}
+	\label{fig:planetary}
+\end{figure}
+
+A planetary gear box is used to implement the differential junction that links the two motors to the output. As illustrated by Fig. \ref{fig:planetary}, the planet carrier is connected to the output, M1 to the sun gear and M2 to the ring gear. Note that in typical gear-reducers using a planetary, the ring gear is usually fixed and there is a single DoF in the gearing. Here the ring gear is also mounted on bearing and there is 2 DoF in the gearing. The kinematic relation of the system is given by
 %
 \begin{align}
 	w_o = 
@@ -273,9 +282,7 @@ Hence, the 3-ports planetary coupling can be interpreted as a 0-junction, in the
 \subsection{Dynamics}
 \label{sec:dyn}
 
-
-
-Fig. \ref{fig:dynamics} shows a lumped-parameter dynamic model of a DSDM when the brake is open (high-speed mode). $J_i$ and $b_i$ are the inertia and damping of the respective i-th ports, $V_1$, $V_2$, $i_1$, $i_2$ are the driving tension and currents in M1 and M2, and $k_m$ is the motor constant. 
+Fig. \ref{fig:dynamics} shows a lumped-parameter dynamic model of a DSDM when the brake is open (high-speed mode). $I_i$ and $b_i$ are the inertia and damping of the respective i-th ports. It will be assumed here that low-level high-bandwidth current controller are used, and electromagnetic torques $\tau_1$ and $\tau_2$ are going to be considered directly as inputs to the system. An equivalent bond-graph model is illustrated at Fig. \ref{fig:dynamics_bond}.
 
 \begin{figure}[htb]
 	\centering
@@ -291,9 +298,7 @@ Fig. \ref{fig:dynamics} shows a lumped-parameter dynamic model of a DSDM when th
 	\label{fig:dynamics_bond}
 \end{figure}
 
-
-
-It is then assumed that low-level high-bandwidth current controller will be used, and electromagnetic torques $\tau_i = k_m i_i$ are going to be considered directly as inputs to the system. Applying Newton's law on each ports yields the following equations of motions:
+Applying Newton's law on each ports yields the following equations of motions:
 %
 \begin{align}
 \tau_{ext}  - e_o &= Z_o(s) w_o \\
@@ -301,15 +306,15 @@ It is then assumed that low-level high-bandwidth current controller will be used
 \tau_{2}    - e_2 &= Z_2(s) w_2
 \end{align}
 %
-where $Z_i(s) = J_i s + b_i$ represents the mechanical impedance of the i-th ports. Note that the system is coupled due to the constraint given by eq. \eqref{eq:kinematic} and \eqref{eq:torque}, and that there is only two degrees of freedom among the three ports. Fig. \ref{fig:dynamics_block}, illustrate the coupled equations motion in block diagram form.
-
+where $Z_i(s) = I_i s + b_i$ represents the mechanical impedance of the i-th ports. Note that the system is coupled due to the constraint given by eq. \eqref{eq:kinematic} and \eqref{eq:torque}, and that there is only two degrees of freedom among the three ports. Fig. \ref{fig:dynamics_block}, illustrate the coupled equations motion in block diagram form.
+%
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.80\textwidth]{dynamics_block.png}
 	\caption{Dynamics of a DSDM illustrated with a block diagram}
 	\label{fig:dynamics_block}
 \end{figure}
-
+%
 It is then possible to eliminate one variable and express the dynamic as the following system of two equations:
 %
 \begin{align}
@@ -371,7 +376,7 @@ w_2     \\
 %\right]
 %\end{align}
 %
-For more convenience, the equation of motion are then expressed using the output and M1 coordinates ($w_o$ and $w_1$):
+The equation of motion can then be rearranged in the standard manipulator equation form, using $w_o$ and $w_1$ are generalized coordinates:
 %
 \begin{align}
 \underbrace{ 
@@ -422,7 +427,7 @@ w_1      \\
 \right] }_{\vec{\tau}}
 \label{eq:dsdm_manip}
 \end{align}
-
+%
 The inverse of the inertia matrix is given by:
 \begin{align}
 H^{-1} = 
@@ -434,7 +439,7 @@ R_1 & \frac{ I_0 }{ I_2 } (\frac{R_1}{R_2})^2 + R_1^2 \\
 \end{array}
 \right]
 \end{align}
-
+%
 The equations can be converted to linear state space form:
 \begin{align}
 \underbrace{ \vec{\ddot{q}} }_{\dot{\vec{x}}}
@@ -445,7 +450,7 @@ The equations can be converted to linear state space form:
 \underbrace{ \left[ H^{-1} B \right] }_{G}
 \underbrace{ \vec{\tau} }_{\vec{u}}
 \end{align}
-
+%
 Leading to the following after eliminating the external torque and the damping at each motor port for brevity:
 \begin{align}
 \left[
@@ -555,7 +560,7 @@ R_1 \frac{R_1 I_1}{R_2 I_2}
 \tau_{ext}(s) \\
 &\text{if} \quad Z_1(s) R_1^2 << Z_2(s) R_2^2 
 \quad \& \quad \frac{Z_1(s)}{Z_2(s)} = \frac{I_1}{I_2}
-\label{eq:dsdm_output_HF}
+\label{eq:dsdm_output_HS}
 \end{align}
 
 During high-speed mode the behavior of the output is also dominated by a first-order linear behavior, but interestingly both input torques contributed to the motion through inertial coupling. Note that this differ from a serial architecture, in both case speed adds-up and effort is shared (0-type junction), but inertial properties are different.
@@ -567,11 +572,11 @@ During high-speed mode the behavior of the output is also dominated by a first-o
 \label{eq:dsdm_output_HFw0}
 \end{align}
 
-Note that, if DSDM would be used on multi-DoF robots, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would be more complex: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected.
+Note that, if DSDM would be used on multi-DoF robots, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would be more complex: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected. Also, although neglected in \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0}, motor damping could be reintroduce easily by substituting motor torque $\tau_i$ with the effective torque $\tau_i - b_i w_i$ since those forces are collocated. 
 
 \subsection{Hybridness due to Discrete Operating Modes and Impacts}
 
-Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes of the system. During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the dynamic behavior is described by the Laplace transfer function given by eq. \eqref{eq:dsdm_output_HF}. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the dynamic behavior is described by state space equation given by eq. \eqref{eq:ss}.
+Fig. \ref{fig:operatingmodes} illustrates the different discrete operating modes of the system. During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the dynamic behavior is described by the Laplace transfer function given by eq. \eqref{eq:dsdm_output_HFw0}. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the dynamic behavior is described by state space equation given by eq. \eqref{eq:ss}.
 
 \begin{figure}[H]
 	\centering
