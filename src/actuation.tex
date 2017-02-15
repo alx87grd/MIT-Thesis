@@ -132,7 +132,7 @@ Many dual-motor actuators have been proposed in the literature \cite{tagliamonte
         \subfloat[Variable stiffness \cite{jafari_new_2014}]{
 				\includegraphics[width=0.45\textwidth]{VSA.png}
 				\label{fig:vsa}}
-        \caption{Dual-motor architectures}\label{fig:dualmotoractuators}
+        \caption{Other types of dual-motor architectures}\label{fig:dualmotoractuators}
 \end{figure}
 %
 Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuator model illustrating the conceptual differences between many approaches. Variable stiffness actuators use a variable transmission placed between a compliant element and the load, where it influence the reflected output stiffness but not the steady-state power-transmission characteristics. Macro-micro actuators have a fixed reflected output stiffness, but the advantage is that the additional direct-drive motor on the output makes possible to emulate a wide-range of output impedance. \textbf{The proposed VGA actuators in this thesis are fundamentally different, it is the transmission between the motor and the load that is varied, like in a car transmission.} The main advantage of VGA is regarding efficient power transmission, enabling small motors to make full use of their maximum power at high speed and at low speed. Macro-micro actuators and VSA have no advantages over a regular electric motor regarding the range of speed at which power can be transmitted. On the other hand, macro-micro and VSA have the ability to store and release potential energy in their compliant element, which is not the case with VGA. Regarding, natural reflected impedance, both VSA and VGA have the ability to change it. One fundamental difference is that VGA can only attenuate or amplify the natural inertia and friction of the rotor, while VSA can only modify its reflected stiffness. 
@@ -258,6 +258,7 @@ An additional secondary advantage of the DSDM architecture is that some minimum 
 \begin{table}[h]
 	\centering
 	\caption{Safe Failure Modes of a DSDM actuator}
+	\vspace{+5pt}
 		\begin{tabular}{| p{1.8in} | p{4.2in} |}
 		\hline \hline
 		\textbf{Failure Mode} & \textbf{Fail-safe Operation} \\	\hline \hline & \\
@@ -293,7 +294,7 @@ This section derives mathematical equations describing the behavior of a DSDM ac
 	\label{fig:planetary}
 \end{figure}
 
-A planetary gear box is used to implement the differential junction that links the two motors to the output. As illustrated by Fig. \ref{fig:planetary}, the planet carrier is connected to the output, M1 to the sun gear and M2 to the ring gear. Note that in typical gear-reducers using a planetary, the ring gear is usually fixed and there is a single DoF in the gearing. Here the ring gear is also mounted on bearing and there is 2 DoF in the gearing. The kinematic relation of the system is given by
+A planetary gear box is used to implement the 3-port differential junction that links the two motors to the output. As illustrated by Fig. \ref{fig:planetary}, the planet carrier is connected to the output, M1 to the sun gear and M2 to the ring gear. Note that in typical gear-reducers using a planetary, the ring gear is usually fixed and there is a single DoF in the gearing. Here the ring gear is also mounted on bearing and there is 2 DoF in the gearing. The kinematic relation of the system is given by
 %
 \begin{align}
 	w_o = 
@@ -328,7 +329,7 @@ Hence, the 3-ports planetary coupling can be interpreted as a 0-junction, in the
 \subsection{Dynamics}
 \label{sec:dyn}
 
-Fig. \ref{fig:dynamics} shows a lumped-parameter dynamic model of a DSDM when the brake is open (high-speed mode). $I_i$ and $b_i$ are the inertia and damping of the respective i-th ports. It will be assumed here that low-level high-bandwidth current controller are used, and electromagnetic torques $\tau_1$ and $\tau_2$ are going to be considered directly as inputs to the system. An equivalent bond-graph model is illustrated at Fig. \ref{fig:dynamics_bond}.
+Fig. \ref{fig:dynamics} shows a lumped-parameter dynamic model of a DSDM when the brake is open (high-speed mode). $I_i$ and $b_i$ are the inertia and damping of the respective i-th ports. It will be assumed here that low-level high-bandwidth current controllers are used, and electromagnetic torques $\tau_1$ and $\tau_2$ are going to be considered directly as inputs to the system. An equivalent bond-graph model is illustrated at Fig. \ref{fig:dynamics_bond}.
 
 \begin{figure}[htb]
 	\centering
@@ -339,7 +340,7 @@ Fig. \ref{fig:dynamics} shows a lumped-parameter dynamic model of a DSDM when th
 
 \begin{figure}[htb]
 	\centering
-		\includegraphics[width=0.65\textwidth]{dynamics_bond.jpg}
+		\includegraphics[width=0.60\textwidth]{dynamics_bond.jpg}
 	\caption{Bond-graph dynamic model of a DSDM}
 	\label{fig:dynamics_bond}
 \end{figure}
@@ -422,11 +423,15 @@ w_2     \\
 %\right]
 %\end{align}
 %
-The equation of motion can then be rearranged in the standard manipulator equation form, using $ \left[
+The equation of motion can then be rearranged in the standard manipulator equation form, using
+\begin{align}
+\left[
 \begin{array}{c}
 w_o \\ w_1 
 \end{array}
-\right] = \vec{w} = \vec{\dot{q}} $ as generalized coordinates:
+\right] = \vec{w} = \vec{\dot{q}} 
+\end{align}
+as generalized coordinates for more convenience. Note that since there is not conservative forces in the actuator, all displacement coordinates are ignorable and the dynamic equation is independent of rotor and output angles.
 %
 \begin{align}
 \underbrace{ 
@@ -459,7 +464,7 @@ w_o     \\
 w_1      \\
 \end{array}
 \right]}_{\vec{\dot{q}}}
-= \\
+= 
 \underbrace{ 
 \left[
 \begin{array}{c c c}
@@ -608,8 +613,8 @@ R_1
 R_1 \frac{R_1 I_1}{R_2 I_2}
 \right] \tau_2(s)  + 
 \tau_{ext}(s) \\
-&\text{if} \quad Z_1(s) R_1^2 << Z_2(s) R_2^2 
-\quad \& \quad \frac{Z_1(s)}{Z_2(s)} = \frac{I_1}{I_2}
+\text{with} \quad Z_1(s) R_1^2 << Z_2(s) R_2^2 
+\quad \text{and} \quad \frac{Z_1(s)}{Z_2(s)} = \frac{I_1}{I_2}
 \label{eq:dsdm_output_HS}
 \end{align}
 
@@ -622,21 +627,20 @@ During high-speed mode the behavior of the output is also dominated by a first-o
 \label{eq:dsdm_output_HFw0}
 \end{align}
 
-Note that, if DSDM would be used on multi-DoF robots, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would be more complex: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected. Also, although neglected in \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0}, motor damping could be reintroduce easily by substituting motor torque $\tau_i$ with the effective torque $\tau_i - b_i w_i$ since those forces are collocated. 
+Note that, if when DSDM connected to a robotic system, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would have terms reflecting other forces: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected. Also, although neglected in \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0}, motor damping could be reintroduce easily by substituting motor torque $\tau_i$ with the effective torque $\tau_i - b_i w_i$ since those forces are collocated. 
 
-\subsection{Hybridness due to Discrete Operating Modes and Impacts}
+\subsection{Hybrid Behavior}
 
-Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of the system. During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the behavior is described by differential equations $f_1$. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the behavior is described by differential equations $f_1$. As illustrated, at the moment the brake is opened or closed, the discrete mode and the states also instantaneously change, according to some mapping (up-shift $h_u$ and down-shift $h_d$). It is also possible that during operation the actuator output hit an object leading to an impulsive behavior. This behavior is modeled by reset map $h_1$ and $h_2$. This hybrid model capture all the possibles behavior in the course of normal operation.
-
+Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of the system and discrete events leading to transitions. 
+%
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.95\textwidth]{operating_modes.png}
-	\caption{Discrete operating modes of the actuators TODO: update with jump map}
+	\caption{Discrete operating modes of the actuators}
 	\label{fig:operatingmodes}
 \end{figure}
-
-
-Table \ref{tab:hybrid} outline each mapping given at Fig. \ref{fig:operatingmodes} to corresponding equations.
+%
+During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the behavior is described by continuous differential equations $f_1$. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the behavior is described by continuous differential equations $f_2$. Those two discrete operating modes will be labeled $k=1$, for high-force mode and $k=2$ for high-speed mode. Also, as illustrated, at the moment the brake is opened or closed, the discrete mode and the states also instantaneously change, according to some mapping (up-shift $h_u$ and down-shift $h_d$). It is also possible that during operation the actuator output hit an object leading to an impulsive behavior. This behavior is modeled by reset map $h_1$ and $h_2$. This hybrid model capture all the possibles behavior in the course of normal operation. Table \ref{tab:hybrid} outline each mapping given at Fig. \ref{fig:operatingmodes} to corresponding equations.
 
 \begin{table}[htbp]
 	\centering
@@ -669,7 +673,7 @@ Table \ref{tab:hybrid} outline each mapping given at Fig. \ref{fig:operatingmode
 
 \subsection{Gear-shift events}
 
-\subsubsection{Up-Shift}
+\subsubsection{Up-Shift $k:1\rightarrow2$}
 
 During high-force mode, the single DoF is described by the variable $w_o$. Opening the brake release a constraint in the system and do not lead to any impulsive behavior. M1 rotor is simply suddenly free to move starting from rest. The mapping is thus giving by:
 \begin{align} 
@@ -677,7 +681,7 @@ During high-force mode, the single DoF is described by the variable $w_o$. Openi
 \begin{array}{c}
 w_o^+ \\ w_1^+
 \end{array}
-\right] = h_u( w_o^- ) = 
+\right] = h_u( \vec{w}^- ) = 
 \left[
 \begin{array}{c}
 w_o^- \\ 0
@@ -688,7 +692,7 @@ w_o^- \\ 0
 
 
 
-\subsubsection{Down-shift}
+\subsubsection{Down-shift $k:2\rightarrow1$}
 
 For a down-shift the system goes from 2-DoF to 1-DoF, hence the sudden addition of a constraint (brake locked) can lead to an impulsive behavior. However, as it will be discuss in the next section, the controller will always make sure that M1 is at zero velocity before engaging the brake in order to avoid this impulsive behavior. 
 
