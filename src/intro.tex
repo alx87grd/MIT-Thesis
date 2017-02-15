@@ -180,7 +180,7 @@ The first contribution of the thesis is an actuation technology capable of fast 
 
 \subsection{Control algorithms to select gear-ratios dynamically}
 
-The second major contribution of this thesis, is the development of intelligent automatic gear-ratio selection schemes for robotic systems. A closed-from solution for the optimal gear-ratios of an arbitrary $n$-DoF robotic system along a known trajectory is derived. Control laws extending this principle to online optimal gear-ratios selection based on state feedback are then developed. The key idea is to used a model to estimate intrinsic and extrinsic forces, to compute if it is more advantageous to attenuate extrinsic forces with large gear-ratios or alternatively to leverage them with a small gear-ratios. The method can be applied to arbitrary $n$-DoF non-linear robotic systems, using actuator with any kind of variable gear-reducer. Moreover, a robust version of the control algorithm that can use some knowledge about the level of uncertainty to improve the gear-ratio selection decision is also developed.
+The second major contribution of this thesis, is the development of intelligent automatic gear-ratio selection schemes for robotic systems. A closed-from solution for the optimal gear-ratios of an arbitrary $n$-DoF robotic system along a known trajectory is derived. Control laws extending this principle to online optimal gear-ratios selection based on state feedback are then developed. The key idea is to used a model to estimate intrinsic and extrinsic forces, to compute if it is more advantageous to attenuate extrinsic forces with large gear-ratios or alternatively to leverage them with a small gear-ratios. The method can be applied to arbitrary $n$-DoF fully-actuated non-linear robotic systems, using actuator with any kind of variable gear-reducer. Moreover, a robust version of the control algorithm that can use some knowledge about the level of uncertainty to improve the gear-ratio selection decision is also developed.
 
 
 \section{Results}
@@ -194,7 +194,7 @@ Two generations of DSDM actuator prototypes were designed, manufactured and test
 
 \paragraph{Software}
 %
-A \emph{Python} library providing tools for planning trajectory, controlling and simulating the behavior of robots using VGA, and implementing all proposed novel controllers was developed \cite{girard_github.com/alx87grd/alexrobotics_2017}. Additionally, ROS wrappers to use those algorithms online to control prototypes were also developped \cite{girard_github.com/alx87grd/dsdm_robotics_ros_2017}.
+A \emph{Python} library providing tools for planning trajectory, controlling and simulating the behavior of robots using VGA, and implementing all proposed novel controllers was developed. Additionally, ROS wrappers to use those algorithms online to control prototypes were also developped. Both library are open-source and available on \emph{Github} \cite{girard_github.com/alx87grd/alexrobotics_2017}\cite{girard_github.com/alx87grd/dsdm_robotics_ros_2017}.
 
 
 \paragraph{Analytical}

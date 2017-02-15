@@ -107,7 +107,7 @@ Continuously variable transmission have been used sporadically for car power-tra
 
 In the actuator field, lever mechanisms with variable attachment points that leads to a very wide range of effective transmission ratio \cite{tahara_high-backdrivable_2011}, even infinite range when using a singular configurations \cite{jafari_new_2014}, have been proposed. However, this type of CVT implementation limits drastically the motion range, thus cannot be used for general purpose actuator transmission. In the literature, those mechanisms are used in VSA between the spring and the output, where their limited motion range is not an issue. 
 
-Many clever mechanisms have proposed to be used as CVT. However, all design have some major drawback regarding either: total variation range, constraints on output motion, ratio-variation speed, allowable shift conditions, efficiency, etc. The best indication of this is the automotive industry. On paper, there is a huge incentive to use CVT with internal combustion engine in because of their narrow peak of power and efficiency. However, despite a century of development in one of the largest industry, transmissions using many discrete gear-ratio are still the most widely adopted solution. Even with the recent effort to improve fuel economy, the trend in the industry is to use automatic transmissions with a large number of discrete gear \cite{phillips_10-speed_2010}\cite{goleski_multi-speed_2015}. Furthermore, compared to the automotive field, the incentive of using CVT in robotics is diminished because of more flexible torque curves of electric motor and the wider desired range of ratios. Hence, all the limitations of CVT make this technology unadapted for general purpose robotic actuators. However, a breakthrough in term of IVT technology would be very interesting for the field of robotics.
+Many clever mechanisms have proposed to be used as CVT. However, all design have some major drawback regarding either: total variation range, constraints on output motion, ratio-variation speed, allowable shift conditions, efficiency, etc. The best indication of this is the automotive industry. Theoretically, there is a huge incentive to use CVT for internal combustion engine because of their narrow peak of power and efficiency. However, despite a century of development in one of the largest industry, transmissions using many discrete gear-ratio are still the most widely adopted solution. Even with the recent effort to improve fuel economy, the trend in the industry is to use automatic transmissions with a large number of discrete gear \cite{phillips_10-speed_2010}\cite{goleski_multi-speed_2015}. Furthermore, compared to the automotive field, the incentive of using CVT in robotics is diminished because of more flexible torque curves of electric motor and the challenges are greater because of the wider desired range of ratios. Hence, all the limitations of CVT make this technology unadapted for general purpose robotic actuators. However, a breakthrough in term of IVT technology would be very interesting for the field of robotics.
 
 \subsection{Novel Contribution}
 %\paragraph{Novel Contribution} 
@@ -252,19 +252,27 @@ An additional advantage of the DSDM architecture, is that during high-speed oper
 \subsection{Reliability advantage}
 \label{sec:RelAdvantage}
 
-An additional secondary advantage of the DSDM architecture is that some minimum performance, illustrated by the green area at Fig. \ref{fig:torquespeed}, can be guaranteed even if either motor fail. Here failures leading to either jamming (rotor and stator stuck together) or freewheeling (motor cannot transmit any torque) are considered. 
+An additional secondary advantage of the DSDM architecture is that some minimum performance, illustrated by the green area at Fig. \ref{fig:torquespeed}, can be guaranteed even if either motor fail. Here failures leading to either jamming (rotor and stator stuck together) or freewheeling (motor cannot transmit any torque) are considered. Table \ref{tab:FailureModesOfADSDMActuator} details how those failures mode can be addressed with the DSDM architecture.
 
-\paragraph{Jamming of M1}
-If M1 jams, then the situation is the same as if the brake would be engaged, and the capability of high-force mode is still available.
 
-\paragraph{Jamming of M2}
-If M2 jams, then M1 can still be used freely to move the output. The capability of high-speed are almost fully available, only the maximum speed is reduced as M2 is not available to add-up speed.
+\begin{table}[h]
+	\centering
+	\caption{Safe Failure Modes of a DSDM actuator}
+		\begin{tabular}{| p{1.8in} | p{4.2in} |}
+		\hline \hline
+		\textbf{Failure Mode} & \textbf{Fail-safe Operation} \\	\hline \hline & \\
+		\textbf{Jamming of M1} &
+				If M1 jams, then the situation is the same as if the brake would be engaged, and the capability of high-force mode is still available. \\  & \\ \hline & \\
+				\textbf{Jamming of M2} &
+				If M2 jams, then M1 can still be used freely to move the output. The capability of high-speed are almost fully available, only the maximum speed is reduced as M2 is not available to add-up speed. \\ & \\ \hline & \\  
+				\textbf{Freewheeling of M1} & 
+				If M1 is no longer able to transmit any torque, than if the brake is engaged all the capability of high-force mode are still available. \\ & \\ \hline & \\
+				\textbf{Freewheeling of M2} & 
+				If M2 is no longer able to transmit any torque, M1 can still be used to move the output. Assuming the reduction stage of M2 is irreversible or barely backdrivable (meaning its associated moving part in the differential is still fixed and can sustain reaction forces) then the capability of high-speed are fully available.			\\	& \\ \hline \hline
+		\end{tabular}
+	\label{tab:FailureModesOfADSDMActuator}
+\end{table}
 
-\paragraph{Freewheeling of M1}
-If M1 is no longer able to transmit any torque, than if the brake is engaged all the capability of high-force mode are still available. 
-
-\paragraph{Freewheeling of M2}
-If M2 is no longer able to transmit any torque, M1 can still be used to move the output. Assuming the reduction stage of M2 is irreversible or barely backdrivable (meaning its associated moving part in the differential is still fixed and can sustain reaction forces) then the capability of high-speed are fully available.
 
 %\section{Fast and Seamless Gearshifts}
 %\label{sec:FastAndSeamlessGearshifts}
