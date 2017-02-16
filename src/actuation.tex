@@ -630,9 +630,10 @@ During high-speed mode the behavior of the output is also dominated by a first-o
 
 Note that, if when DSDM connected to a robotic system, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would have terms reflecting other forces: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected. Also, although neglected in \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0}, motor damping could be reintroduce easily by substituting motor torque $\tau_i$ with the effective torque $\tau_i - b_i w_i$ since those forces are collocated. 
 
+\newpage
 \subsection{Hybrid Behavior}
 
-Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of the system and discrete events leading to transitions. 
+Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of the system and possible transitions. Table \ref{tab:hybrid} gives a  
 %
 \begin{figure}[H]
 	\centering
@@ -641,9 +642,7 @@ Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of th
 	\label{fig:operatingmodes}
 \end{figure}
 %
-During high-force mode, when the brake is engaged, the actuator only has a single DoF and control input and the behavior is described by continuous differential equations $f_1$. During high-speed mode, when the brake is open, the actuator has two DoF and two control inputs and the behavior is described by continuous differential equations $f_2$. Those two discrete operating modes will be labeled $k=1$, for high-force mode and $k=2$ for high-speed mode. Also, as illustrated, at the moment the brake is opened or closed, the discrete mode and the states also instantaneously change, according to some mapping (up-shift $h_u$ and down-shift $h_d$). It is also possible that during operation the actuator output hit an object leading to an impulsive behavior. This behavior is modeled by reset map $h_1$ and $h_2$. This hybrid model capture all the possibles behavior in the course of normal operation. Table \ref{tab:hybrid} outline each mapping given at Fig. \ref{fig:operatingmodes} to corresponding equations.
-
-\begin{table}[htbp]
+\begin{table}[H]
 	\centering
 	\caption{Hybrid model: Continous equations and discrete jump maps}	% Table caption must be placed on top of the table %
 		\begin{tabular}{ c c c c }
@@ -668,6 +667,8 @@ During high-force mode, when the brake is engaged, the actuator only has a singl
         \end{tabular}		
 	\label{tab:hybrid}
 \end{table}
+%
+During high-force mode (labeled $k=1$), when the brake is engaged, and high-speed mode (labeled $k=2$), when the brake is open, the behavior of the system can be described by discrete sets of continuous differential equations $\vec{\dot{w}}=f_k( \vec{w} )$. It is also possible that during operation the actuator output hit an object leading to an impulsive behavior. This behavior is modeled by the appropriate reset map$\vec{w}^+=h_k( \vec{w}^- )$, depending on the active mode. Also, at the moment the brake is opened or closed, the discrete mode and the states also instantaneously change, according to some mapping (up-shift $\vec{w}^+=h_u( \vec{w}^- )$ and down-shift $\vec{w}^+=h_d( \vec{w}^- )$).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -785,7 +786,7 @@ w_o^- + TODO(w_1^-) \\ 0
 
 \subsubsection{High-speed mode impact}
 
-During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities can suddenly change. Since there is no impulsive force on the motor side, the effect of the contacts, from the actuator point-of-view, can be reduce to a impulse torque $\tau_c$ applied to the output of the actuator, leading to impulsive map:
+During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities can suddenly change. Since there is no impulsive force on the motor side, the effect of the contacts, from the actuator point-of-view, can be reduce to a impulse torque $\tau_c$ applied to the output of the actuator. Using eq. \eqref{eq:manipulator_impact}, it leads to to impulsive map:
 %
 \begin{align}
 \left[
