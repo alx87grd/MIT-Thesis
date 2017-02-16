@@ -785,10 +785,7 @@ w_o^- + TODO(w_1^-) \\ 0
 
 \subsubsection{High-speed mode impact}
 
-During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities will suddenly change, 
-
-
-However, since there is no impulsive force on the motor side, the effect of the contact, from the actuator point-of-view, can be reduce to a impulse torque $\tau_c$ applied to the output of the actuator, leading to:
+During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities can suddenly change. Since there is no impulsive force on the motor side, the effect of the contacts, from the actuator point-of-view, can be reduce to a impulse torque $\tau_c$ applied to the output of the actuator, leading to impulsive map:
 %
 \begin{align}
 \left[
@@ -796,7 +793,7 @@ However, since there is no impulsive force on the motor side, the effect of the 
 w_0^+ \\
 w_1^+ \\
 \end{array}
-\right] = 
+\right] = h_2( \vec{w}^- , \int \tau_c dt ) = 
 \left[
 \begin{array}{c}
 w_0^- \\
@@ -847,7 +844,22 @@ Hence, M2 velocity will be unchanged and the velocity discontinuity of the outpu
 
 \subsubsection{High-force mode impact}
 
-TODO
+During high-force mode, assuming the brake is strong enough not to slip during the impact, the impulsive mapping is given by :
+%
+\begin{align}
+\left[
+\begin{array}{c}
+w_0^+ \\
+w_1^+ \\
+\end{array}
+\right] = h_1( \vec{w}^- , \int \tau_c dt ) = 
+\left[
+\begin{array}{c}
+w_0^- + \frac{\int{\tau_c dt}}{I_o + R_2^2  I_2 } \\
+0 \\
+\end{array}
+\right]  
+\end{align}
 
 %\begin{figure}[H]
 	%\centering
@@ -895,6 +907,7 @@ TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newpage
 \subsection{Nullspace of the system during high-speed mode}
 
 \subsubsection{Kinematic}
