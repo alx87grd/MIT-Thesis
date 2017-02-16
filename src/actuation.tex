@@ -504,6 +504,7 @@ The equations can be converted to linear state space form:
 + 
 \underbrace{ \left[ H^{-1} B \right] }_{G}
 \underbrace{ \vec{\tau} }_{\vec{u}}
+\label{eq:ss_full}
 \end{align}
 %
 Leading to the following after eliminating the external torque and the damping at each motor port for brevity:
@@ -605,7 +606,7 @@ Assuming the reflected impedance of M1 is much smaller than that of M2, and negl
 \begin{align}
 \left[
 Z_o(s)  + R_1^2 Z_1(s)
-\right] w_o(s) &= 
+\right] w_o(s) = 
 \left[
 R_1
 \right] \tau_1(s)  + 
@@ -652,7 +653,7 @@ During high-force mode, when the brake is engaged, the actuator only has a singl
 				\multicolumn{4}{c}{ Continuous differential equations }\\
         \hline
 			   High-Force Mode    & $k=1$             & $\dot{\vec{w}} = f_1(\vec{w})$  & given by eq. \eqref{eq:dsdm_output_HF} \\
-				 High-Speed Mode    & $k=2$             & $\dot{\vec{w}} = f_2(\vec{w})$  & given by eq. \eqref{eq:ss}             \\
+				 High-Speed Mode    & $k=2$             & $\dot{\vec{w}} = f_2(\vec{w})$  & given by eq. \eqref{eq:ss_full}             \\
 				\hline
 				\multicolumn{4}{c}{ Discrete gear-shift jump maps }\\
 				\hline
@@ -671,11 +672,52 @@ During high-force mode, when the brake is engaged, the actuator only has a singl
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsection{Continuous differential equations}
+
+\subsubsection{High-Force Mode $k=1$}
+
+From eq. \eqref{eq:dsdm_output_HF}, the continous differential equation mapping during high-force mode can be written as:
+%
+\begin{align}
+\left[
+\begin{array}{c}
+\dot{w_o}\\
+\dot{w_1}
+\end{array}
+\right] &= f_1( \vec{w} , \vec{\tau} ) = 
+\left[ \begin{array}{c}
+\frac{1}{I_0 + R^2_2 I_2}\left( -(b_o + R_2^2 b_2) w_o + R_2 \tau_2 + \tau_o \right)\\
+0
+\end{array} \right]
+\label{eq:f1}
+\end{align}
+
+
+\subsubsection{High-Speed Mode $k=2$}
+
+From eq. \eqref{eq:ss_full}, the continous differential equation mapping during high-speed mode can be written as:
+%
+\begin{align}
+\left[
+\begin{array}{c}
+\dot{w_o}\\
+\dot{w_1}
+\end{array}
+\right] &= f_2( \vec{w} , \vec{\tau} ) = 
+\left[ -H^{-1} D \right]
+\vec{w} 
++ 
+\left[ H^{-1} B \right] 
+\vec{\tau}
+\label{eq:f2}
+\end{align}
+
+
 \subsection{Gear-shift events}
 
 \subsubsection{Up-Shift $k:1\rightarrow2$}
 
-During high-force mode, the single DoF is described by the variable $w_o$. Opening the brake release a constraint in the system and do not lead to any impulsive behavior. M1 rotor is simply suddenly free to move starting from rest. The mapping is thus giving by:
+During high-force mode, the single DoF is described by the variable $w_o$. Opening the brake release a constraint in the system and do not lead to any impulsive behavior. M1 rotor is simply suddenly free to move starting from rest. The mapping is thus given by:
 \begin{align} 
 \left[
 \begin{array}{c}
@@ -701,9 +743,17 @@ For a down-shift the system goes from 2-DoF to 1-DoF, hence the sudden addition 
 In normal operation, M1 velocity will be brought to zero before engaging the brake and the mapping is thus smooth and given by:
 %
 \begin{align} 
-w_o^+ 
+\left[
+\begin{array}{c}
+w_o^+ \\ w_1^+
+\end{array}
+\right]
  = h_d( \vec{w}^- ) = 
-w_o^- \quad \text{if} \quad w_1^-=0
+\left[
+\begin{array}{c}
+w_o^- \\ 0
+\end{array}
+\right] \quad \text{if} \quad w_1^-=0
 \label{eq:downshiftmap_ideal}
 \end{align}
 
@@ -712,9 +762,17 @@ w_o^- \quad \text{if} \quad w_1^-=0
 %
 If the brake would be engaged with non-zero velocity, TODO
 \begin{align} 
-w_o^+ 
+\left[
+\begin{array}{c}
+w_o^+ \\ w_1^+
+\end{array}
+\right]
  = h_d( \vec{w}^- ) = 
-w_o^- + TODO(w_1^-)
+\left[
+\begin{array}{c}
+w_o^- + TODO(w_1^-) \\ 0
+\end{array}
+\right]
 \label{eq:downshiftmap_ideal}
 \end{align}
 
@@ -727,25 +785,10 @@ w_o^- + TODO(w_1^-)
 
 \subsubsection{High-speed mode impact}
 
-During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities will suddenly change, as a function of the full dynamic of the robot and the contact situation:
-%
-\begin{align}
-\left[
-\begin{array}{c}
-w_0^+ \\
-w_1^+ \\
-\end{array}
-\right] = 
-\left[
-\begin{array}{c}
-w_0^- \\
-w_1^- \\
-\end{array}
-\right] +
-\vec{h}( \vec{q} , \vec{\dot{q}} , J_c )
-\end{align}
-%
-where $\vec{h}$ can be a complex mapping involving high-dimensional dynamic and constraints. However, since there is no impulsive force on the motor side, the effect of the contact, from the actuator point-of-view, can be reduce to a impulse torque $\tau_c$ applied to the output of the actuator, leading to:
+During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities will suddenly change, 
+
+
+However, since there is no impulsive force on the motor side, the effect of the contact, from the actuator point-of-view, can be reduce to a impulse torque $\tau_c$ applied to the output of the actuator, leading to:
 %
 \begin{align}
 \left[
