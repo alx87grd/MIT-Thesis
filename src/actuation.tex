@@ -1094,14 +1094,14 @@ The nullspace can be used for many possible objectives. In case the first motor 
 This section addresses transition control between the two discrete operating modes.
 
 
-\subsubsection{Up-shift: From high-force mode to high-speed mode}
+\subsubsection{Up-shift: $k:1\rightarrow2$}
 In this case, the transition is simple because the system goes from 1 DoF to 2 DoF. As described by eq. \eqref{eq:upshiftmap} opening the brake at anytime does not lead to any undesirable impulsive behavior. As described by the state machine, as soon as an up-shift is commanded, the locking brake can be released, M1 is then instantaneously freed and the controller can immediately switch to the high-speed control mode.
 %
 
-\subsubsection{Down-shift: From high-speed mode to high-force mode}
+\subsubsection{Down-shift: $k:2\rightarrow1$}
 In this case, the transition is harder because the system goes from 2 DoF to 1 DoF, and some synchronization work is needed. As described by eq. \eqref{eq:downshiftmap_nonideal}, closing the brake will lead to an undesirable impulsive behavior if M1 is not already still. M1 speed $w_1$ must thus be brought to zero so that the locking brake can be engaged smoothly without any impact. Hence, as illustrated at Fig. \ref{fig:automaticflow}, when a down-shift is commanded, and intermediary synchronization control mode is activated, and the brake is only closed after M1 as reach zero velocity. %Two algorithms, a kinematic and a dynamic approach, can be considered. 
 
-\subsubsection{Synchronization control algorithm}
+\subsubsection{Synchronization controller}
 First, a solution from a kinematic point-of-view is considered, then more flexible dynamic approach is proposed. Assuming the two motor velocities $w_1$ and $w_2$ can be treated as control inputs, then using the nullspace projection vector from eq.\eqref{eq:kinematicnullspace}, the kinematic control law can be written as 
 %
 \begin{align}
@@ -1166,10 +1166,17 @@ and a $w_1$ closed-loop dynamic converging exponentially to zero if the synchron
 
 Hence, the output is not influenced by the braking law due to orthogonality, and is only controlled by the desired torque $\tau_d$. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturation. The other advantage of this approach over fully uncoupling the equations, is that the nullspace projection only required motor-side parameters and is valid even when load-side dynamic is unknown. 
 
-Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control. Also the synchronization gain can be a complex compensator, for instance a PI ( $C(s) = k_p + \frac{k_i}{s}$ ), for better rejection of disturbances coming from the main loop coupling. 
+Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If undesirable coupling from main loop are too larges and conflicting with the downshift process, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes so large that both motor torques saturate then synchronization is guaranteed:
+
+equation with saturation torque
+
+assuming $\tau_d$ is bounded by XXXX.
 
 \subsection{Preparation in the nullspace for faster down-shifts}
 \label{sec:prep}
+
+
+Here control are proposed to use the secondary objective, during regular high-speed operation, to prepare for a possible incoming down-shift command in the way that will make the synchronization process faster. 
 
 This section described a control scheme where the velocity of the internal DoF is adjusted beforehand when an impact is expected, so that impact forces bring M1 velocity close to zero, allowing for fast down-shift transitions. This is aimed at situation like a leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot.
 
