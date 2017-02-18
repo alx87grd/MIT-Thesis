@@ -356,7 +356,7 @@ Here a minimum time delay between a back-and-forth gear-shift sequence is derive
 	\label{fig:costontrajrollout}
 \end{figure}
 
-It can be shown that there is a minimum delay $\Delta t$ between a back-and-forth gear-shift sequence. Hence, no arbitrary fast chattering between gear-ratio (zeno behavior [REF switched system]) is possible. 
+It can be shown that there is a minimum delay $\Delta t$ between a back-and-forth gear-shift sequence. Hence, no arbitrary fast chattering between gear-ratio (zeno behavior \cite{liberzon_switching_2003}) is possible. 
 
 \paragraph{Proof} 
 
@@ -370,9 +370,9 @@ j \rightarrow i  \quad\text{at time}\quad t+\Delta t &\quad\Rightarrow\quad J_i(
 Then to simplify the notation, integral cost on the trajectory is given by the following value for each three sections of interest:
 %
 \begin{align}
-J_k^A &= \int_{t}^{t+\Delta t}{         C_k  d\hat{t}  }   \\
-J_k^B &= \int_{t+\Delta t}^{t+h}{       C_k  d\hat{t}  }   \\
-J_k^C &= \int_{t+h}^{t+\Delta t+h}{     C_k  d\hat{t}  }
+J_k^A = \int_{t}^{t+\Delta t}{         C_k  d\hat{t}  }   \quad \quad
+J_k^B = \int_{t+\Delta t}^{t+h}{       C_k  d\hat{t}  }   \quad \quad
+J_k^C = \int_{t+h}^{t+\Delta t+h}{     C_k  d\hat{t}  }
 \end{align}
 %
 Then it is possible to express the computed cost of predictive simulation done at $\Delta t$ time difference by the sum of a identical part and a different part:
@@ -392,7 +392,7 @@ Now assuming there is an upper bound on instantaneous cost $C_k^{max}$, an upper
 %
 \begin{align}
 0 \leq J_k^C   \leq  C_k^{max} \Delta t \\
-0 \leq J_k^A   \leq  C_k^{max} \Delta t \\
+0 \leq J_k^A   \leq  C_k^{max} \Delta t 
 \end{align}
 %
 The cost variation is thus bounded is this range:
@@ -405,7 +405,7 @@ Hence the time evolution of computed cost can be bounded:
 %
 \begin{align}
 J_j(t+\Delta t) \leq J_j(t)  + C_k^{max} \Delta t \\
-J_i(t+\Delta t) \geq J_i(t)  - C_k^{max} \Delta t \\
+J_i(t+\Delta t) \geq J_i(t)  - C_k^{max} \Delta t 
 \end{align}
 %
 Finally it is possible to combine all those inequality, starting with the condition for the second gearshift:
@@ -423,6 +423,7 @@ Hence resulting in the desired inequality relating instantaneous cost and time b
 \Delta t \geq \frac{Q}{C_k^{max}}
 \end{align}
 %
+Note that if there is more than 2 discrete gear-ratio options, this analysis gives not insight about possible sequences of gear-shift during this interval, but still guarantee the minimum time for a full cycle (coming back to the starting gear-ratio).
 
 \subsection{Arbitrary}
 \label{sec:chat2}
