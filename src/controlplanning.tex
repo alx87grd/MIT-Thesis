@@ -873,7 +873,7 @@ For the minimum energy controller, interestingly the mode selection policy is no
 
 \subsubsection{Non-linear 1-DoF robot}
 
-Figure \ref{fig:J} illustrates the computed optimal cost-to-go for both the minimal time and quadratic cost problem. Figure \ref{fig:u0} shows the optimal torque policy and Figure \ref{fig:u1} shows the optimal gear selection policy. The resulting closed loop behavior is illustrated in the phase plane at Figure \ref{fig:phase_plane}. Figure \ref{fig:phase_plane} also shows closed-loop state trajectories and control inputs for a simulation starting at $q$ = -2 rad.
+Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted pendulum system for both a minimal time goal and a quadratic cost minimization. Figure \ref{fig:u0} shows the optimal torque policy and Figure \ref{fig:u1} shows the optimal gear selection policy. The resulting closed loop behavior is illustrated in the phase plane at Figure \ref{fig:phase_plane}. Figure \ref{fig:phase_plane} also shows closed-loop state trajectories and control inputs for a simulation starting at $q$ = -2 rad.
 
 \begin{figure*}[htpb]
         \centering
@@ -905,7 +905,7 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for both the mini
         \subfloat[Quadratic cost]{
 				\includegraphics[width=0.48\textwidth]{u1_quadratic.png}
 				\label{fig:u1_LQR}}
-        \caption{Optimal policy for the gear selection $R$}\label{fig:u1}
+        \caption{Optimal policy for the discrete gear selection $k \in [1,2]$}\label{fig:u1}
 \end{figure*}
 
 \begin{figure*}[htpb]
@@ -919,90 +919,91 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for both the mini
         \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane. Two trajectories starting at $q=-2$ are illustrated, blue is open-loop, red is closed loop}\label{fig:phase_plane}
 \end{figure*}
 
-\begin{figure*}[htpb]
-        \centering
-				\subfloat[Minimum time]{
-        \includegraphics[width=0.48\textwidth]{Traj_time.png}
-				\label{fig:phase_plane_time}}
-        \subfloat[Quadratic cost]{
-				\includegraphics[width=0.48\textwidth]{Traj_quadratic.png}
-				\label{fig:phase_plane_LQR}}
-        \caption{State trajectories and control inputs for a closed loop simulation starting at $q=-2$}\label{fig:phase_plane}
-\end{figure*}
 
-The only issues that was found with those computations is that care need to be be used when picking the out-of bound termination conditions. Indeed, because of the stochastic state evolution, the high-cost assigned to out-of-bound terminations diffuse inside the boundary and reach states that should be able to never go out-of-bound (with a deterministic evolution). To alleviate this problem, the out-of-bound termination cost is set to a value just slightly bigger that the maximum expected optimal cost-to-go reaching the goal. Also, the boundary is set so that the boundary layer affected by this diffusion is not reaching the zone of interest.
+%\begin{figure*}[htpb]
+        %\centering
+				%\subfloat[Minimum time]{
+        %\includegraphics[width=0.48\textwidth]{Traj_time.png}
+				%\label{fig:phase_plane_time}}
+        %\subfloat[Quadratic cost]{
+				%\includegraphics[width=0.48\textwidth]{Traj_quadratic.png}
+				%\label{fig:phase_plane_LQR}}
+        %\caption{State trajectories and control inputs for a closed loop simulation starting at $q=-2$}\label{fig:phase_plane}
+%\end{figure*}
+
+%The only issues that was found with those computations is that care need to be be used when picking the out-of bound termination conditions. Indeed, because of the stochastic state evolution, the high-cost assigned to out-of-bound terminations diffuse inside the boundary and reach states that should be able to never go out-of-bound (with a deterministic evolution). To alleviate this problem, the out-of-bound termination cost is set to a value just slightly bigger that the maximum expected optimal cost-to-go reaching the goal. Also, the boundary is set so that the boundary layer affected by this diffusion is not reaching the zone of interest.
 
 
-\subsection{Feedback laws simplification}
-
-TODO Using regresstion to obtain analytical feedback laws...
-
-In this section, simplified algebraic control laws are extracted from the numerical map of optimal control actions for the quadratic cost controller. The dynamic programming algorithm outputs a list of optimal actions that is assumed are samples of a  map of optimal actions $\vec{u}^* = \pi^* ( \vec{x} )$. The goal is then to find a simplified map $\hat{\pi}( \vec{x} )$ based on the samples. Here a two-steps approach is used; first the state-space is segmented into zones based on the optimal discrete action $u_2$, then regression is used to compute the $u_1$ map independently in each zone. 
-
-\subsubsection{1-DoF linear robot example}
-
-\paragraph{Segmentation}
-For the resulting optimal policy found at Fig. \ref{fig:u0_LQR}, three main zones can be identified. The boundaries are approximated by two lines at $\dot{x}= \pm \; 20 $, and the samples are separated into two groups:
-\begin{align}
-\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 1} \quad \text{if} \; | \dot{x} | \geq 20 \\
-\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 2} \quad \text{if} \; | \dot{x} | < 20
-\end{align}
-
-For more complex segmentation, machine learning techniques could be used to perform the classification.
-
-\paragraph{Continuous maps}
-
-In each zones, the optimal continuous input $u_1^*$ is very close to a planar surface with exceptions when the input saturates or near the boundaries, see Fig. \ref{fig:u0_LQR}. Here, it is proposed to forgo absolute optimality and instead use the simplest control law that can globally approximate $u_1^*$ map. Hence, simple linear plane are fitted on the samples group by group. The regression is defined as follow, the dependent variable to approximate is $u_1$, the independent variables are the state coordinates $\vec{x}^T = [ x  \; \dot{x} ]$ and the parameter vector is $\vec{\alpha}^T = [ k_p  \; k_d ]$. Hence the continuous control variable $\hat{u}_1$ is approximated with the following linear map:
-\begin{align}
-\hat{u}_1 = \vec{\alpha}^T \vec{x} = k_p  x + k_d \dot{x}
-\end{align}
-which is essentially a simple proportional-derivative control law. Then the parameters are estimated using a least-square criterion, $\vec{\alpha}_1$ using the samples in group 1 and $\vec{\alpha}_2$ samples in group 2. Then combining the segmentation and both linear maps, the global control policy is approximated with the following law:
-\begin{align}
-\vec{ \hat{u}} &= \hat{\pi} ( \vec{x} )
- = \left \{ 
-	\begin{array}{c}
-	\left[
-	\begin{array}{c}
-		 \vec{\alpha}_1^T \vec{x} \\
-		 1 
-	\end{array} 
-	\right] 		
-	\text{if} \; | \dot{x} | \geq 20 \\ \\
-		 \left[
-		\begin{array}{c}
-		 \vec{\alpha}_2^T \vec{x} \\ 
-		 2
-	\end{array}
-		 \right]
-		\text{if} \; | \dot{x} | < 20
-	\end{array}
-	\right.
-	\label{eq:uhat}
-\end{align}
-Fig. \ref{fig:u0_LQR_approx} shows the resulting continuous control policy $\hat{u}_1$ for the full state-space, and is an approximation of Fig. \ref{fig:u0_LQR} map.
-
-%\begin{figure}[H]
-	%\centering
-		%\includegraphics[width=0.30\textwidth]{u1aq.png}
-	%\caption{Continuous map approximation for $u_1$}
-	%\label{fig:u0_LQR_approx}
+%\subsection{Feedback laws simplification}
+%
+%TODO Using regresstion to obtain analytical feedback laws...
+%
+%In this section, simplified algebraic control laws are extracted from the numerical map of optimal control actions for the quadratic cost controller. The dynamic programming algorithm outputs a list of optimal actions that is assumed are samples of a  map of optimal actions $\vec{u}^* = \pi^* ( \vec{x} )$. The goal is then to find a simplified map $\hat{\pi}( \vec{x} )$ based on the samples. Here a two-steps approach is used; first the state-space is segmented into zones based on the optimal discrete action $u_2$, then regression is used to compute the $u_1$ map independently in each zone. 
+%
+%\subsubsection{1-DoF linear robot example}
+%
+%\paragraph{Segmentation}
+%For the resulting optimal policy found at Fig. \ref{fig:u0_LQR}, three main zones can be identified. The boundaries are approximated by two lines at $\dot{x}= \pm \; 20 $, and the samples are separated into two groups:
+%\begin{align}
+%\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 1} \quad \text{if} \; | \dot{x} | \geq 20 \\
+%\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 2} \quad \text{if} \; | \dot{x} | < 20
+%\end{align}
+%
+%For more complex segmentation, machine learning techniques could be used to perform the classification.
+%
+%\paragraph{Continuous maps}
+%
+%In each zones, the optimal continuous input $u_1^*$ is very close to a planar surface with exceptions when the input saturates or near the boundaries, see Fig. \ref{fig:u0_LQR}. Here, it is proposed to forgo absolute optimality and instead use the simplest control law that can globally approximate $u_1^*$ map. Hence, simple linear plane are fitted on the samples group by group. The regression is defined as follow, the dependent variable to approximate is $u_1$, the independent variables are the state coordinates $\vec{x}^T = [ x  \; \dot{x} ]$ and the parameter vector is $\vec{\alpha}^T = [ k_p  \; k_d ]$. Hence the continuous control variable $\hat{u}_1$ is approximated with the following linear map:
+%\begin{align}
+%\hat{u}_1 = \vec{\alpha}^T \vec{x} = k_p  x + k_d \dot{x}
+%\end{align}
+%which is essentially a simple proportional-derivative control law. Then the parameters are estimated using a least-square criterion, $\vec{\alpha}_1$ using the samples in group 1 and $\vec{\alpha}_2$ samples in group 2. Then combining the segmentation and both linear maps, the global control policy is approximated with the following law:
+%\begin{align}
+%\vec{ \hat{u}} &= \hat{\pi} ( \vec{x} )
+ %= \left \{ 
+	%\begin{array}{c}
+	%\left[
+	%\begin{array}{c}
+		 %\vec{\alpha}_1^T \vec{x} \\
+		 %1 
+	%\end{array} 
+	%\right] 		
+	%\text{if} \; | \dot{x} | \geq 20 \\ \\
+		 %\left[
+		%\begin{array}{c}
+		 %\vec{\alpha}_2^T \vec{x} \\ 
+		 %2
+	%\end{array}
+		 %\right]
+		%\text{if} \; | \dot{x} | < 20
+	%\end{array}
+	%\right.
+	%\label{eq:uhat}
+%\end{align}
+%Fig. \ref{fig:u0_LQR_approx} shows the resulting continuous control policy $\hat{u}_1$ for the full state-space, and is an approximation of Fig. \ref{fig:u0_LQR} map.
+%
+%%\begin{figure}[H]
+	%%\centering
+		%%\includegraphics[width=0.30\textwidth]{u1aq.png}
+	%%\caption{Continuous map approximation for $u_1$}
+	%%\label{fig:u0_LQR_approx}
+%%\end{figure}
+%
+%\begin{figure}[htpb]
+				%\vspace{-10pt}
+        %\centering
+				%\subfloat[Map for $u_1$ (Nm)]{
+        %\includegraphics[width=0.45\textwidth]{u1aq.pdf}
+				%\label{fig:u0_LQR_approx}}
+        %\subfloat[Phase plane behavior]{
+				%\includegraphics[width=0.40\textwidth]{pp2q.pdf}
+				%\label{fig:phase_plot_lqr}}
+        %\caption{Approximated control laws and resulting behavior}\label{fig:approx}
 %\end{figure}
-
-\begin{figure}[htpb]
-				\vspace{-10pt}
-        \centering
-				\subfloat[Map for $u_1$ (Nm)]{
-        \includegraphics[width=0.45\textwidth]{u1aq.pdf}
-				\label{fig:u0_LQR_approx}}
-        \subfloat[Phase plane behavior]{
-				\includegraphics[width=0.40\textwidth]{pp2q.pdf}
-				\label{fig:phase_plot_lqr}}
-        \caption{Approximated control laws and resulting behavior}\label{fig:approx}
-\end{figure}
-
-
-The resulting behavior with the control law of eq.\eqref{eq:uhat} is illustrated in the phase plane at Fig. \ref{fig:phase_plot_lqr}, where the arrows illustrate the state derivative throughout the state space. The blue arrows illustrate the natural dynamic of the system and the red arrows illustrate the closed behavior with the control policy of eq.\eqref{eq:uhat}. At high speed with the small reduction ratio, the controller only takes small actions illustrated by the fact that red arrows only have small deviation compared to blue arrows. However at low speed, the large reduction ratio is used to drastically change the natural behavior of the system, illustrated by the large red arrows. 
-
+%
+%
+%The resulting behavior with the control law of eq.\eqref{eq:uhat} is illustrated in the phase plane at Fig. \ref{fig:phase_plot_lqr}, where the arrows illustrate the state derivative throughout the state space. The blue arrows illustrate the natural dynamic of the system and the red arrows illustrate the closed behavior with the control policy of eq.\eqref{eq:uhat}. At high speed with the small reduction ratio, the controller only takes small actions illustrated by the fact that red arrows only have small deviation compared to blue arrows. However at low speed, the large reduction ratio is used to drastically change the natural behavior of the system, illustrated by the large red arrows. 
+%
 
 
 
