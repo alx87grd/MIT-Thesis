@@ -67,11 +67,11 @@ Open-loop trajectories can be unstable and if the system deviate from the origin
 
 \paragraph{Feedback control}
 
-One possible approach for closing the loop would be simply to re-plan trajectory continuously online. However, the rate at which this would be possible for hybrid robotic system would not be sufficient. Here we aim at having control policies that can react to a situation in factions of a second (~50 ms), for instance down-shifting as a robotic leg touch the ground. 
+One possible approach for closing the loop would be simply to re-plan trajectory continuously online. However, the rate at which this would be possible for hybrid robotic system would not be sufficient. Here we aim at having control policies that can react to a situation in a matter of milliseconds, for instance down-shifting as a robotic leg touch the ground. 
 
-Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it only works for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section \ref{sec:DynamicProgrammingAproach}, which is an extention of work already published in a previous conferance paper \cite{girard_practical_2016}.
+Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it only works for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section \ref{sec:DynamicProgrammingAproach}, which is an extention of work already published by the author \cite{girard_practical_2016}.
 
-An alternative model-based approach is proposed in section \ref{sec:HierachicalControlApproach} with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The work in the section is an extension of a journal paper, but present improved algorithms \cite{girard_leveraging_2017}.
+An alternative model-based approach is proposed in section \ref{sec:HierachicalControlApproach} with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The work in that section is an extension of a journal paper, but present improved algorithms \cite{girard_leveraging_2017}.
 
 
 
@@ -80,7 +80,7 @@ An alternative model-based approach is proposed in section \ref{sec:HierachicalC
 \section{Control architecture}
 \label{sec:arch}
 
-This chapter proposed control schemes to dynamically select the optimal gear-ratios online. The focus is on feedback policies, that can react quickly to the states of the robot, and engage the appropriate gear-ratio with minimal delays (in the order of 10-50 ms). Two approaches are investigated and illustrated at Fig. \ref{fig:controlarchitectures}. 
+This chapter proposed control schemes to dynamically select the optimal gear-ratios online. The focus is on feedback policies, that can react quickly to the states of the robot, and engage the appropriate gear-ratio with minimal delays (in the order of 20 ms). Two approaches are investigated and illustrated at Fig. \ref{fig:controlarchitectures}. 
 
 \begin{figure}[H]
 				%\vspace{-10pt}
