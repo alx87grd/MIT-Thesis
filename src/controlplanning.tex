@@ -592,9 +592,7 @@ The proposed approach in this section is to discretize the continuous control pr
 The control problem of obtaining the global desired behavior is formulated as minimizing a scalar cost $J$ that is a function of the state trajectory $\vec{x}(:)$ and the inputs trajectory $\vec{u}(:)$, while constraining both states and inputs to be in their respective domains:
 \begin{align}
 	\operatornamewithlimits{min}\limits_{\vec{u}(:)} \; & J(\vec{x}(:),\vec{u}(:)) \\
-	s.t. \quad & \vec{\dot{x}} = f(\vec{x}, \vec{u}) \\
-	& \vec{u} \in U(\vec{x}) \\
-	& \vec{x} \in X
+	s.t. \quad & \vec{\dot{x}} = f(\vec{x}, \vec{u}) \quad \vec{u} \in U(\vec{x}) \quad \vec{x} \in X 
 	\label{eq:min}
 \end{align}
 
@@ -1014,9 +1012,7 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
 \label{sec:shift_sim}
 
 
-
 \subsection{Model-based controller}
-
 
 In this section, the advantages of dynamically changing the gear-ratios, using the R* computed torque controller, are illustrated using simulations of two robots: first a 1-DoF pendulum, then a 3-DoF arm. Both robots are considered having VGA with two possible gear-ratios: 1:1 or 1:10. Reference low-torque trajectories to reach target positions are computed offline using a sample-based search algorithm \cite{lavalle_planning_2006}. 
 %
@@ -1031,19 +1027,19 @@ The first simulated experiment uses the robot of Fig. \ref{fig:bigpicture}, but 
 \end{figure}
 %
 %
-%\begin{figure}[htp]
-				%\vspace{-10pt}
-        %\centering
-				%\subfloat[ Reduction ratio $R$=1 ]{ %extrinsic dynamics
-				%\includegraphics[width=0.23\textwidth]{simpp1.pdf}
-				%\label{fig:pp1s}}
-        %\subfloat[Reduction ratio $R$=10 ]{ % intrinsic dynamics
-				%\includegraphics[width=0.23\textwidth]{simpp2.pdf}
-				%\label{fig:pp2s}}
-        %\caption{Trajectory superposed with natural dynamics vectors}
-				%\label{fig:pps}
-%\end{figure}
-%
+\begin{figure}[htp]
+				\vspace{-10pt}
+        \centering
+				\subfloat[ Reduction ratio $R$=1 ]{ %extrinsic dynamics
+				\includegraphics[width=0.45\textwidth]{simpp1.pdf}
+				\label{fig:pp1s}}
+        \subfloat[Reduction ratio $R$=10 ]{ % intrinsic dynamics
+				\includegraphics[width=0.45\textwidth]{simpp2.pdf}
+				\label{fig:pp2s}}
+        \caption{Trajectory superposed with natural dynamics vectors}
+				\label{fig:pps}
+\end{figure}
+
 %\begin{figure}[htp]
 	%\centering
 		%\includegraphics[width=0.38\textwidth]{simpp1.pdf}
@@ -1057,7 +1053,7 @@ The first simulated experiment uses the robot of Fig. \ref{fig:bigpicture}, but 
 	%\caption{Trajectory superposed with natural dynamics vectors with R=10}
 	%\label{fig:simpp2}
 %\end{figure}
-%
+
 In the second experiment, a 3-DoF manipulator is tasked with going from configuration A to configuration B with the 3D trajectory shown at Fig. \ref{fig:3d_traj}. For this robot the controller is actively selecting the best gear-ratios matrix $R$ out of the possible $2^3=8$ options. Fig. \ref{fig:3d_u} shows the control inputs activity. During the initial falling-down phase, at around $t=1$, the robot is using 1:1 gear-ratios for all actuators, leveraging gravitational torques. In contrast, during the final lifting phase, at around $t=6$, the robot is using 1:10 gear-ratios for all actuators. 
 %
 %
@@ -1101,6 +1097,7 @@ To evaluate the performance gain of actively changing the gear-ratio, simulation
 %
 \begin{table}[htp]
 	\centering
+		\caption{Required torque comparison}
 		\begin{tabular}{ c c c c }
 		\hline
 		     & Fixed gear & Fixed gear & Active gearshifting \\
@@ -1117,9 +1114,7 @@ To evaluate the performance gain of actively changing the gear-ratio, simulation
 		3-link robot  & 2774 & 3617 & 295  \\	
 		\hline \hline
 		\end{tabular}
-	\caption{Required torque comparison}
 	\label{tab:MaximumTorqueComparison}
-	\vspace{-20pt}
 \end{table}
 %
 

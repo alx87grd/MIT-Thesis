@@ -300,21 +300,21 @@ k^*(t)   &= \operatornamewithlimits{argmin}\limits_{k} \left[ J_k(t) + Q \, [[ k
 \end{align}
 %
 where $J_k(t)$ is the computed cost over the simulated trajectory over the time horizon $h$ using the gear-ration mode $k$. An additional instantaneous cost $Q$ is added when the gear-ratio mode is changed.
-
+%
 The integral cost is given by:
 %
 \begin{align}
 J_k(t) = \int_{t}^{t+h}{  C_k \, d\hat{t} }
 \end{align}
 %
-where $C_k$ is the instantaneous cost and $\hat{t}$ is the virtual time in the simulation. The instantaneous cost is a function of state and time. If the instantaneous cost is the squared actuator torques, then:
+where $C_k$ is the instantaneous cost and $\hat{t}$ is the virtual time in the simulation. The instantaneous cost is a function of state and time. In this thesis the instantaneous cost is always simply the squared actuator torques:
 %
 \begin{align}
 C_k =  \vec{\tau}_k^T \vec{\tau}_k
 \end{align}
 %
 where $\vec{\tau}_k$ is the computed torque in predictive simulation with the base policy when using the gear-ratio mode $k$.
-
+%
 It will be assumed that and upper bound can be found for the instantaneous cost, in a domain of interest $D$, given the desired trajectory and the feedback policy:
 %
 \begin{align}
@@ -356,7 +356,7 @@ Here a minimum time delay between a back-and-forth gear-shift sequence is derive
 	\label{fig:costontrajrollout}
 \end{figure}
 
-It can be shown that if the computed torque $\vec{\tau}_k$ has an upper bound, then there is a minimum delay $\Delta t$ between a back-and-forth gear-shift sequence. Hence, no arbitrary fast chattering between gear-ratio is possible. 
+It can be shown that there is a minimum delay $\Delta t$ between a back-and-forth gear-shift sequence. Hence, no arbitrary fast chattering between gear-ratio (zeno behavior [REF switched system]) is possible. 
 
 \paragraph{Proof} 
 
@@ -370,16 +370,16 @@ j \rightarrow i  \quad\text{at time}\quad t+\Delta t &\quad\Rightarrow\quad J_i(
 Then to simplify the notation, integral cost on the trajectory is given by the following value for each three sections of interest:
 %
 \begin{align}
-J_k^A &= \int_{t}^{t+\Delta t}{\vec{\tau}_k^T \vec{\tau}_k  d\hat{t}}     \\
-J_k^B &= \int_{t+\Delta t}^{t+h}{\vec{\tau}_k^T \vec{\tau}_k  d\hat{t}}   \\
-J_k^C &= \int_{t+h}^{t+\Delta t+h}{\vec{\tau}_k^T \vec{\tau}_k d\hat{t}}
+J_k^A &= \int_{t}^{t+\Delta t}{         C_k  d\hat{t}  }   \\
+J_k^B &= \int_{t+\Delta t}^{t+h}{       C_k  d\hat{t}  }   \\
+J_k^C &= \int_{t+h}^{t+\Delta t+h}{     C_k  d\hat{t}  }
 \end{align}
 %
 Then it is possible to express the computed cost of predictive simulation done at $\Delta t$ time difference by the sum of a identical part and a different part:
 %
 \begin{align}
-J_k(t)          &= \int_{t}^{t+h}{\vec{\tau}_k^T \vec{\tau}_k  d\hat{t}}  = J_k^A + J_k^B \\
-J_k(t+\Delta t) &= \int_{t+\Delta t}^{t+\Delta t+h}{\vec{\tau}_k^T \vec{\tau}_k  d\hat{t}} = J_k^B + J_k^C
+J_k(t)          &= \int_{t}^{t+h}{ C_k   d\hat{t} }  = J_k^A + J_k^B \\
+J_k(t+\Delta t) &= \int_{t+\Delta t}^{t+\Delta t+h}{   C_k  d\hat{t}} = J_k^B + J_k^C
 \end{align}
 %
 The difference between computed cost separated by $\Delta t$ is:
@@ -388,39 +388,39 @@ The difference between computed cost separated by $\Delta t$ is:
 \Delta J_k = J_k(t+\Delta t) - J_k(t) &= J_k^C - J_k^A
 \end{align}
 %
-Now assuming there is an upper bound on instantaneous computed torque by the base policy (this will be discussed shortly), an upper bound also exist for the integral cost. Since the cost is quadratic the integral cost cannot be negative. Hence:
+Now assuming there is an upper bound on instantaneous cost $C_k^{max}$, an upper bound also exist for the integral cost. Since the instantaneous cost is always positive definite, the integral cost cannot be negative. Hence:
 %
 \begin{align}
-0 \leq J_k^C   \leq  \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
-0 \leq J_k^A   \leq  \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
+0 \leq J_k^C   \leq  C_k^{max} \Delta t \\
+0 \leq J_k^A   \leq  C_k^{max} \Delta t \\
 \end{align}
 %
 The cost variation is thus bounded is this range:
 %
 \begin{align}
--\vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \leq \Delta J_k \leq \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t
+-C_k^{max} \Delta t  \leq \Delta J_k \leq C_k^{max} \Delta t
 \end{align}
 %
-Using this it is possible to bound the time evolution of computed cost:
+Hence the time evolution of computed cost can be bounded:
 %
 \begin{align}
-J_j(t+\Delta t) \leq J_j(t)  + \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
-J_i(t+\Delta t) \geq J_i(t)  - \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
+J_j(t+\Delta t) \leq J_j(t)  + C_k^{max} \Delta t \\
+J_i(t+\Delta t) \geq J_i(t)  - C_k^{max} \Delta t \\
 \end{align}
 %
 Finally it is possible to combine all those inequality, starting with the condition for the second gearshift:
 %
 \begin{align}
-J_i(t)  - \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t + Q \leq J_i(t+\Delta t) + Q &< J_j(t+\Delta t) \leq J_j(t)  + \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
-J_i(t) + Q &\leq J_j(t)  + 2 \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
-J_j(t) + 2 Q &\leq J_j(t)  + 2 \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t \\
-Q &\leq \vec{\tau}_{max}^T \vec{\tau}_{max} \Delta t 
+J_i(t)  - C_k^{max} \Delta t + Q \leq J_i(t+\Delta t) + Q &< J_j(t+\Delta t) \leq J_j(t)  + C_k^{max} \Delta t \\
+J_i(t) + Q &\leq J_j(t)  + 2 C_k^{max} \Delta t \\
+J_j(t) + 2 Q &\leq J_j(t)  + 2 C_k^{max} \Delta t \\
+Q &\leq C_k^{max} \Delta t 
 \end{align}
 %
 Hence resulting in the desired inequality relating instantaneous cost and time between gear-shift:
 %
 \begin{align}
-\Delta t \geq \frac{Q}{\vec{\tau}_{max}^T \vec{\tau}_{max}}
+\Delta t \geq \frac{Q}{C_k^{max}}
 \end{align}
 %
 
