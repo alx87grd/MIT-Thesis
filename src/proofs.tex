@@ -279,13 +279,152 @@ J^*   &= 2 \sum_i{ \left[ \tau_i^E \tau_i^I + \left| \tau_i^E \tau_i^I \right| \
 
  
 \subsection{R* Computed Torque Controller}
-\label{sec:stabrstar}
+\label{sec:stabrstar1}
 
 
 \subsection{R* Sliding Mode Controller}
-\label{sec:stabrstar}
+\label{sec:stabrstar2}
 
 
-\section{Chattering Bounds}
+\section{Chattering Bounds with Rollout Gear-selection}
 \label{sec:chat}
+
+This section provides minimum delay guarantees for successive gear-shift when using the Rollout gear-selection scheme. 
+
+\paragraph{Problem setting}
+First, using the Rollout approach the optimal gear-ratio mode $k^*$ selection is done as follow:
+%
+\begin{align}
+k^*(t)   &= \operatornamewithlimits{argmin}\limits_{k} \left[ J_k(t) + Q \, [[ k \neq k_{previous}]] \, \right]
+\label{eq:rolloutsimple}
+\end{align}
+%
+where $J_k(t)$ is the computed cost over the simulated trajectory over the time horizon $h$ using the gear-ration mode $k$. An additional instantaneous cost $Q$ is added when the gear-ratio mode is changed.
+%
+The integral cost is given by:
+%
+\begin{align}
+J_k(t) = \int_{t}^{t+h}{  C_k \, d\hat{t} }
+\end{align}
+%
+where $C_k$ is the instantaneous cost and $\hat{t}$ is the virtual time in the simulation. The instantaneous cost is a function of state and time. In this thesis the instantaneous cost is always simply the squared actuator torques:
+%
+\begin{align}
+C_k =  \vec{\tau}_k^T \vec{\tau}_k
+\end{align}
+%
+where $\vec{\tau}_k$ is the computed torque in predictive simulation with the base policy when using the gear-ratio mode $k$.
+%
+It will be assumed that and upper bound can be found for the instantaneous cost, in a domain of interest $D$, given the desired trajectory and the feedback policy:
+%
+\begin{align}
+C_k^{max} =  \operatornamewithlimits{max}\limits_{\vec{x},t \in D} C_k(\vec{x},t)
+\end{align}
+%
+Such a bound should always exist given reasonable assumptions:                  \\
+- Domain of interest $D$ constraint all states to finite values                 \\
+- Desired trajectory has bounded acceleration, speed and position values        \\
+- Absence of singularity where inertia matrix values can tend toward infinity   \\
+
+For instance, if using computed torque as base policy and a torque-squared criteria, the maximum instantaneous cost value is given by:
+%
+\begin{align}
+C_k^{max} =  |\vec{\tau}_{k}|_{max}^T |\vec{\tau}_{k}|_{max}
+\end{align}
+%
+where $|\vec{\tau}_{k}|_{max}$ is a vector of the highest possible computed joint torques in the domain of interest $D$.
+
+Fig. \ref{fig:rollouttrajs} gives a graphical support illutrating the 2D space, where at all time virtual trajectories branch-off the real robot trajectory.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.8\textwidth]{rollouttrajs.png}
+	\caption{Real trajectory and simulated virtual trajectory in the Rollout controller}
+	\label{fig:rollouttrajs}
+\end{figure}
+
+
+\subsection{On a trajectory}
+\label{sec:chat1}
+
+Here a minimum time delay between a back-and-forth gear-shift sequence is derived for the situation where the robot has converged on a trajectory and is staying on the trajectory. In that case, it is assumed that both the simulation trajectory and the real system follow the same desired trajectory, see Fig. \ref{fig:costontrajrollout}.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.90\textwidth]{costontrajrollout.png}
+	\caption{Rollout controller behavior on a given trajectory}
+	\label{fig:costontrajrollout}
+\end{figure}
+
+It can be shown that there is a minimum delay $\Delta t$ between a back-and-forth gear-shift sequence. Hence, no arbitrary fast chattering between gear-ratio (zeno behavior \cite{liberzon_switching_2003}) is possible. 
+
+\paragraph{Proof} 
+
+Without lost of generality, lets assume a gear shift sequence where the robot is first using mode $i$, then shift to mode $j$ at time $t$ and then shift back to mode $i$ at time $t+\Delta t$. If such a sequence happened while using the gear-ratio selection law given by eq. \eqref{eq:rolloutsimple}, then the following inequality must have been satisfied:
+%
+\begin{align}
+i \rightarrow j  \quad\text{at time}\quad t          &\quad\Rightarrow\quad J_j(t) + Q < J_i(t)                  \\
+j \rightarrow i  \quad\text{at time}\quad t+\Delta t &\quad\Rightarrow\quad J_i(t+\Delta t) + Q < J_j(t+\Delta t)
+\end{align}
+%
+Then to simplify the notation, integral cost on the trajectory is given by the following value for each three sections of interest:
+%
+\begin{align}
+J_k^A = \int_{t}^{t+\Delta t}{         C_k  d\hat{t}  }   \quad \quad
+J_k^B = \int_{t+\Delta t}^{t+h}{       C_k  d\hat{t}  }   \quad \quad
+J_k^C = \int_{t+h}^{t+\Delta t+h}{     C_k  d\hat{t}  }
+\end{align}
+%
+Then it is possible to express the computed cost of predictive simulation done at $\Delta t$ time difference by the sum of a identical part and a different part:
+%
+\begin{align}
+J_k(t)          &= \int_{t}^{t+h}{ C_k   d\hat{t} }  = J_k^A + J_k^B \\
+J_k(t+\Delta t) &= \int_{t+\Delta t}^{t+\Delta t+h}{   C_k  d\hat{t}} = J_k^B + J_k^C
+\end{align}
+%
+The difference between computed cost separated by $\Delta t$ is:
+%
+\begin{align}
+\Delta J_k = J_k(t+\Delta t) - J_k(t) &= J_k^C - J_k^A
+\end{align}
+%
+Now assuming there is an upper bound on instantaneous cost $C_k^{max}$, an upper bound also exist for the integral cost. Since the instantaneous cost is always positive definite, the integral cost cannot be negative. Hence:
+%
+\begin{align}
+0 \leq J_k^C   \leq  C_k^{max} \Delta t \\
+0 \leq J_k^A   \leq  C_k^{max} \Delta t 
+\end{align}
+%
+The cost variation is thus bounded is this range:
+%
+\begin{align}
+-C_k^{max} \Delta t  \leq \Delta J_k \leq C_k^{max} \Delta t
+\end{align}
+%
+Hence the time evolution of computed cost can be bounded:
+%
+\begin{align}
+J_j(t+\Delta t) \leq J_j(t)  + C_k^{max} \Delta t \\
+J_i(t+\Delta t) \geq J_i(t)  - C_k^{max} \Delta t 
+\end{align}
+%
+Finally it is possible to combine all those inequality, starting with the condition for the second gearshift:
+%
+\begin{align}
+J_i(t)  - C_k^{max} \Delta t + Q \leq J_i(t+\Delta t) + Q &< J_j(t+\Delta t) \leq J_j(t)  + C_k^{max} \Delta t \\
+J_i(t) + Q &\leq J_j(t)  + 2 C_k^{max} \Delta t \\
+J_j(t) + 2 Q &\leq J_j(t)  + 2 C_k^{max} \Delta t \\
+Q &\leq C_k^{max} \Delta t 
+\end{align}
+%
+Hence resulting in the desired inequality relating instantaneous cost and time between gear-shift:
+%
+\begin{align}
+\Delta t \geq \frac{Q}{C_k^{max}}
+\end{align}
+%
+Note that if there is more than 2 discrete gear-ratio options, this analysis gives not insight about possible sequences of gear-shift during this interval, but still guarantee the minimum time for a full cycle (coming back to the starting gear-ratio).
+
+\subsection{Arbitrary}
+\label{sec:chat2}
 

@@ -67,11 +67,11 @@ Open-loop trajectories can be unstable and if the system deviate from the origin
 
 \paragraph{Feedback control}
 
-One possible approach for closing the loop would be simply to re-plan trajectory continuously online. However, the rate at which this would be possible for hybrid robotic system would not be sufficient. Here we aim at having control policies that can react to a situation in factions of a second (~50 ms), for instance down-shifting as a robotic leg touch the ground. 
+One possible approach for closing the loop would be simply to re-plan trajectory continuously online. However, the rate at which this would be possible for hybrid robotic system would not be sufficient. Here we aim at having control policies that can react to a situation in a matter of milliseconds, for instance down-shifting as a robotic leg touch the ground. 
 
-Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it only works for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section \ref{sec:DynamicProgrammingAproach}, which is an extention of work already published in a previous conferance paper \cite{girard_practical_2016}.
+Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it only works for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section \ref{sec:DynamicProgrammingAproach}, which is an extention of work already published by the author \cite{girard_practical_2016}.
 
-An alternative model-based approach is proposed in section \ref{sec:HierachicalControlApproach} with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The work in the section is an extension of a journal paper, but present improved algorithms \cite{girard_leveraging_2017}.
+An alternative model-based approach is proposed in section \ref{sec:HierachicalControlApproach} with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The work in that section is an extension of a journal paper, but present improved algorithms \cite{girard_leveraging_2017}.
 
 
 
@@ -80,7 +80,7 @@ An alternative model-based approach is proposed in section \ref{sec:HierachicalC
 \section{Control architecture}
 \label{sec:arch}
 
-This chapter proposed control schemes to dynamically select the optimal gear-ratios online. The focus is on feedback policies, that can react quickly to the states of the robot, and engage the appropriate gear-ratio with minimal delays (in the order of 10-50 ms). Two approaches are investigated and illustrated at Fig. \ref{fig:controlarchitectures}. 
+This chapter proposed control schemes to dynamically select the optimal gear-ratios online. The focus is on feedback policies, that can react quickly to the states of the robot, and engage the appropriate gear-ratio with minimal delays (in the order of 20 ms). Two approaches are investigated and illustrated at Fig. \ref{fig:controlarchitectures}. 
 
 \begin{figure}[H]
 				%\vspace{-10pt}
@@ -294,232 +294,17 @@ Second, large gear-ratios also decrease the sensitivity of the system to uncerta
 Hence, selecting large gear-ratios makes the system less sensitive to uncertainty on the extrinsic side.
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage
 
-\section{Dynamic programming approach}
-\label{sec:DynamicProgrammingAproach}
-
-\begin{flushright}
-\small"The true logic of this world is in the calculus of probabilities." \\ \emph{-- James Clerk Maxwell}
-\end{flushright}
-
-The proposed approach in this section is to discretize the continuous control problem into a graph search problem, with transition probability, where the discrete input actions can be considered naturally. Then using dynamic programming to find global optimal feedback policies. 
-
-%First, a simplified low-dimensional model of the controlled system is derived to keep the problem tractable. Second, the optimal control problem is solved using dynamic programming. Third, the resulting optimal policies are approximated with simple feedback laws, to conduct a stability analysis and also for the ease of implementation.
-
-\subsection{Problem formulation}
-
-The control problem of obtaining the global desired behavior is formulated as minimizing a scalar cost $J$ that is a function of the state trajectory $\vec{x}(:)$ and the inputs trajectory $\vec{u}(:)$, while constraining both states and inputs to be in their respective domains:
-\begin{align}
-	\operatornamewithlimits{min}\limits_{\vec{u}(:)} \; & J(\vec{x}(:),\vec{u}(:)) = \int g(\vec{x}(t),\vec{u}(t)) dt  \\
-	s.t. \quad & \vec{\dot{x}} = F(\vec{x}, \vec{u}) \\
-	& u_1 \in [ -0.02 , 0.02 ] \quad (Nm) \\
-	& u_2 \in \{ 1 , 2 \} \\
-	& x_1 \in [ -150 , 150 ] \quad (mm) \\
-	& x_2 \in [ -500 , 500 ] \quad (mm/sec)
-	\label{eq:min}
-\end{align}
-
-An additional constraint is imposed, when the output speed is greater than 20 mm/sec only the operating mode $u_1=1$ can be used (to limit motor speeds to 8000 RPM). 
-
-\subsection{Cost functions}
-
-Then three different additive cost functions are investigated; a quadratic cost function $g_q$ where error is weighted against control effort, a function corresponding $g_t$ to the minimal time problem and a function $g_e$ corresponding to thermal losses in the motors, leading to a simplified minimum wasted energy problem (neglecting mechanical losses).
-%
-\begin{align}
-	g_q(\vec{x},\vec{u}) &= w_1 \; x^2 + w_2 \; \dot{x}^2 + w_3 \; u_1^2
-	\label{eq:g_quad} \\
-	g_t(\vec{x},\vec{u}) &= 1
-	\label{eq:g_time} \\
-	g_e(\vec{x},\vec{u}) &= u_1^2 \quad  \propto \quad  \dot{Q}_{motor} = r I^2
-	\label{eq:g_e}
-\end{align}
-%
-
-
-\subsection{Value Iteration}
-\label{sec:VI}
-
-A dynamic programming algorithm, also known as value iteration, is used to find both the optimal cost-to-go function and optimal policies for an infinite horizon. The optimal control problem is numerically solved for the different three cost functions. The discretization parameters are as follow: the time step is 0.02 sec, the state space is discretized into an even 501 x 501 grid and the continuous torque is discretized into 51 discrete control options, for a total of 102 possible control actions including the mode selection. Artificial out-of-bound and on-target termination states are included to guarantee convergence \cite{bertsekas_dynamic_2000}.
-
-\subsection{Reinforcement Learning}
-
-TODO get from class project
-
-
-\subsection{Numerical results}
-
-\subsubsection{Linear 1-DoF robot}
-Fig. \ref{fig:J}-\ref{fig:u1} illustrate the numerical results of the dynamic programming algorithm for the three different cost functions. The absence of color indicates states with no solution (a constraint will be violated for any possible control actions). Fig. \ref{fig:phase_plane} shows the closed loop behavior of the system in the phase plane when the optimal policy is applied.
-
-\begin{figure}[H]
-        \centering
-				\subfloat[Minimum time]{
-        \includegraphics[width=0.32\textwidth]{Jt.png}
-				\label{fig:J_time}}
-        \subfloat[Quadratic cost]{
-				\includegraphics[width=0.32\textwidth]{Jq.png}%J_LQR.png
-				\label{fig:J_LQR}}
-				\subfloat[Minimum energy]{
-				\includegraphics[width=0.32\textwidth]{Je.png}
-				\label{fig:J_energy}}
-        \caption{Optimal cost-to-go $J^*$}\label{fig:J}
-\end{figure}
-
-\begin{figure}[H]
-        \centering
-				\subfloat[Minimum time]{
-        \includegraphics[width=0.32\textwidth]{u1t.png}
-				\label{fig:u0_time}}
-        \subfloat[Quadratic cost]{
-				\includegraphics[width=0.32\textwidth]{u1q.png}
-				\label{fig:u0_LQR}}
-				\subfloat[Minimum energy]{
-				\includegraphics[width=0.32\textwidth]{u1e.png}
-				\label{fig:u0_energy}}
-        \caption{Optimal policy for the continuous torque command $u_1$ [Nm]}\label{fig:u0}
-\end{figure}
-
-\begin{figure}[H]
-        \centering
-				\subfloat[Minimum time]{
-        \includegraphics[width=0.32\textwidth]{u2t.png}
-				\label{fig:u1_time}}
-        \subfloat[Quadratic cost]{
-				\includegraphics[width=0.32\textwidth]{u2q.png}
-				\label{fig:u1_LQR}}
-				\subfloat[Minimum energy]{
-				\includegraphics[width=0.32\textwidth]{u2e.png}
-				\label{fig:u1_energy}}
-        \caption{Optimal policy for the mode selection $u_2$}\label{fig:u1}
-\end{figure}
-
-\begin{figure}[H]
-        \centering
-				\subfloat[Minimum time]{
-        \includegraphics[width=0.32\textwidth]{ppt.pdf}
-				\label{fig:phase_plane_time}}
-        \subfloat[Quadratic cost]{
-				\includegraphics[width=0.32\textwidth]{ppq.pdf}
-				\label{fig:phase_plane_LQR}}
-				\subfloat[Minimum energy]{
-				\includegraphics[width=0.32\textwidth]{ppe.pdf}
-				\label{fig:phase_plane_energy}}
-        \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane}\label{fig:phase_plane}
-\end{figure}
-
-\paragraph{Minimum time}
-\label{sec:MinimumTime}
-For the minimum time problem, the optimal policy is a bang-bang law for $u_1$ and always using highly-geared mode when possible. Note that the bang-bang switching curve accounts for the fact the large gear ratio will be used during the final part of the trajectory.
-
-\paragraph{Quadratic cost}
-\label{sec:QuadraticCost}
-For the quadratic cost, the mode selection optimal policy is almost as simple as the minimum time problem except for small features in quadrant II and IV. The more interesting result comes from the continuous torque control law, the gains when using the large reduction ratio are larger than those when using the small reduction ratio. This results in the controller taking action mainly at low speed when its actions have the biggest impacts on the system, and lead to a highly non-linear closed-loop behavior. This is the opposite of what would have been obtained using feedback linearization: large gains with the small gear and small gains with the large gear to linearize the global behavior. Hence implementing feedback linearization would have led to a poor performance considering this quadratic cost metric. 
-
-\paragraph{Minimum energy}
-\label{sec:MinimumEnergy}
-For the minimum energy controller, interestingly the mode selection policy is not trivial even for this simple linear model.  This shows that it does not take much complexity to have non-trivial optimal policies for hybrid systems. Here, the large reduction ratio is used almost only for braking, and in quadrant II and IV the small reduction ratio is used even at low speed to coast with low viscous resistance. Also globally the gains are much lower than the other controllers except for zones where it is necessary to use energy to stay in the domain. 
-
-\subsubsection{Non-linear 1-DoF robot}
-
-TODO Insert VI results for pendulum.
-
-
-
-
-\subsection{Feedback laws simplification}
-
-TODO Using regresstion to obtain analytical feedback laws...
-
-In this section, simplified algebraic control laws are extracted from the numerical map of optimal control actions for the quadratic cost controller. The dynamic programming algorithm outputs a list of optimal actions that is assumed are samples of a  map of optimal actions $\vec{u}^* = \pi^* ( \vec{x} )$. The goal is then to find a simplified map $\hat{\pi}( \vec{x} )$ based on the samples. Here a two-steps approach is used; first the state-space is segmented into zones based on the optimal discrete action $u_2$, then regression is used to compute the $u_1$ map independently in each zone. 
-
-\subsubsection{1-DoF linear robot example}
-
-\paragraph{Segmentation}
-For the resulting optimal policy found at Fig. \ref{fig:u0_LQR}, three main zones can be identified. The boundaries are approximated by two lines at $\dot{x}= \pm \; 20 $, and the samples are separated into two groups:
-\begin{align}
-\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 1} \quad \text{if} \; | \dot{x} | \geq 20 \\
-\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 2} \quad \text{if} \; | \dot{x} | < 20
-\end{align}
-
-For more complex segmentation, machine learning techniques could be used to perform the classification.
-
-\paragraph{Continuous maps}
-
-In each zones, the optimal continuous input $u_1^*$ is very close to a planar surface with exceptions when the input saturates or near the boundaries, see Fig. \ref{fig:u0_LQR}. Here, it is proposed to forgo absolute optimality and instead use the simplest control law that can globally approximate $u_1^*$ map. Hence, simple linear plane are fitted on the samples group by group. The regression is defined as follow, the dependent variable to approximate is $u_1$, the independent variables are the state coordinates $\vec{x}^T = [ x  \; \dot{x} ]$ and the parameter vector is $\vec{\alpha}^T = [ k_p  \; k_d ]$. Hence the continuous control variable $\hat{u}_1$ is approximated with the following linear map:
-\begin{align}
-\hat{u}_1 = \vec{\alpha}^T \vec{x} = k_p  x + k_d \dot{x}
-\end{align}
-which is essentially a simple proportional-derivative control law. Then the parameters are estimated using a least-square criterion, $\vec{\alpha}_1$ using the samples in group 1 and $\vec{\alpha}_2$ samples in group 2. Then combining the segmentation and both linear maps, the global control policy is approximated with the following law:
-\begin{align}
-\vec{ \hat{u}} &= \hat{\pi} ( \vec{x} )
- = \left \{ 
-	\begin{array}{c}
-	\left[
-	\begin{array}{c}
-		 \vec{\alpha}_1^T \vec{x} \\
-		 1 
-	\end{array} 
-	\right] 		
-	\text{if} \; | \dot{x} | \geq 20 \\ \\
-		 \left[
-		\begin{array}{c}
-		 \vec{\alpha}_2^T \vec{x} \\ 
-		 2
-	\end{array}
-		 \right]
-		\text{if} \; | \dot{x} | < 20
-	\end{array}
-	\right.
-	\label{eq:uhat}
-\end{align}
-Fig. \ref{fig:u0_LQR_approx} shows the resulting continuous control policy $\hat{u}_1$ for the full state-space, and is an approximation of Fig. \ref{fig:u0_LQR} map.
-
-%\begin{figure}[H]
-	%\centering
-		%\includegraphics[width=0.30\textwidth]{u1aq.png}
-	%\caption{Continuous map approximation for $u_1$}
-	%\label{fig:u0_LQR_approx}
-%\end{figure}
-
-\begin{figure}[htpb]
-				\vspace{-10pt}
-        \centering
-				\subfloat[Map for $u_1$ (Nm)]{
-        \includegraphics[width=0.45\textwidth]{u1aq.pdf}
-				\label{fig:u0_LQR_approx}}
-        \subfloat[Phase plane behavior]{
-				\includegraphics[width=0.40\textwidth]{pp2q.pdf}
-				\label{fig:phase_plot_lqr}}
-        \caption{Approximated control laws and resulting behavior}\label{fig:approx}
-\end{figure}
-
-
-The resulting behavior with the control law of eq.\eqref{eq:uhat} is illustrated in the phase plane at Fig. \ref{fig:phase_plot_lqr}, where the arrows illustrate the state derivative throughout the state space. The blue arrows illustrate the natural dynamic of the system and the red arrows illustrate the closed behavior with the control policy of eq.\eqref{eq:uhat}. At high speed with the small reduction ratio, the controller only takes small actions illustrated by the fact that red arrows only have small deviation compared to blue arrows. However at low speed, the large reduction ratio is used to drastically change the natural behavior of the system, illustrated by the large red arrows. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-\newpage
-
-\section{Model-based control approach}
-\label{sec:HierachicalControlApproach}
-
-
-\begin{flushright}
-\textit{"If you know the enemy and know yourself, you need \\ not fear the result of a hundred battles."}  \emph{-- Sun Tzu}
-\end{flushright}
-\vspace{+10pt}
-
-In this section, control algorithms relying on a dynamic model of a robot and its load are proposed. Here, a methodology is presented to synthesize feedback laws, for both the torques and gear-ratios input variable, to follow a trajectory with minimal effort. 
-
-\subsection{Optimal gear-ratios along a trajectory}
+\section{Optimal gear-ratios along a trajectory}
 
 This section analyzes the optimal gear-ratio at each instant along a known trajectory. 
 
-\subsubsection{Selection criteria}
+\subsection{Selection criteria}
 \label{sec:GearSelectionCriteria}
 
 The two main advantages of changing gear-ratio are 1) lowering the necessary torque to follow a trajectory and 2) modifying the effective impedance reflected on the environment. 
@@ -537,7 +322,7 @@ Optimization for reflected impedance can be done by minimizing the difference be
 %
 Another point of practical importance is that the rotor speed should be constrained to be lower than their maximum velocity. This is to avoid infeasible gear shifts. For example, attempting to shift to a low gear at an extremely high speed is impossible. 
 
-\subsubsection{Optimization}
+\subsection{Optimization Formulation}
  The optimal gear-ratio is determined by minimizing the total actuator torques and, optionally, the difference in end-point impedance:
 %
 \begin{align}
@@ -548,6 +333,9 @@ Another point of practical importance is that the rotor speed should be constrai
 %
 where $\alpha$ is a parameter to set the trade-off between minimizing motor torques and matching the desired end-point inertia.
 %
+
+\subsection{Minimal Torque Solution}
+
 For a 1-DoF system, the optimal gear ratio leading to minimal torque, not considering any velocity constraints, at a given instant on a trajectory is given by
 %
 \begin{align}
@@ -569,13 +357,92 @@ The derivation is available in the Appendix \ref{sec:optgearproofn}.
 
 Note that large gravitational forces or external disturbances, only present in $\vec{\tau}_{E}$, will usually lead to larger optimal gear-ratios, unless they cancel-out other forces in a way that makes $\vec{\tau}_{E}$ smaller. If inertial or viscous forces, present both in $\vec{\tau}_{E}$ and $\vec{\tau}_{I}$, dominate, then the optimal gear-ratio will be a compromise such that extrinsic and intrinsic forces are balanced, a form of impedance matching. The optimal gear ratio given by \eqref{eq:rmin2} includes both gravity, inertial and viscous effects as well as all other effects, hence it can be applied to any arbitrary dynamic situations.
 
+
+\subsection{Reduction to impedance matching}
+\label{sec:impreduc}
+
+In simplified situation where there is only on type of force acting on the system, the general solution reduce to a case of impedance matching. For instance if only inertial forces are involves:
+%
+\begin{align}
+	R^{*}  = \sqrt{ \left | \frac{H \ddot{q} }{ I \ddot{q} } \right |   } = \sqrt{ \frac{H}{I}}  \quad\Rightarrow\quad  {R^{*}}^2 I = H
+ \label{eq:impmatchingHI}
+\end{align}
+%
+Hence the optimal gear-ratio is the one for which the external load inertia is equal to the reflected actuator inertia. Also, if only linear dissipative forces are involves:
+%
+\begin{align}
+	R^{*}  = \sqrt{ \left | \frac{D \dot{q} }{ B \dot{q} } \right |   } = \sqrt{ \frac{D}{B}}  \quad\Rightarrow\quad  {R^{*}}^2 B = D
+ \label{eq:impmatchingDB}
+\end{align}
+%
+Then the optimal gear-ratio is the one for which the external damping coefficient is equal to the effective actuator damping coefficient reflected to the output. 
+
+Note that those optimal solution are only valid locally. In general for robotic systems, $H$ and $D$ are state dependent. 
+
+
+\subsection{Examples}
+\label{sec:Examples}
+
+Here eq. \eqref{eq:aaa} is applied to the robot in Fig. \ref{fig:bigpicture} in simple scenarios. 
+
+\paragraph{Acceleration from rest} 
+
+When the robot accelerates from rest with no viscous forces, the optimal gear ratio at the up-right position, where no gravity acts, is given by:
+\begin{align}
+	R^{*}  = \sqrt{ \left | \frac{H \ddot{q} }{ I \ddot{q} } \right |   } = \sqrt{ \frac{H}{I}}
+ \label{eq:impmatching}
+\end{align}
+In this situation, the problem is reduced to impedance matching for two inertial loads. The optimal gear ratio minimizing the torque for a given acceleration is the one for which the load inertia and the motor reflected inertia are the same.
+
+\paragraph{Supporting gravity without moving}
+
+In the situation where the robot is not moving and fighting against gravity, then the optimal gear ratio is:
+\begin{align}
+	R^{*}  = \sqrt{ \left | \frac{ \vec{g} }{ 0 } \right |   } \rightarrow \infty
+ \label{eq:gravrejection}
+\end{align}
+In this static case, the largest possible gear-ratio is the optimal choice. 
+
+
+\paragraph{Coasting} 
+
+In the situation where a robot maintains a constant speed, assuming the output load is purely inertial and not dissipative ($D=0$) but that there is friction in the motors:
+%
+\begin{align}
+	R^{*}  = \sqrt{ \left | \frac{D \dot{q} }{ B \dot{q} } \right |   } = \sqrt{ \frac{D}{B}} \rightarrow 0
+ \label{eq:impmatching}
+\end{align}
+%
+In this situation, to avoid dissipative motor forces it is best to have the smallest possible gear-ratio. In the limit, this correspond to completely disconnect the load from the actuator.
+
+%\paragraph{Resisting disturbances}
+%%
+%In the situation where there is no gravity and the robot is not moving, but disturbances are expected, minimizing the sliding mode torque (eq. \eqref{eq:rstar_sliding}) would also lead to the conclusion that the largest possible gear-ratio is the optimal choice.
+%\begin{align}
+	%R^{*}  = \sqrt{ \left | \frac{ 0 + | d |_{max} \, sgn( s ) }{ 0 } \right |   }  = \sqrt{  \frac{| d |_{max} }{ 0 } }\rightarrow \infty
+ %\label{eq:gravrejection}
+%\end{align}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \newpage
 
+\section{Model-based Controllers}
+\label{sec:HierachicalControlApproach}
 
 
-\subsection{Trajectory following controllers}
+\begin{flushright}
+\textit{"If you know the enemy and know yourself, you need \\ not fear the result of a hundred battles."}  \emph{-- Sun Tzu}
+\end{flushright}
+\vspace{+10pt}
 
-\subsubsection{R* Computed Torque}
+
+In this section, control algorithms relying on a dynamic model of a robot and its load are proposed. Methodologies are proposed to synthesize feedback laws, for both the torques and gear-ratios input variable, to follow a trajectory with minimal effort. 
+
+
+\subsection{R* Computed Torque}
 \label{sec:RobustTrajectoryFollowingController}
 
 
@@ -596,7 +463,7 @@ The proposed closed-loop controller, shown in Fig. \ref{fig:Rstar_block_big}, is
 	\label{fig:dq}
 \end{figure}
 
-\subsubsection{Robust Control}
+\subsection{Robust Control}
 \label{sec:robustcontrol}
 
 In general Computed Torque Control is susceptible to modeling uncertainties and disturbances. This section presents two approaches to improving robustness: Adaptation and Sliding Mode Control. 
@@ -645,8 +512,9 @@ Hence, if no disturbance is expected ($| d |_{max}=0$) gear-ratio selection is u
 %
 
 
+\subsection{Implementation Aspects}
 
-\subsubsection{Numerical Optimization}
+\subsubsection{Numerical Online Optimization}
 
 If some of the assumptions used in the previous section are not valid or if the gear-ratios are limited to a few discrete choices, then the optimization must be computed numerically. The minimum needed is to have a model of the inverse dynamic, which could include any non-linearity, in the form:
 \begin{align}
@@ -660,63 +528,491 @@ In the situation of discrete gear-ratios, this lead to a combinatorial optimizat
 However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly. For instance, for the robot presented in this paper, see Fig. \ref{fig:arm_proto}, there is 3 actuators each with 2 gear-ratio options, leading to $l=2^3=8$ possible matrix $R$.
 
 
-
 \subsubsection{Heuristic approach to minimize gearshift}
 
 Because the control effort during gear-shifts is neglected in the model, using the proposed controller can lead to rapid switching between gear-ratios in certain situations. To avoid this undesirable behavior, it is proposed to add hysteresis to the controller: the gear-ratio is only changed if the difference of computed torque, between using the optimal and the previously selected gear-ratio, is greater than a minimum torque threshold, and also if the elapsed time since the last change is greater than a minimum delay. 
 
 
 
-\subsubsection{Examples}
-\label{sec:Examples}
-
-Here eq. \eqref{eq:aaa} is applied to the robot in Fig. \ref{fig:bigpicture} in simple scenarios. 
-
-\paragraph{Acceleration from rest} 
-
-When the robot accelerates from rest with no viscous forces, the optimal gear ratio at the up-right position, where no gravity acts, is given by:
-\begin{align}
-	R^{*}  = \sqrt{ \left | \frac{H \ddot{q} }{ I \ddot{q} } \right |   } = \sqrt{ \frac{H}{I}}
- \label{eq:impmatching}
-\end{align}
-In this situation, the problem is reduced to impedance matching for two inertial loads. The optimal gear ratio minimizing the torque for a given acceleration is the one for which the load inertia and the motor reflected inertia are the same.
-
-\paragraph{Supporting gravity without moving}
-
-In the situation where the robot is not moving and fighting against gravity, then the optimal gear ratio is:
-\begin{align}
-	R^{*}  = \sqrt{ \left | \frac{ f_g }{ 0 } \right |   } \rightarrow \infty
- \label{eq:gravrejection}
-\end{align}
-In this static case, the largest possible gear-ratio is the optimal choice. 
-
-\paragraph{Resisting disturbances}
-%
-In the situation where there is no gravity and the robot is not moving, but disturbances are expected, minimizing the sliding mode torque (eq. \eqref{eq:rstar_sliding}) would also lead to the conclusion that the largest possible gear-ratio is the optimal choice.
-\begin{align}
-	R^{*}  = \sqrt{ \left | \frac{ 0 + | d |_{max} \, sgn( s ) }{ 0 } \right |   }  = \sqrt{  \frac{| d |_{max} }{ 0 } }\rightarrow \infty
- \label{eq:gravrejection}
-\end{align}
+\subsection{Rollout Optimization}
 
 
 
-\subsection{Trajectory planning}
+
+\subsection{Guarantees}
+
+
+\subsubsection{Stability}
+
+Fixed target
+
+Convergence on desired trajectory
+
+
+\subsubsection{Chattering}
+
+
+If convergence is guaranteed, the zeno behavior is impossible unless the desired trajectory or point-target reside on a switching surface. 
+
+
+Minimum delay on a trajectory
+
+Proof is detailed in Appendix \ref{sec:chat1}.
+
+Minimum delay in arbitrary situations
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Trajectory planning}
 \label{sec:SamplingBasedTrajectoryPlanner}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage
 
+\section{Dynamic programming approach}
+\label{sec:DynamicProgrammingAproach}
+
+\begin{flushright}
+\small"The true logic of this world is in the calculus of probabilities." \\ \emph{-- James Clerk Maxwell}
+\end{flushright}
+
+The proposed approach in this section is to discretize the continuous control problem into a graph search problem, with transition probability, where the discrete input actions can be considered naturally. Then dynamic programming approaches can be used to find global optimal feedback policies. 
+
+%First, a simplified low-dimensional model of the controlled system is derived to keep the problem tractable. Second, the optimal control problem is solved using dynamic programming. Third, the resulting optimal policies are approximated with simple feedback laws, to conduct a stability analysis and also for the ease of implementation.
+
+\subsection{Problem formulation}
+
+The control problem of obtaining the global desired behavior is formulated as minimizing a scalar cost $J$ that is a function of the state trajectory $\vec{x}(:)$ and the inputs trajectory $\vec{u}(:)$, while constraining both states and inputs to be in their respective domains:
+\begin{align}
+	\operatornamewithlimits{min}\limits_{\vec{u}(:)} \; & J(\vec{x}(:),\vec{u}(:)) \\
+	s.t. \quad & \vec{\dot{x}} = f(\vec{x}, \vec{u}) \quad \vec{u} \in U(\vec{x}) \quad \vec{x} \in X 
+	\label{eq:min}
+\end{align}
+
+\subsection{Constraints}
+
+The input valid set $U(\vec{x})$ is defined by allowable motor torque respecting saturation and the discrete options of gear-ratios that are feasible given actual joint velocities:
+\begin{align}
+	U(\vec{x}):&\\
+	&\tau_i \in [ -\tau_{max,i} , \tau_{max,i} ] \;\forall\; i\\
+	&k      \in \{ 0 , ... , l \} \quad\text{ such that }\quad \vec{w} = R_k \vec{\dot{q}} \in W
+\end{align}
+where $W$ is the set of allowable rotor velocities. The state valid set $X$ include a range of acceptable state and could exclude some regions if desired. 
+
+\subsection{Cost function}
+\label{sec:CostFunction}
+
+Here the goal is set to minimize an additive cost function over an infinite horizon, which led to simpler time-independent control policies \cite{bertsekas_dynamic_2000}.
+%
+\begin{align}
+	J = \lim_{ t \rightarrow \infty} \int_0^t g(\vec{x}(t),\vec{u}(t)) dt 
+	\label{eq:j_lim}
+\end{align}
+%
+Two different additive cost functions are investigated; a quadratic cost function where error is weighted against control effort:
+%
+\begin{align}
+	g(\boldsymbol{x},\boldsymbol{u}) = \sum w^x_{ii} \; x_i^2 + \sum w^u_{ii} \; \tau_i^2
+	\label{eq:g_quad}
+\end{align}
+%
+where $w$ are weighting factors (note that there is no penalty for either gear ratio options); and a function corresponding to the minimal time problem:
+%
+\begin{align}
+	g(\boldsymbol{x},\boldsymbol{u}) = \left \{ \begin{array}[pos]{l}	1 \quad   \text{if target not yet reached} \\ 0 \quad   \text{if target is reached} \end{array}  \right.
+	\label{eq:g_time}
+\end{align}
+%
+Note that in this section, the goal is fixed and set to zero $\boldsymbol{x}_d=\boldsymbol{0}$.
+
+
+\subsection{Value Iteration}
+\label{sec:VI}
+
+A dynamic programming algorithm, also known as value iteration, is used to solve for almost exact optimal infinite horizon policies for the one-link robot. Two simplification to the problem are made, first the disturbances will be fixed to their typical values (certainty equivalence control) and second, the state space and possible control actions will be discretized.
+
+\subsubsection{Discretization and conversion to a Stochastic Shortest Path problem}
+\label{sec:ConvertionToAStocasticShortestPathProblem}
+
+Here a evenly spaced grid of nodes is used to represent the state space. However, the equations of motion of the system can lead the system to a future state that will not be exactly a grid point corresponding to a discrete node. To solve this problem the cost-to-go of the next point is computed by interpolating the cost-to-go of the neighboring grid points based on geometric interpolation weight, see Figure \ref{fig:Probinterpolation}:
+%
+\begin{align}
+	J(\boldsymbol{x}(t+1)) \approx \sum{ w_j J(\boldsymbol{x}_j(t+1)) } 
+	\label{eq:interpol}
+\end{align}
+%
+where the weight factors add-up to one:
+%
+\begin{align}
+	 \sum{ w_i  } = 1
+	\label{eq:w}
+\end{align}
+%
+Thus the value iteration algorithm will have the form:
+%
+\begin{align}
+	J_{k+1}(\boldsymbol{x}_i) =  \min_u{\left[ g(\boldsymbol{x}_i,\boldsymbol{u}) + \sum{ w_j J(\boldsymbol{x}_j(t+1))}  \right]}
+	\label{eq:interpol}
+\end{align}
+%
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.40\textwidth]{interpolation.png}
+	\caption{Approximation of the cost-to-go using interpolation}
+	\label{fig:interpolation}
+\end{figure}
+%
+The interpolation can also be interpreted as computing an expected value where the weight factor are probabilities. As illustrated at Figure. \ref{fig:Probinterpolation}, this scheme can also be interpreted as aggregating the continuous space state into discrete nodes with the weight factors corresponding to aggregation probabilities. Hence, the problem that is solved correspond to a stochastic shortest path problem. Note that even if the uncertainty of the system is not modeled directly, this scheme has similar effects of including a disturbance leading to an uncertainty on the state evolution of roughly the size of the grid.  
+%
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.40\textwidth]{Probinterpolation.png}
+	\caption{Interpolation as agregation probabilities}
+	\label{fig:Probinterpolation}
+\end{figure}
+
+\subsubsection{Termination conditions}
+\label{sec:TerminationCondtions}
+
+In order to guarantee the good behavior of the value iteration scheme, nodes close to the goal state are aggregated into a big cost free and absorbing termination node.  Moreover, when the equations of motion for a given state and control lead to out-of-bound states, it is considered that the system reach with a very large cost an artificial termination node with probability one. Since it is clear from the physics that there exist proper policies that can reach the termination node, and the cost is positive definite (for both the quadratic and minimum time cost functions) it is also clear that any improper policy will be associated to an infinite cost for an infinite horizon. Thus, given those conditions value iteration algorithm is guarantee to converge to the optimal cost-to-go for any initial conditions.
+
+\subsubsection{Implementation}
+\label{sec:Methodology}
+
+
+The Value Iteration algorithm is implemented for two single-axis robot using a two-speed actuator. In the first case the output dynamic is a linear mass-damper system while in the second case the output is a non-linear inverted pendulum. 
+
+The discretization parameters used are as follow: the state space is discretized into a 101 x 101 grid (101 equally spaced angles and 101 equally spaced speed values) leading to 10201 possible nodes, the actuator torque is discretized into 21 possible torque values, leading to a total of 41 possibles control actions including the gear ratio selection. The state transition is computed using a time discretization of $\Delta t$ = 0.05 sec. The interpolation weights are computed using a bivariate spline approximation. The value iterations are stopped manually when the maximum difference between $J_k$ and $J_{k+1}$ are many orders of magnitude smaller then the variations of $J$ across the state space. The computation takes on average 200-500 iterations and 2-5 minutes.
+
+%\subsection{Reinforcement Learning}
+%
+%\subsubsection{Q-Learning}
+%
+%Next, the Q-Learning algorithm is implemented. While here in this project we have access to the model of the system, this approach would be advantageous in a real context because we could use it directly on a prototype without having a model of the robot. 
+%
+%The Q-learning update is:
+%\begin{align}
+	%Q( \boldsymbol{x} , \boldsymbol{u} ) &= Q( \boldsymbol{x} , \boldsymbol{u} ) + \alpha \left[ g(\boldsymbol{x} , \boldsymbol{u}) + \lambda J( \boldsymbol{x}_{(t+1)}  )  -  Q( \boldsymbol{x} , \boldsymbol{u} ) \right] \\
+	%J( \boldsymbol{x}  ) &= \min_{\boldsymbol{u}} Q( \boldsymbol{x}, \boldsymbol{u} )
+   %\end{align}
+   %
+%This update is conducted for each set of $\left[ \boldsymbol{x}_{(t)}  , \boldsymbol{u}_{(t)}  , \boldsymbol{x}_{(t+1)}   \right]$ collected using simulated experiments. The controller used for the experiment is $\epsilon$-greedy, i.e. $\epsilon$ fraction of the time it picks a random action, else it is using the optimal action so far ( $ u(\boldsymbol{x})  = arg\min_{\boldsymbol{u}} Q( \boldsymbol{x}, \boldsymbol{u} ) $ ). The training is done as follow: first conduct a 10 sec simulation with the $\epsilon$-greedy controller, then go through the collected state-action pairs and conduct a Q-values update for each data-point, then start again.
+
+%\paragraph{Numerical results}
+%\label{sec:NumericalResults}
+%
+%This approach was found to be practical only for very simple robots. For instance, one degree of freedom lead to two states (position and speed). If each of those variable is discretized into 100 levels, the total number of possible states is 10000. Then if we use 10 possible levels of torque times two gear ratios we have 20 possibles action. Hence, we must keep track of 200000 Q-values, and we need to visit each of those values multiple time to converge. For more complex systems the brute force look-up table approach is thus even less tractable then value iteration.
+%
+%\begin{figure}[hpt]
+        %\centering
+				%\subfloat[Cost-to-go]{
+				%\includegraphics[width=0.32\textwidth]{Q_1_J2.png}}
+        %\subfloat[Policy for torque]{
+				%\includegraphics[width=0.25\textwidth]{Q_1_u0.png}}
+				%\subfloat[Trajectory using the learned policy]{
+				%\includegraphics[width=0.32\textwidth]{Q_1_xu.png}}
+       %\caption{Results with Q-Learning for a 1-DOF robot after thousands of simulated experiments}
+			%\label{fig:Q}
+%\end{figure}
+%
+%The results are illustrated at Fig. \ref{fig:Q}. For this experiment, the set of possible action was limited to only 3 torque levels, to reduce the necessary computation time. After thousands of simulated experiment, it was possible to see a cost-to-go mapping similar to the one obtained with value iteration. Interesting point is that for some region of the state-space, the cost-to-go is different (still equal to the initialization value) because those zones were never visited during the experiments. Also, even if the state-space exploration was far from complete, the controller obtained at this point was still able to bring the robot on the target.
+%
+%
+%\subsubsection{Feature based reinforcement learning}
+%
+%
+%In this section, instead of learning a look-up table for the cost-to-go or Q-values, an approximation of the cost-to-go using features and a small set of weights is learned. This approach as the advantage of scaling more easily to complex robots and to avoid Bellman`s "curse of dimensionality". The approximation will be done directly on the cost-to-go function:
+%
+%\begin{align}
+	%\hat{J}(\boldsymbol{x}) &= \sum_i  w_i  f_i(\boldsymbol{x})  
+	%\label{eq:Qhat}
+%\end{align}
+%
+%With the weight update:
+%\begin{align}
+	%w_i =w_i + \alpha \left[ g(\boldsymbol{x} , \boldsymbol{u}) + \lambda \hat{J}(\boldsymbol{x}_{(t+1)})  -  \hat{J}(\boldsymbol{x}) \right] f_i(\boldsymbol{x},\boldsymbol{u}) 
+%\end{align}
+%
+%This correspond to temporal-difference learning scheme. During the learning phase, the controller $\epsilon$-greedy is again used. One difference is that since only the cost-to-go is estimated, the greedy policy needs to do a one-step look-ahead to select the best action, i.e. $ u(\boldsymbol{x})  = arg\min_{\boldsymbol{u}} \left[ g(\boldsymbol{x} , \boldsymbol{u}) + \lambda \hat{J}(\boldsymbol{x}_{(t+1)}) \right] $. Note that with this approach, since we are doing both policy evaluation and policy improvement simultaneously, we will converge to a local minimum, unlike Q-learning where we are guarantee to find the global optimum if we run it for long enough.
+%
+%
+%\paragraph{Feature design}
+%\label{sec:features}
+%
+%The features were picked using physical intuition from the dynamical system. Since the cost-to-go function needs to represent how far away the system is from the goal, in term of future cost with the optimal behavior, one good indicator in the energy level. If the actual energy level is very different from the goal energy level, then a lot of control effort will be required to change that and there is no way around it. So the first feature is :
+%%
+%\begin{align}
+	%f_1(\boldsymbol{x}) &=  | energy( \boldsymbol{x} )  - energy( \boldsymbol{x}_{target} ) |
+%\end{align}
+%%
+%However, simply having the correct energy level is not enough to reach the goal. We also need to penalize position error and velocity leading away from the goal, both which will make the system incur additional cost. In order to do that, sliding variable are used, one for each joint of the robot. A sliding variable is the combination of a position error and a velocity error into a single scalar:
+%%
+%\begin{align}
+	%s_i &=  \dot{q_e}  + \lambda q_e
+%\end{align}
+%%
+%where $q_e$ is a joint position error and $\dot{q_e}$ is a joint velocity error. If $s_i$ is very small then the error on this joint is converging toward zero, hence this can be used to know if the system is in a good/bad situation. So for the 1-DOF robot, only two features are used: the absolute error on energy level and the absolute value of the sliding variable. Three variables thus parametrize $\hat{J}$ (the third one correspond to an offset). For the 2-DOF robot, only an additional sliding variable is added as a feature to account for the additional joint.
+%
+%
+%\paragraph{Numerical results}
+%\label{sec:NumericalResults}
+%
+%Fig. \ref{fig:aaa} shows the first experiment, with the initial weights set so the initial cost-to-go is only the energy error. We can see that this is not enough and the controller fail to stabilize the robot. However, after only 20 experiments, the weights had converged and the resulting controller was doing a good job of bringing the robot to the target. Note that the approximated cost-to-go is not too far from the cost-to-go obtained using value iteration, at least considering only 3 parameters are used. 
+%
+%\begin{figure}[hp]
+        %\centering
+				%\subfloat[Approximated Cost-to-go]{
+				%\includegraphics[width=0.28\textwidth]{eG1_J0.png}}
+        %\subfloat[Phase plane trajectory]{
+				%\includegraphics[width=0.32\textwidth]{eG1_pp0.png}}
+				%\subfloat[State and input trajectory]{
+				%\includegraphics[width=0.32\textwidth]{eG1_xu0.png}}
+       %\caption{Results of 2-features learning after 1 experiment (controller failed to stabilize the goal) }
+			 %\label{fig:aaa}
+%\end{figure}
+%
+%\begin{figure}[hp]
+        %\centering
+				%\subfloat[Approximated Cost-to-go]{
+				%\includegraphics[width=0.28\textwidth]{eG1_J20.png}}
+        %\subfloat[Phase plane trajectory]{
+				%\includegraphics[width=0.32\textwidth]{eG1_pp20.png}}
+				%\subfloat[State and input trajectory]{
+				%\includegraphics[width=0.32\textwidth]{eG1_xu20.png}}
+       %\caption{Results of 2-features learning after 20 experiments (weight converged)}
+			%\label{fig:aaa}
+%\end{figure}
+%
+%Similar results were obtained for the 2-DOF robot, see the youtube video at \url{https://youtu.be/JJejTTy1-bU}. 
+%
+%Note: I tried adding a lot more features, for instance directly the states, the square of the states, sin/cos of the states, etc. However, no meaningful improvement was obtained by doing so.
+%
+%
+
+\subsection{Numerical results}
+
+\subsubsection{Linear 1-DoF robot}
+Fig. \ref{fig:J} to \ref{fig:u1} illustrate the numerical results of the Value Iteration algorithm for the linear mass-damper output case. Three different cost functions are explored, a quadratic cost function, a mininimum time cost and minimum energy case which is simply a special case of the quadratic cost where weight are sets to drastically penalize control inputs over state error. The absence of color indicates states with no solution (a constraint will be violated for any possible control actions). Fig. \ref{fig:phase_plane} shows the closed loop behavior of the system in the phase plane when the optimal policy is applied.
+%
+\begin{figure}[H]
+        \centering
+				\subfloat[Minimum time]{
+        \includegraphics[width=0.32\textwidth]{Jt.png}
+				\label{fig:J_time}}
+        \subfloat[Quadratic cost]{
+				\includegraphics[width=0.32\textwidth]{Jq.png}%J_LQR.png
+				\label{fig:J_LQR}}
+				\subfloat[Minimum energy]{
+				\includegraphics[width=0.32\textwidth]{Je.png}
+				\label{fig:J_energy}}
+        \caption{Optimal cost-to-go $J^*$}\label{fig:J}
+\end{figure}
+%
+\begin{figure}[H]
+        \centering
+				\subfloat[Minimum time]{
+        \includegraphics[width=0.32\textwidth]{u1t.png}
+				\label{fig:u0_time}}
+        \subfloat[Quadratic cost]{
+				\includegraphics[width=0.32\textwidth]{u1q.png}
+				\label{fig:u0_LQR}}
+				\subfloat[Minimum energy]{
+				\includegraphics[width=0.32\textwidth]{u1e.png}
+				\label{fig:u0_energy}}
+        \caption{Optimal policy for the continuous torque command $u_1$ [Nm]}\label{fig:u0}
+\end{figure}
+%
+\begin{figure}[H]
+        \centering
+				\subfloat[Minimum time]{
+        \includegraphics[width=0.32\textwidth]{u2t.png}
+				\label{fig:u1_time}}
+        \subfloat[Quadratic cost]{
+				\includegraphics[width=0.32\textwidth]{u2q.png}
+				\label{fig:u1_LQR}}
+				\subfloat[Minimum energy]{
+				\includegraphics[width=0.32\textwidth]{u2e.png}
+				\label{fig:u1_energy}}
+        \caption{Optimal policy for the mode selection $u_2$}\label{fig:u1}
+\end{figure}
+%
+\begin{figure}[H]
+        \centering
+				\subfloat[Minimum time]{
+        \includegraphics[width=0.32\textwidth]{ppt.pdf}
+				\label{fig:phase_plane_time}}
+        \subfloat[Quadratic cost]{
+				\includegraphics[width=0.32\textwidth]{ppq.pdf}
+				\label{fig:phase_plane_LQR}}
+				\subfloat[Minimum energy]{
+				\includegraphics[width=0.32\textwidth]{ppe.pdf}
+				\label{fig:phase_plane_energy}}
+        \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane}\label{fig:phase_plane}
+\end{figure}
+
+\paragraph{Minimum time}
+\label{sec:MinimumTime}
+For the minimum time problem, the optimal policy is a bang-bang law for the torque and always using highly-geared mode when possible. Note that the bang-bang switching curve accounts for the fact the large gear ratio will be used during the final part of the trajectory.
+
+\paragraph{Quadratic cost}
+\label{sec:QuadraticCost}
+For the quadratic cost, the gear-ratio selection optimal policy is almost as simple as the minimum time problem except for small features in quadrant II and IV. The more interesting result comes from the continuous torque control law, the gains when using the large reduction ratio are larger than those when using the small reduction ratio. This results in the controller taking action mainly at low speed when its actions have the biggest impacts on the system, and lead to a highly non-linear closed-loop behavior.
+
+\paragraph{Minimum energy}
+\label{sec:MinimumEnergy}
+For the minimum energy controller, interestingly the mode selection policy is not trivial even for this simple linear model.  This shows that it does not take much complexity to have non-trivial optimal policies for hybrid systems. Here, the large reduction ratio is used almost only for braking, and in quadrant II and IV the small reduction ratio is used even at low speed to coast with low viscous resistance. Also globally the gains are much lower than the other controllers except for zones where it is necessary to use energy to stay in the domain. 
+
+\subsubsection{Non-linear 1-DoF robot}
+
+Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted pendulum system for both a minimal time goal and a quadratic cost minimization. Figure \ref{fig:u0} shows the optimal torque policy and Figure \ref{fig:u1} shows the optimal gear selection policy. The resulting closed loop behavior is illustrated in the phase plane at Figure \ref{fig:phase_plane}. Figure \ref{fig:phase_plane} also shows closed-loop state trajectories and control inputs for a simulation starting at $q$ = -2 rad.
+
+\begin{figure*}[htpb]
+        \centering
+				\subfloat[Minimum time]{
+        \includegraphics[width=0.48\textwidth]{J_time.png}
+				\label{fig:J_time}}
+        \subfloat[Quadratic cost]{
+				\includegraphics[width=0.48\textwidth]{J_quadratic.png}%J_LQR.png
+				\label{fig:J_LQR}}
+        \caption{Optimal cost-to-go $J^*$}\label{fig:J}
+\end{figure*}
+
+\begin{figure*}[htpb]
+        \centering
+				\subfloat[Minimum time]{
+        \includegraphics[width=0.48\textwidth]{u0_time.png}
+				\label{fig:u0_time}}
+        \subfloat[Quadratic cost]{
+				\includegraphics[width=0.48\textwidth]{u0_quadratic.png}
+				\label{fig:u0_LQR}}
+        \caption{Optimal policy for the continuous torque command $\tau$ [Nm]}\label{fig:u0}
+\end{figure*}
+
+\begin{figure*}[htpb]
+        \centering
+				\subfloat[Minimum time]{
+        \includegraphics[width=0.48\textwidth]{u1_time.png}
+				\label{fig:u1_time}}
+        \subfloat[Quadratic cost]{
+				\includegraphics[width=0.48\textwidth]{u1_quadratic.png}
+				\label{fig:u1_LQR}}
+        \caption{Optimal policy for the discrete gear selection $k \in [1,2]$}\label{fig:u1}
+\end{figure*}
+
+\begin{figure*}[htpb]
+        \centering
+				\subfloat[Minimum time]{
+        \includegraphics[width=0.48\textwidth]{PP_time.png}
+				\label{fig:phase_plane_time}}
+        \subfloat[Quadratic cost]{
+				\includegraphics[width=0.48\textwidth]{PP_quadratic.png}
+				\label{fig:phase_plane_LQR}}
+        \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane. Two trajectories starting at $q=-2$ are illustrated, blue is open-loop, red is closed loop}\label{fig:phase_plane}
+\end{figure*}
+
+
+%\begin{figure*}[htpb]
+        %\centering
+				%\subfloat[Minimum time]{
+        %\includegraphics[width=0.48\textwidth]{Traj_time.png}
+				%\label{fig:phase_plane_time}}
+        %\subfloat[Quadratic cost]{
+				%\includegraphics[width=0.48\textwidth]{Traj_quadratic.png}
+				%\label{fig:phase_plane_LQR}}
+        %\caption{State trajectories and control inputs for a closed loop simulation starting at $q=-2$}\label{fig:phase_plane}
+%\end{figure*}
+
+%The only issues that was found with those computations is that care need to be be used when picking the out-of bound termination conditions. Indeed, because of the stochastic state evolution, the high-cost assigned to out-of-bound terminations diffuse inside the boundary and reach states that should be able to never go out-of-bound (with a deterministic evolution). To alleviate this problem, the out-of-bound termination cost is set to a value just slightly bigger that the maximum expected optimal cost-to-go reaching the goal. Also, the boundary is set so that the boundary layer affected by this diffusion is not reaching the zone of interest.
+
+
+%\subsection{Feedback laws simplification}
+%
+%TODO Using regresstion to obtain analytical feedback laws...
+%
+%In this section, simplified algebraic control laws are extracted from the numerical map of optimal control actions for the quadratic cost controller. The dynamic programming algorithm outputs a list of optimal actions that is assumed are samples of a  map of optimal actions $\vec{u}^* = \pi^* ( \vec{x} )$. The goal is then to find a simplified map $\hat{\pi}( \vec{x} )$ based on the samples. Here a two-steps approach is used; first the state-space is segmented into zones based on the optimal discrete action $u_2$, then regression is used to compute the $u_1$ map independently in each zone. 
+%
+%\subsubsection{1-DoF linear robot example}
+%
+%\paragraph{Segmentation}
+%For the resulting optimal policy found at Fig. \ref{fig:u0_LQR}, three main zones can be identified. The boundaries are approximated by two lines at $\dot{x}= \pm \; 20 $, and the samples are separated into two groups:
+%\begin{align}
+%\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 1} \quad \text{if} \; | \dot{x} | \geq 20 \\
+%\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 2} \quad \text{if} \; | \dot{x} | < 20
+%\end{align}
+%
+%For more complex segmentation, machine learning techniques could be used to perform the classification.
+%
+%\paragraph{Continuous maps}
+%
+%In each zones, the optimal continuous input $u_1^*$ is very close to a planar surface with exceptions when the input saturates or near the boundaries, see Fig. \ref{fig:u0_LQR}. Here, it is proposed to forgo absolute optimality and instead use the simplest control law that can globally approximate $u_1^*$ map. Hence, simple linear plane are fitted on the samples group by group. The regression is defined as follow, the dependent variable to approximate is $u_1$, the independent variables are the state coordinates $\vec{x}^T = [ x  \; \dot{x} ]$ and the parameter vector is $\vec{\alpha}^T = [ k_p  \; k_d ]$. Hence the continuous control variable $\hat{u}_1$ is approximated with the following linear map:
+%\begin{align}
+%\hat{u}_1 = \vec{\alpha}^T \vec{x} = k_p  x + k_d \dot{x}
+%\end{align}
+%which is essentially a simple proportional-derivative control law. Then the parameters are estimated using a least-square criterion, $\vec{\alpha}_1$ using the samples in group 1 and $\vec{\alpha}_2$ samples in group 2. Then combining the segmentation and both linear maps, the global control policy is approximated with the following law:
+%\begin{align}
+%\vec{ \hat{u}} &= \hat{\pi} ( \vec{x} )
+ %= \left \{ 
+	%\begin{array}{c}
+	%\left[
+	%\begin{array}{c}
+		 %\vec{\alpha}_1^T \vec{x} \\
+		 %1 
+	%\end{array} 
+	%\right] 		
+	%\text{if} \; | \dot{x} | \geq 20 \\ \\
+		 %\left[
+		%\begin{array}{c}
+		 %\vec{\alpha}_2^T \vec{x} \\ 
+		 %2
+	%\end{array}
+		 %\right]
+		%\text{if} \; | \dot{x} | < 20
+	%\end{array}
+	%\right.
+	%\label{eq:uhat}
+%\end{align}
+%Fig. \ref{fig:u0_LQR_approx} shows the resulting continuous control policy $\hat{u}_1$ for the full state-space, and is an approximation of Fig. \ref{fig:u0_LQR} map.
+%
+%%\begin{figure}[H]
+	%%\centering
+		%%\includegraphics[width=0.30\textwidth]{u1aq.png}
+	%%\caption{Continuous map approximation for $u_1$}
+	%%\label{fig:u0_LQR_approx}
+%%\end{figure}
+%
+%\begin{figure}[htpb]
+				%\vspace{-10pt}
+        %\centering
+				%\subfloat[Map for $u_1$ (Nm)]{
+        %\includegraphics[width=0.45\textwidth]{u1aq.pdf}
+				%\label{fig:u0_LQR_approx}}
+        %\subfloat[Phase plane behavior]{
+				%\includegraphics[width=0.40\textwidth]{pp2q.pdf}
+				%\label{fig:phase_plot_lqr}}
+        %\caption{Approximated control laws and resulting behavior}\label{fig:approx}
+%\end{figure}
+%
+%
+%The resulting behavior with the control law of eq.\eqref{eq:uhat} is illustrated in the phase plane at Fig. \ref{fig:phase_plot_lqr}, where the arrows illustrate the state derivative throughout the state space. The blue arrows illustrate the natural dynamic of the system and the red arrows illustrate the closed behavior with the control policy of eq.\eqref{eq:uhat}. At high speed with the small reduction ratio, the controller only takes small actions illustrated by the fact that red arrows only have small deviation compared to blue arrows. However at low speed, the large reduction ratio is used to drastically change the natural behavior of the system, illustrated by the large red arrows. 
+%
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \section{Simulation Results}
 \label{sec:shift_sim}
 
 
-
 \subsection{Model-based controller}
-
 
 In this section, the advantages of dynamically changing the gear-ratios, using the R* computed torque controller, are illustrated using simulations of two robots: first a 1-DoF pendulum, then a 3-DoF arm. Both robots are considered having VGA with two possible gear-ratios: 1:1 or 1:10. Reference low-torque trajectories to reach target positions are computed offline using a sample-based search algorithm \cite{lavalle_planning_2006}. 
 %
@@ -731,19 +1027,19 @@ The first simulated experiment uses the robot of Fig. \ref{fig:bigpicture}, but 
 \end{figure}
 %
 %
-%\begin{figure}[htp]
-				%\vspace{-10pt}
-        %\centering
-				%\subfloat[ Reduction ratio $R$=1 ]{ %extrinsic dynamics
-				%\includegraphics[width=0.23\textwidth]{simpp1.pdf}
-				%\label{fig:pp1s}}
-        %\subfloat[Reduction ratio $R$=10 ]{ % intrinsic dynamics
-				%\includegraphics[width=0.23\textwidth]{simpp2.pdf}
-				%\label{fig:pp2s}}
-        %\caption{Trajectory superposed with natural dynamics vectors}
-				%\label{fig:pps}
-%\end{figure}
-%
+\begin{figure}[htp]
+				\vspace{-10pt}
+        \centering
+				\subfloat[ Reduction ratio $R$=1 ]{ %extrinsic dynamics
+				\includegraphics[width=0.45\textwidth]{simpp1.pdf}
+				\label{fig:pp1s}}
+        \subfloat[Reduction ratio $R$=10 ]{ % intrinsic dynamics
+				\includegraphics[width=0.45\textwidth]{simpp2.pdf}
+				\label{fig:pp2s}}
+        \caption{Trajectory superposed with natural dynamics vectors}
+				\label{fig:pps}
+\end{figure}
+
 %\begin{figure}[htp]
 	%\centering
 		%\includegraphics[width=0.38\textwidth]{simpp1.pdf}
@@ -757,7 +1053,7 @@ The first simulated experiment uses the robot of Fig. \ref{fig:bigpicture}, but 
 	%\caption{Trajectory superposed with natural dynamics vectors with R=10}
 	%\label{fig:simpp2}
 %\end{figure}
-%
+
 In the second experiment, a 3-DoF manipulator is tasked with going from configuration A to configuration B with the 3D trajectory shown at Fig. \ref{fig:3d_traj}. For this robot the controller is actively selecting the best gear-ratios matrix $R$ out of the possible $2^3=8$ options. Fig. \ref{fig:3d_u} shows the control inputs activity. During the initial falling-down phase, at around $t=1$, the robot is using 1:1 gear-ratios for all actuators, leveraging gravitational torques. In contrast, during the final lifting phase, at around $t=6$, the robot is using 1:10 gear-ratios for all actuators. 
 %
 %
@@ -801,6 +1097,7 @@ To evaluate the performance gain of actively changing the gear-ratio, simulation
 %
 \begin{table}[htp]
 	\centering
+		\caption{Required torque comparison}
 		\begin{tabular}{ c c c c }
 		\hline
 		     & Fixed gear & Fixed gear & Active gearshifting \\
@@ -817,9 +1114,7 @@ To evaluate the performance gain of actively changing the gear-ratio, simulation
 		3-link robot  & 2774 & 3617 & 295  \\	
 		\hline \hline
 		\end{tabular}
-	\caption{Required torque comparison}
 	\label{tab:MaximumTorqueComparison}
-	\vspace{-20pt}
 \end{table}
 %
 
