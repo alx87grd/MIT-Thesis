@@ -1,10 +1,16 @@
 \chapter{Introduction}
 \label{sec:Introduction}
 
+%{
+%\begin{flushright}
+%\textit{"There is one quality more important than know-how [...] This is \\ know-what by which we determine not only how to accomplish our \\  purposes, but what our purposes are to be."} 
+%\emph{-- Norbert Wiener}
+%\end{flushright}
+%}
 {
 \begin{flushright}
-\textit{"There is one quality more important than know-how [...] This is \\ know-what by which we determine not only how to accomplish our \\  purposes, but what our purposes are to be."} 
-\emph{-- Norbert Wiener}
+\textit{"To have a great idea, have a lot of them."} \\
+\emph{-- Thomas A. Edison}
 \end{flushright}
 }
 \vspace{10pt}
@@ -17,7 +23,7 @@
 This thesis proposes an actuation technology and control schemes addressing the fundamental problem of efficient power-transmission in diverse situation. In many robotic systems, actuators are often required to operate in distinctively different torque-speed load conditions. Machine tools, for instance, are usually either moving at high-speed unloaded during reaching phases, or moving slowly applying large forces during manufacturing operations (see Fig. \ref{fig:machinetool}). Also a legged robot, for example, has to move its leg forward quickly through the air and, once touching the ground, it has to bear a large load (see Fig. \ref{fig:leggedrobot}), or a gripper needs to reach the part quickly and then has to apply large holding forces (see Fig. \ref{fig:gripper}).
 %
 \begin{figure}[H]
-				\vspace{-10pt}
+				%\vspace{-10pt}
         \centering
 				\subfloat[Machine tool]{
 				\includegraphics[width=0.30\textwidth]{machinetool.png}
@@ -81,7 +87,7 @@ The gear-ratio has a radical effect on the output impedance of a robot; the moto
 Changing the gear-ratio has a radical effect on the natural dynamics of a system. By changing dynamically the gear-ratio, it is possible to select the natural dynamic behavior that is most advantageous for a task. For instance, selecting a small reduction ratio to exploit gravitational forces pulling the robot in a desired direction, or on the other hand, selecting a large reduction ratio to hold a heavy weight with small actuator torques.
 
 \paragraph{Directionality of properties}
-For a multiple DoF mechanism, the speed/force properties are directional. Typically the Jacobian of a mechanism is only a function of the configuration $J=J(\vec{q})$, but a mechanism using $m$ variable gear-ratio actuators with $n$ possible gear-ratio, the Jacobian (from actuator coordinates to task-space coordinates) would also be function of the gear-ratios selected, i.e. dependent on control inputs $\vec{u}$ : $J=J(\vec{q},\vec{u})$. Hence, for a given configuration there is $n^m$ manipulability ellipsoid option. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear-ratios would be picked to meet the task requirement.
+For a multiple DoF mechanism, the speed/force properties are directional. Typically the Jacobian of a mechanism is only a function of the configuration $J=J(\vec{q})$, but a mechanism using $m$ variable gear-ratio actuators with $n$ possible gear-ratio, the Jacobian (from actuator coordinates to task-space coordinates) would also be function of the selected gear-ratios $R$, i.e. dependent on control inputs : $J=J(\vec{q},R)$. Hence, for a given configuration there is $n^m$ manipulability ellipsoid option. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear-ratios would be picked to meet the task requirement.
 
 
 \begin{figure}[H]
@@ -94,7 +100,7 @@ For a multiple DoF mechanism, the speed/force properties are directional. Typica
 
 \subsection{Differences from vehicle power-train transmissions}
 
-Here differences from issues faced in the context of car power-train variable transmissions are emphasized.
+Here differences from issues faced in the context of car power-train transmissions are emphasized.
 
 \paragraph{Range of required gear-ratio}
 %
@@ -102,12 +108,12 @@ For car transmissions, a typical gear-ratio range start with a ~3:1 reduction fo
 
 %\subsubsection{Characteristic of transducer and driven load}
 
-\emph{Electromagnetic transducer vs. internal combustion engine characteristics -}
+\paragraph{Electromagnetic transducer vs. internal combustion engine characteristics -}
 %
 Internal combustion engine have an efficient power-output on a narrow range of speed, hence transmission require many gear-ratio options (modern cars use up to eleven \cite{goleski_multi-speed_2015}) to keep the engine at its optimal velocity for any vehicle speed. Moreover, internal combustion engines cannot produce torque at low speed and car transmission must be equipped with a disengaging clutch.  Electric motor are much more flexible and their is less constraints for the design of adapted variable transmission. 
 
 %\newline
-\emph{Car dynamics vs. robot dynamics -}
+\paragraph{Car dynamics vs. robot dynamics}
 %
 For car power-trains the driven load is always a large inertia and is thus naturally attenuating any discontinuity in torque during a gear-shift. However, this is not the case in a general robotic context. 
 
@@ -115,16 +121,17 @@ For car power-trains the driven load is always a large inertia and is thus natur
 %
 Last and most fundamental difference, this thesis explore the control of VGA in multi-DoF systems like robotic arms, while for vehicle power-train the system is always single-axis.
 
-\paragraph{Solutions}
+\paragraph{Solutions Concepts}
 %
-All in all, for car power-train the solution is generally something similar to the selection of possible gear-ratios $R$ shown at eq. \eqref{eq:rangestypical}, i.e. single axis, limited total range variation of about and small jump between successive gear-ratio. With proposed solution for robotic system, the gear-ratio options would be characterized by multiple-DoF, only two gear-options per axis and order-of-magnitude difference between gear-ratio. A typical selection of gear-ratio for a 2 DoF robot is illustrated at \eqref{eq:rangestypical}. %Note that section \ref{sec:model} will discuss why gear-ratios for a multi-DoF system are represented with a matrix.
+All in all, as exemplified at eq. \eqref{eq:ratiorangestypicalrobot}, this thesis explore variable transmissions in multi-axis systems where gear-ratios exhibit drastic variations. This differ from typical car transmission with small jumps between successive gear-ratio for a single-axis system, see eq. \eqref{eq:ratiorangestypicalcar}.
 %
 \begin{align}
-  \text{Car:}& \quad R \in \{ 3 , 2 , 1.4 , 1 , 0.8 \} 
+  \text{Car Transmission:}& \quad R \in \{ \, 3 \, , \,  2 \, , \, 1.4 \, , \, 1 \, , \, 0.8 \, \} 
+	\label{eq:ratiorangestypicalcar}
 	%%
 	\\
 	%%
-	\text{Robot:}& \quad R \in 
+	\text{Proposed Robots:}& \quad R \in 
 	\scriptsize
 	\left \{
 	\left[
@@ -151,10 +158,11 @@ All in all, for car power-train the solution is generally something similar to t
 	\end{array} 
 	\right]
 	\right \}
- \label{eq:rangestypical}
+ \label{eq:ratiorangestypicalrobot}
 \end{align}
 
 
+\newpage
 
 \section{Main challenges}
 \label{sec:MainChallenges}

@@ -103,7 +103,7 @@ While variable gear-ratio actuators (VGA) have been studied extensively for auto
 
 \paragraph{Continuously variable transmissions (CVT)} 
 
-Continuously variable transmission have been used sporadically for car power-trains. Most common design are based on belts with variable-diameter pulley or toroidal disk. Drawbacks compared to regular transmission include higher transmission losses and complex dynamics \cite{srivastava_review_2009}. Moreover, typical CVT total ratio variation are limited to a factor 4x (for instance 0.5:1 to 2:1), which makes them unadapted for very large ratio variation [TODO find a good CVT review article]. Some designs have been proposed for infinite range variation, often called IVT. For instance the company Torotrack claim to have a CVT that can reach an effective gear-ratio of zero \cite{schoolcraft_gear_2011}. However, since those designs rely on friction, maximum transmitted torque is limited and the transmission systems are complex and very large, which inhibit the potential use in robotic applications.
+Continuously variable transmission have been used sporadically for car power-trains. Most common design are based on belts with variable-diameter pulley or toroidal disk. Drawbacks compared to regular transmission include higher transmission losses and complex dynamics \cite{srivastava_review_2009}. Moreover, typical CVT have limited total ratio variation range (for instance 0.5:1 to 2:1), which makes them unadapted for very large ratio variation. Some designs have been proposed for infinite range variation, often called IVT. For instance the company Torotrack claim to have a CVT that can reach an effective gear-ratio of zero \cite{schoolcraft_gear_2011}. However, since those designs rely on friction, maximum transmitted torque is limited and the transmission systems are complex and very large, which inhibit the potential use in robotic applications. % [TODO find a good CVT review article]
 
 In the actuator field, lever mechanisms with variable attachment points that leads to a very wide range of effective transmission ratio \cite{tahara_high-backdrivable_2011}, even infinite range when using a singular configurations \cite{jafari_new_2014}, have been proposed. However, this type of CVT implementation limits drastically the motion range, thus cannot be used for general purpose actuator transmission. In the literature, those mechanisms are used in VSA between the spring and the output, where their limited motion range is not an issue. 
 
@@ -113,7 +113,7 @@ Many clever mechanisms have proposed to be used as CVT. However, all design have
 %\paragraph{Novel Contribution} 
 The presented DSDM actuator in this chapter, address the issue of improving available power and efficiency over a wide range of operating speeds, which has rarely been addressed in the robotics literature. Also, the actuator enable order-of-magnitude variation of the output impedance, which is also a highly desirable feature.  \textbf{The main novel contribution is the methodology for gear shifting between two very different gear-ratios seamlessly even in highly dynamic situations, which is a key enabling feature for robotic applications.} A mechanical architecture where two motors are coupled using a 3-ports gearbox and a brake is used in conjunction with novel control scheme to provide full control of the output during gear shifting. The mechanical architecture is not new by itself as similar architectures (using planetary and brakes) are used in hybrid car powertrains, automatic transmissions and special actuators. However, here this architecture is used in conjunction with a novel controller to provide full control of the output during gear shifting. A preliminary version of this work have been published in \cite{girard_two-speed_2015}, but this chapter include a more throughout analysis and new algorithms for fast gear-shift even during impacts. 
 
-To the knowledge of the author, no other technology can meet all those requirements:
+To the knowledge of the author, no other technology meets all those requirements:
 \begin{itemize}
 	\item Fast shifting between order-of-magnitude different gear-ratios
 	\item High-fidelity control of the output during transitions
@@ -570,8 +570,9 @@ The variable of interest is the output $w_o$, and its dynamic can be expressed, 
 \right] \tau_{ext}(s)
 \label{eq:dsdm_output}
 \end{align}
-
+%
 When the brake on M1 of the DSDM is locked, the output equation is reduced, by letting $Z_1(s) \rightarrow \infty$, to:
+%
 \begin{align}
 \left[
  Z_o(s)  + R_2^2 Z_2(s)
@@ -582,7 +583,7 @@ R_2
 \tau_{ext}(s)
 \label{eq:dsdm_output_HF}
 \end{align}
-
+%
 When the brake is open, if the gear-ratio $R_2$ of M2 is large, the equation can be simplified. 
 %
 %, the behavior can be approximated. First eq. \eqref{eq:dsdm_output} is rearranged:
@@ -603,6 +604,7 @@ When the brake is open, if the gear-ratio $R_2$ of M2 is large, the equation can
 %\end{align}
 %
 Assuming the reflected impedance of M1 is much smaller than that of M2, and neglecting motor side damping, the equation reduce to:
+%
 \begin{align}
 \left[
 Z_o(s)  + R_1^2 Z_1(s)
@@ -618,26 +620,26 @@ R_1 \frac{R_1 I_1}{R_2 I_2}
 \quad \text{and} \quad \frac{Z_1(s)}{Z_2(s)} = \frac{I_1}{I_2}
 \label{eq:dsdm_output_HS}
 \end{align}
-
+%
 During high-speed mode the behavior of the output is also dominated by a first-order linear behavior, but interestingly both input torques contributed to the motion through inertial coupling. Note that this differ from a serial architecture, in both case speed adds-up and effort is shared (0-type junction), but inertial properties are different.
-
+%
 \begin{align}
 \text{High-speed mode: } \quad \left[ I_o + R_1^2 I_1 \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_1 \right] \tau_1 + \left[ R_1 \frac{R_1 I_1}{R_2 I_2} \right] \tau_2 
 \label{eq:dsdm_output_HSw0} \\
 \text{High-force mode: } \quad \left[ I_o + R_2^2 I_2 \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_2 \right] \tau_2 
 \label{eq:dsdm_output_HFw0}
 \end{align}
-
-Note that, if when DSDM connected to a robotic system, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would have terms reflecting other forces: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected. Also, although neglected in \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0}, motor damping could be reintroduce easily by substituting motor torque $\tau_i$ with the effective torque $\tau_i - b_i w_i$ since those forces are collocated. 
+%
+Note that, if when DSDM connected to a robotic system, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would have terms reflecting other load-side forces: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected. Also, although neglected in \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0}, motor damping could be reintroduce easily by substituting motor torque $\tau_i$ with the effective torque $\tau_i - b_i w_i$ since those forces are collocated. 
 
 \newpage
 \subsection{Hybrid Behavior}
 
-Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of the system and possible transitions. Table \ref{tab:hybrid} gives a  
+Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of the system and possible transitions. Table \ref{tab:hybrid} gives references to the equations modeling each the discrete behaviors and transitions.
 %
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.95\textwidth]{operating_modes.png}
+		\includegraphics[width=0.99\textwidth]{operating_modes.png}
 	\caption{Discrete operating modes of the actuators}
 	\label{fig:operatingmodes}
 \end{figure}
@@ -645,14 +647,14 @@ Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of th
 \begin{table}[H]
 	\centering
 	\caption{Hybrid model: Continous equations and discrete jump maps}	% Table caption must be placed on top of the table %
-		\begin{tabular}{ c c c c }
+		\begin{tabular}{ c l l l }
 				\hline \hline
 				Situation           & Discrete Mode     & Mapping   & Equation of motions \\
 				\hline \hline
 				\multicolumn{4}{c}{ Continuous differential equations }\\
         \hline
-			   High-Force Mode    & $k=1$             & $\dot{\vec{w}} = f_1(\vec{w})$  & given by eq. \eqref{eq:dsdm_output_HF} \\
-				 High-Speed Mode    & $k=2$             & $\dot{\vec{w}} = f_2(\vec{w})$  & given by eq. \eqref{eq:ss_full}             \\
+			   High-Force Mode    & $k=1$             & $\dot{\vec{w}} = f_1(\vec{w},\tau)$  & given by eq. \eqref{eq:dsdm_output_HF} \\
+				 High-Speed Mode    & $k=2$             & $\dot{\vec{w}} = f_2(\vec{w},\tau)$  & given by eq. \eqref{eq:ss_full}             \\
 				\hline
 				\multicolumn{4}{c}{ Discrete gear-shift jump maps }\\
 				\hline
@@ -661,8 +663,8 @@ Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of th
 				\hline
 				\multicolumn{4}{c}{ Output impact jump maps }\\
 				\hline
-				 Impact during HF   & $k:1\rightarrow1$  & $\vec{w}^+= h_1(\vec{w}^-)$  &  \\
-				 Impact during HS   & $k:2\rightarrow2$  & $\vec{w}^+= h_2(\vec{w}^-)$  &  \\
+				 Impact during HF   & $k:1\rightarrow1$  & $\vec{w}^+= h_1(\vec{w}^-,p_{ext})$  & given by eq. \eqref{eq:h1} \\
+				 Impact during HS   & $k:2\rightarrow2$  & $\vec{w}^+= h_2(\vec{w}^-,p_{ext})$  & given by eq. \eqref{eq:h2} \\
 		    \hline \hline
         \end{tabular}		
 	\label{tab:hybrid}
@@ -687,7 +689,7 @@ From eq. \eqref{eq:dsdm_output_HF}, the continous differential equation mapping 
 \end{array}
 \right] &= f_1( \vec{w} , \vec{\tau} ) = 
 \left[ \begin{array}{c}
-\frac{1}{I_0 + R^2_2 I_2}\left( -(b_o + R_2^2 b_2) w_o + R_2 \tau_2 + \tau_o \right)\\
+\frac{1}{I_0 + R^2_2 I_2}\left( -(b_o + R_2^2 b_2) w_o + R_2 \tau_2 + \tau_{ext} \right)\\
 0
 \end{array} \right]
 \label{eq:f1}
@@ -718,7 +720,7 @@ From eq. \eqref{eq:ss_full}, the continous differential equation mapping during 
 
 \subsubsection{Up-Shift $k:1\rightarrow2$}
 
-During high-force mode, the single DoF is described by the variable $w_o$. Opening the brake release a constraint in the system and do not lead to any impulsive behavior. M1 rotor is simply suddenly free to move starting from rest. The mapping is thus given by:
+During high-force mode, the only DoF is described by the variable $w_o$. Opening the brake release a constraint in the system and it does not lead to any impulsive behavior. M1 rotor is simply suddenly free to move starting from rest. The mapping is thus given by:
 \begin{align} 
 \left[
 \begin{array}{c}
@@ -784,9 +786,16 @@ w_o^- + TODO(w_1^-) \\ 0
 \subsection{Impacts}
 \label{sec:model_impact}
 
+During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities can suddenly change. Since there is no impulsive forces on the motor side, the effect of contacts, from the actuator point-of-view, can be reduce to an impulsive torque applied to the output of the actuator. The output impulse $p_{ext}$ (integral of the impulsive force during the impact) is thus sufficient to characterized the velocity jumps:
+%
+\begin{align}
+p_{ext} = \int_{t^-}^{t^+} \tau_{ext} dt
+\label{eq:outputimpulsedefine}
+\end{align}
+
 \subsubsection{High-speed mode impact}
 
-During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities can suddenly change. Since there is no impulsive force on the motor side, the effect of the contacts, from the actuator point-of-view, can be reduce to a impulse torque $\tau_c$ applied to the output of the actuator. Using eq. \eqref{eq:manipulator_impact}, it leads to to impulsive map:
+During high-speed mode, applying eq. \eqref{eq:manipulator_impact}, it leads to to impulsive map:
 %
 \begin{align}
 \left[
@@ -794,7 +803,7 @@ During a contact, impulsive forces can create a sudden change of velocity. Hence
 w_0^+ \\
 w_1^+ \\
 \end{array}
-\right] = h_2( \vec{w}^- , \int \tau_c dt ) = 
+\right] = h_2( \vec{w}^- , p_{ext} ) = 
 \left[
 \begin{array}{c}
 w_0^- \\
@@ -806,10 +815,11 @@ H^{-1} \left[
 1 \\
 0 \\
 \end{array}
-\right] \int{\tau_c dt}
+\right] p_{ext}
+\label{eq:h2}
 \end{align}
 %
-If the reflected inertia of M2 is much greater than that of M1 ($R_2^2 I_2 >> R_1^2 I_1 $), than the impulsive reaction is expressed by:
+If the reflected inertia of M2 is much greater than that of M1 ($R_2^2 I_2 >> R_1^2 I_1 $), than the impulsive reaction can be simplified to 
 %
 \begin{align}
 \left[
@@ -824,7 +834,7 @@ w_0^- \\
 w_1^- \\
 \end{array}
 \right] +
-\frac{ \int{\tau_c dt} }{ I_o + I_1 R_1^2} 
+\frac{ p_{ext} }{ I_o + I_1 R_1^2} 
 \left[
 \begin{array}{c}
 1 \\
@@ -836,7 +846,7 @@ R_1 \\
 Hence, M2 velocity will be unchanged and the velocity discontinuity of the output is transmitted directly to M1 during an impact:
 %
 \begin{align}
-\Delta w_o  &= w_o^+ - w_o^- = \frac{ \int{\tau_c dt} }{ I_o + I_1 R_1^2}  \\
+\Delta w_o  &= w_o^+ - w_o^- = \frac{ p_{ext} }{ I_o + I_1 R_1^2}  \\
 \Delta w_1  &= w_1^+ - w_1^- = R_1 \Delta w_o \\
 \Delta w_2  &= w_2^+ - w_2^- =  0
 \label{eq:dsdm_impact_gen_delta_w1}
@@ -853,13 +863,14 @@ During high-force mode, assuming the brake is strong enough not to slip during t
 w_0^+ \\
 w_1^+ \\
 \end{array}
-\right] = h_1( \vec{w}^- , \int \tau_c dt ) = 
+\right] = h_1( \vec{w}^- , p_{ext} ) = 
 \left[
 \begin{array}{c}
-w_0^- + \frac{\int{\tau_c dt}}{I_o + R_2^2  I_2 } \\
+w_0^- + \frac{ p_{ext} }{I_o + R_2^2  I_2 } \\
 0 \\
 \end{array}
-\right]  
+\right] 
+\label{eq:h1}
 \end{align}
 
 %\begin{figure}[H]
@@ -1031,10 +1042,10 @@ and they can be reduced the same input-output structure :
 The same structure can also be found for the impulsive behavior in case of impacts:
 %
 \begin{align}
-w_0^+  =  w_0^- + \frac{\int{\tau_c dt}}{I_o + R_k^2  I_k } \quad k \in {1,2}
+w_0^+  =  w_0^- + \frac{p_{ext}}{I_o + R_k^2  I_k } \quad k \in {1,2}
 \end{align}
 %
-Hence, if both motor are identical ($I_1=I_2$), then the only parameter changing in those equations is the reduction ratio $R_k$. Thus, from a high-level point of view, with the commanded torque routed as described by eq. \eqref{eq:torquerooting}, the behavior of a DSDM behaves like a single motor actuator with two set of gear-ratio. 
+Hence, if both motor are identical ($I_1=I_2$), then the only parameter changing in those equations is the reduction ratio $R_k$. Thus, from a high-level point of view, with the commanded torque routed as described by eq. \eqref{eq:torquerooting}, the behavior of a DSDM is equivalent to a single motor actuator with two gear-ratios. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1188,7 +1199,7 @@ This section described a control scheme where the velocity of the internal DoF i
 Rearranging the results of section \ref{sec:model_impact} to express the two variables of interest (approaching speed $w_0^-$ and M1 velocity after the impact $w_1^+$), as a function of controllable inputs (from a kinematic point of view), lead to:
 %
 \begin{align}
-\left[ \begin{array}{c} w_0^- \\ w_1^+ \end{array} \right] &= \Bigg[ \begin{array}{c c} \frac{1}{R_1} & \frac{1}{R_2}\\ 1 & 0 \end{array} \Bigg] \left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] + \left[ \begin{array}{c} 0 \\ R_1 \frac{\int{\tau_c dt}}{I_o + I_1 R_1^2} \end{array} \right]
+\left[ \begin{array}{c} w_0^- \\ w_1^+ \end{array} \right] &= \Bigg[ \begin{array}{c c} \frac{1}{R_1} & \frac{1}{R_2}\\ 1 & 0 \end{array} \Bigg] \left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] + \left[ \begin{array}{c} 0 \\ R_1 \frac{  p_{ext}  }{I_o + I_1 R_1^2} \end{array} \right]
 \label{eq:dsdm_impact_approx_sol}
 \end{align}
 %
@@ -1197,7 +1208,7 @@ Hence it is possible to set both motor velocities so that the approaching speed 
 \begin{align}
 \left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] &= \Bigg[ \begin{array}{c} R_1 \\ 0  \end{array} \Bigg] u_0  + 
 \underbrace{ \left[ \begin{array}{c} 1 \\ -\frac{R_2}{R_1} \end{array} \right]}_{\text{Nullspace projection}}
- \left( u_1 - R_1 \frac{\int{\tau_c dt}}{I_o + I_1 R_1^2} \right) 
+ \left( u_1 - R_1 \frac{ p_{ext} }{I_o + I_1 R_1^2} \right) 
 \end{align}
 %
 leading to
@@ -1213,7 +1224,7 @@ Therefore, if an impact is expected and the upcoming impulsive impact reaction $
 Alternatively, as for the braking law used for synchronization during the down-shift process, this problem can be approached from a dynamic point of view. A desired velocity for M1 is defined has a function of the expected impulsive contact reaction:
 %
 \begin{align}
-w_{1,d}  = - R_1 \frac{\int{\tau_c dt}}{I_o + I_1 R_1^2}
+w_{1,d}  = - R_1 \frac{ p_{ext} }{I_o + I_1 R_1^2}
 \label{eq:dsdm_impact_gen_delta_w1}
 \end{align}
 %
@@ -1250,7 +1261,7 @@ and a $w_1$ closed-loop dynamic converging exponentially to $w_{1,d}$ if the syn
 If the velocity controller is able to track the velocity set-point and the collision is perfectly predicted, then immediately after the impact, M1 velocity will be zero:
 %
 \begin{align}
-w_1^+ =  w_1^- + \Delta w_1 = w_{1,d}  + R_1 \frac{\int{\tau_c dt}}{I_o + I_1 R_1^2} \approx 0
+w_1^+ =  w_1^- + \Delta w_1 = w_{1,d}  + R_1 \frac{ p_{ext} }{I_o + I_1 R_1^2} \approx 0
 \label{eq:dsdm_impact_vel}
 \end{align}
 %
