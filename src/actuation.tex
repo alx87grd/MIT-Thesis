@@ -242,7 +242,7 @@ Note that a two-speed actuator using a single motor and a variable transmission 
 \subsection{Efficiency advantage}
 \label{sec:EffAdvantage}
 
-VGA actuators, including DSDM actuators, can transmit power more efficiently given various operating conditions. Electric motor efficiency is a function of velocity and applied torque. The efficiency map depends on the electric motor type (DC brushed, AC induction, DC brushless, etc). As a general rule, motors are typically more efficient in the upper-end of their velocity range. Hence, by using multiple gear-ratios, not only motors can be down-sized, but power transmission can be made more efficient. For instance, switching to a large gear-ratio to use a motor at its most efficient operating conditions. This efficiency advantage has been studied for electric cars equipped with multiple speed transmissions \cite{ren_effect_2009} \cite{holdstock_energy_2012} \cite{zhang_three-speed_2013} \cite{mckeegan_antonovs_2011}. This advantage is also of high interest for any mobile robot where on-board energy is limited. Any quantitative analysis of this benefit depends heavily on the specific of the type of motor used, the controller, the robotic system and the task executed by the robotic system. Section \ref{sec:shift_sim} will offer some quantivative simulation results regarding reduced energy consumption of robotic manipulator achieved using VGA actuators.
+VGA actuators, including DSDM actuators, can transmit power more efficiently given various operating conditions. Electric motor efficiency is a function of velocity and applied torque. The efficiency map depends on the electric motor type (DC brushed, AC induction, DC brushless, etc). As a general rule, motors are typically more efficient in the upper-end of their velocity range. Hence, by using multiple gear-ratios, not only motors can be down-sized, but power transmission can be made more efficient. For instance, switching to a large gear-ratio to use a motor at its most efficient operating conditions with high rotor speeds. This efficiency advantage has been studied for electric cars equipped with multiple speed transmissions \cite{ren_effect_2009} \cite{holdstock_energy_2012} \cite{zhang_three-speed_2013} \cite{mckeegan_antonovs_2011}. This advantage is also of high interest for any mobile robot where on-board energy is limited. Any quantitative analysis of this benefit depends heavily on the specific of the type of motor used, the controller, the robotic system and the task executed by the robotic system. Section \ref{sec:shift_sim} will offer some quantivative simulation results regarding reduced energy consumption of robotic manipulator achieved using VGA actuators.
 
 Another significant efficiency advantage of DSDM actuators over single-gear motors, is that high-speed mode can be backdrivable for interaction tasks while the high-force mode can be made non-backdrivable (using a irreversible large reduction for M2) in order to be able to hold an object against gravity without having to consume any electrical energy. A backdrivable single-gear motor will always have to supply electrical power just to sustain gravity forces, leading to zero efficiency for holding tasks. Hence, for a robot requiring backdrivability in some task and often holding objects against gravity, the efficiency gain could be huge. Note that some industrial robot arms use brake mounted on actuator outputs to address this type of energy consumption issue \cite{meike_energy_2011}.
 
@@ -621,12 +621,12 @@ R_1 \frac{R_1 I_1}{R_2 I_2}
 \label{eq:dsdm_output_HS}
 \end{align}
 %
-During high-speed mode the behavior of the output is also dominated by a first-order linear behavior, but interestingly both input torques contributed to the motion through inertial coupling. Note that this differ from a serial architecture, in both case speed adds-up and effort is shared (0-type junction), but inertial properties are different.
+During high-speed mode the behavior of the output is also dominated by a first-order linear behavior, but interestingly both input torques contributed to the motion through inertial coupling. Note that this differ from a serial architecture, in both case speed adds-up and effort is shared (0-type junction), but inertial properties are different. Input/output differential equations are thus given by:
 %
 \begin{align}
-\text{High-speed mode: } \quad \left[ I_o + R_1^2 I_1 \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_1 \right] \tau_1 + \left[ R_1 \frac{R_1 I_1}{R_2 I_2} \right] \tau_2 
+\text{High-speed mode: } \quad \left[ I_o + R_1^2 I_1 \right] \dot{w}_o +  \left[ b_o \right] w_o  &= \left[ R_1 \right] \tau_1 + \left[ R_1 \frac{R_1 I_1}{R_2 I_2} \right] \tau_2 
 \label{eq:dsdm_output_HSw0} \\
-\text{High-force mode: } \quad \left[ I_o + R_2^2 I_2 \right] \dot{w}_o +  \left[ b_o \right] \dot{w}_o  &= \left[ R_2 \right] \tau_2 
+\text{High-force mode: } \quad \left[ I_o + R_2^2 I_2 \right] \dot{w}_o +  \left[ b_o \right] w_o  &= \left[ R_2 \right] \tau_2 
 \label{eq:dsdm_output_HFw0}
 \end{align}
 %
@@ -803,12 +803,14 @@ w_0 \\ w_1
 \subsection{Impacts}
 \label{sec:model_impact}
 
-During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities can suddenly change. Since there is no impulsive forces on the motor side, the effect of contacts, from the actuator point-of-view, can be reduce to an impulsive torque applied to the output of the actuator. The output impulse $p_{ext}$ (integral of the impulsive force during the impact) is thus sufficient to characterized the velocity jumps:
+During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities can suddenly change. Since there is no impulsive forces on the motor side, the effect of a contact on a DSDM actuator can be reduce to an impulsive torque applied to the output. The output impulse $p_{ext}$ (integral of the impulsive force during the impact) is thus sufficient to characterized the velocity jumps:
 %
 \begin{align}
 p_{ext} = \int_{t^-}^{t^+} \tau_{ext} dt
 \label{eq:outputimpulsedefine}
 \end{align}
+%
+Section \ref{sec:impact} discuss how such impulsive forces can be computed with a dynamic model of a robotic system.
 
 \subsubsection{High-speed mode impact}
 
@@ -863,9 +865,9 @@ R_1 \\
 Hence, M2 velocity will be unchanged and the velocity discontinuity of the output is transmitted directly to M1 during an impact:
 %
 \begin{align}
-\Delta w_o  &= w_o^+ - w_o^- = \frac{ p_{ext} }{ I_o + I_1 R_1^2}  \\
-\Delta w_1  &= w_1^+ - w_1^- = R_1 \Delta w_o \\
-\Delta w_2  &= w_2^+ - w_2^- =  0
+\Delta w_o  = \frac{ p_{ext} }{ I_o + I_1 R_1^2}  \quad\quad  %w_o^+ - w_o^- = 
+\Delta w_1  =  R_1 \Delta w_o \quad\quad                      % w_1^+ - w_1^- =
+\Delta w_2  =  0                                         %w_2^+ - w_2^- =
 \label{eq:dsdm_impact_gen_delta_w1}
 \end{align}
 
@@ -1073,13 +1075,21 @@ Hence, if both motor are identical ($I_1=I_2$), then the only parameter changing
 
 \subsection{Architecture}
 
-Fig. XXX shows the proposed hierarchical control architecture. As discussed in section \ref{sec:mod}, it is assumed that high-bandwidth current controllers are implemented for each motors. The actuator-level DSDM controller has the role of coordinating motors M1 and M2 to make the actuator gear-shift seamlessly between the two operating modes. The idea is to encapsulate DSDM actuators with simple control inputs: a desired torque $\tau_d$ and a desired gear-ratio $k_d$, like a semi-automatic power-train in a car. The high-level controller, analogous to the driver using again the car analogy, then only have to specify those two desired value and is released of the low-level management of the gear-shift process. With this architecture, a multi-DoF robotic system using multiple DSDM actuator could have a single centralized high-level controller and independent actuator-level controller for each actuators. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} will discuss extensively the design of centralized high-level controllers while the rest of this section discuss the design of actuator-level DSDM controllers. 
+Fig. \ref{fig:dsdm_control_architecture} shows the proposed hierarchical control architecture for a DSDM actuator. As discussed in section \ref{sec:mod}, it is assumed that high-bandwidth current controllers are implemented for each motors. Moreover, it is also assumed that quality motor velocities $w_1$ and $w_2$ measurement are available to the DSDM controller. The actuator-level DSDM controller has the role of coordinating motors M1 and M2 to make the actuator gear-shift seamlessly between the two operating modes. The idea is to encapsulate DSDM actuators with simple control inputs: a desired torque $\tau_d$ and a desired gear-ratio $k_d$, like a semi-automatic transmission in a car. The high-level controller, analogous to the driver using again the car analogy, then only have to specify those two desired values and is released of the low-level management of the gear-shift process. With this architecture, a multi-DoF robotic system using multiple DSDM actuators could have a single centralized high-level controller and independent actuator-level controller for each actuators. 
 
-TODO New Figure showing actuator-level vs high-level. 
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{dsdm_control_architecture.png}
+	\caption{Control Architecture of a DSDM Controller}
+	\label{fig:dsdm_control_architecture}
+\end{figure}
+
+This section discuss the design of the actuator-level controller, focusing on gear-shift transitions. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} will discuss extensively the design of centralized high-level controllers, and an implementation of the necessary low-level hardware controllers is presented in chapter \ref{sec:ExperimentalValidation}.
+
 
 \subsection{State-machine}
 
-The proposed control scheme for the DSDM actuator-level controller has three discrete operating modes, described by a state machine illustrated at figure \ref{fig:automaticflow}. There is one set on control laws for each discrete mode $k$ (brake on/off),and also a special case of control laws for making sure M1 speed is zero before closing the brake, when a down-shift is desired. Fig. \ref{fig:hybrid_closedloop} shows the resulting closed-loop hybrid behavior.
+The proposed control scheme for the DSDM actuator-level controller has three discrete operating modes, described by a state machine illustrated at figure \ref{fig:automaticflow}. There is one set on control laws for each discrete mode $k$ (brake on/off), and also a special case of control laws (synchronization mode) for making sure M1 speed is zero before closing the brake, when a down-shift is desired. Fig. \ref{fig:hybrid_closedloop} shows the resulting closed-loop hybrid behavior.
 
 \begin{figure}[H]
 	\centering
@@ -1286,28 +1296,28 @@ Hence, it would be possible to engaged the brake and switch to high-force mode a
 
 \begin{figure}[p]
 	\centering
-		\includegraphics[width=0.95\textwidth]{HF_ctl.png}
+		\includegraphics[width=0.90\textwidth]{HF_ctl.png}
 	\caption{High-Force Mode Controller}
 	\label{fig:HF_loop}
 \end{figure}
 
 \begin{figure}[p]
 	\centering
-		\includegraphics[width=0.95\textwidth]{HS_ctl.png}
+		\includegraphics[width=0.90\textwidth]{HS_ctl.png}
 	\caption{High-Speed Mode: Generic Controller}
 	\label{fig:HS_loop}
 \end{figure}
 
 \begin{figure}[p]
 	\centering
-		\includegraphics[width=0.95\textwidth]{down_ctl.png}
+		\includegraphics[width=0.90\textwidth]{down_ctl.png}
 	\caption{High-Speed Mode: Synchronization controller}
 	\label{fig:down_loop}
 \end{figure}
 
 \begin{figure}[p]
 	\centering
-		\includegraphics[width=0.95\textwidth]{imp_ctl.png}
+		\includegraphics[width=0.90\textwidth]{imp_ctl.png}
 	\caption{High-Speed Mode: Impact Preparation Controller}
 	\label{fig:imp_loop}
 \end{figure}
