@@ -1231,11 +1231,23 @@ Note that however, if the high-level is planning only feasible gear-shifts than 
 \subsection{Preparation in the nullspace for faster down-shifts}
 \label{sec:prep}
 
+Here a control scheme is proposed to prepare the actuator for a possible incoming down-shift command, using the secondary objective during regular high-speed operation, in a way that will make the synchronization process faster. The idea is that there is no need to wait to receive a down-shift signal to adjust velocities. The condition for engaging the brake is :
+%
+\begin{align}
+w_1 = 0 \quad \Leftrightarrow \quad w_2 = R_2 w_o
+\label{eq:shiftcond}
+\end{align}
+%
+Hence the ideal situation to be prepare for a down-shift, is having M2 alone providing the output velocity. This is however only possible for low output velocity, due to motor velocity constraints. When possible to use this approach, the synchronization is done in advance and the down-shift operation is faster, since only limited by the time the brake takes to close. More generally, matching eq.\eqref{eq:shiftcond} as close as possible will improve gear-shift time since synchronization error will be smaller to start with.
 
-Here control are proposed to use the secondary objective, during regular high-speed operation, to prepare for a possible incoming down-shift command in the way that will make the synchronization process faster. 
-
-This section described a control scheme where the velocity of the internal DoF is adjusted beforehand when an impact is expected, so that impact forces bring M1 velocity close to zero, allowing for fast down-shift transitions. This is aimed at situation like a leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot.
-
+This idea can be also extended to a more complex impulsive behavior situation. As illustrated by Fig. \ref{fig:app}, down-shifting can be particularly useful in contact situation happens in the context of manipulation or locomotion, where large forces must be bear rapidly after contact. For instance a robotic leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot. For this situation, where motor velocity will suddenly change right before the desired down-shift, the preparation condition take this form:
+%
+\begin{align}
+w_1^+ = w_1^- + \Delta w_1 = 0 \quad \Leftrightarrow \quad w_2^+ = R_2 w_o^+ = w_2^- 
+\end{align}
+%
+%Note that $\Delta w_2 = 0$, see sec. \ref{sec:model_impact} analysis. 
+Hence, if the impulsive behavior is expected and can be estimated, then the preparation scheme can also be used to improve gear-shift time during a contact. Two control scheme implementing this preparation are presented, first a kinematic approach and then a more flexible dynamic approach. Equation are derived for the case where an impact is expected, but the simple non-impulsive situation can be extracted simply by setting the expected impulse to zero in the given equations.
 
 %\paragraph{Kinematic algo}
 Rearranging the results of section \ref{sec:model_impact} to express the two variables of interest (approaching speed $w_0^-$ and M1 velocity after the impact $w_1^+$), as a function of controllable inputs (from a kinematic point of view), lead to:
@@ -1259,7 +1271,7 @@ leading to
  w_o^- = u_0 \quad \text{and} \quad w_1^+ = u_1
 \end{align}
 %
-Therefore, if an impact is expected and the upcoming impulsive impact reaction $\int{\tau_c dt}$ can be computed, using this control law lead to independent control of the approaching speed of the actuator output $w_o^-$, which would be used for the primary objective (for instance making contact with the object at the right place and time), and resulting velocity of M1 after the impact $w_1^+$, which would be set to zero to allow for instantaneous down-shift.
+Therefore, if an impact is expected and the upcoming impulsive impact reaction $p_{ext} = \int{\tau_{ext} dt}$ can be computed, using this control law lead to independent control of the approaching speed of the actuator output $w_o^-$, which would be used for the primary objective (for instance making contact with the object at the right place and time), and resulting velocity of M1 after the impact $w_1^+$, which would be set to zero to allow for instantaneous down-shift.
 
 %\paragraph{Dynamic algo}
 %
@@ -1303,11 +1315,13 @@ and a $w_1$ closed-loop dynamic converging exponentially to $w_{1,d}$ if the syn
 If the velocity controller is able to track the velocity set-point and the collision is perfectly predicted, then immediately after the impact, M1 velocity will be zero:
 %
 \begin{align}
-w_1^+ =  w_1^- + \Delta w_1 = w_{1,d}  + R_1 \frac{ p_{ext} }{I_o + I_1 R_1^2} \approx 0
+w_1^+ =  w_1^- + \Delta w_1 \approx w_{1,d}  + R_1 \frac{ p_{ext} }{I_o + I_1 R_1^2} = 0
 \label{eq:dsdm_impact_vel}
 \end{align}
 %
-Hence, it would be possible to engaged the brake and switch to high-force mode almost instantaneously. In practice, because of speed saturation it won't always be possible to perfectly track the desired speed $w_{1,d}$ in the nullspace, or to perfectly predict the contact impulse $\int{\tau_c dt}$. However, by running this control scheme and bringing $w_1^+$ as close as possible to zero, gear-shift will nonetheless be achieved faster because synchronization error will be smaller at the start of the down-shift process.
+Hence, it would be possible to engaged the brake and switch to high-force mode almost instantaneously. In practice, because of speed saturation it won't always be possible to perfectly track the desired speed $w_{1,d}$ in the nullspace, or to perfectly predict the contact impulse $p_{ext}$. However, by running this control scheme and bringing $w_1^+$ as close as possible to zero, gear-shift will nonetheless be achieved faster because synchronization error will be smaller at the start of the down-shift process.
+
+The preparation controller is illustrated in the form of a block diagram at Fig. \ref{fig:imp_loop}. Note that the expected impulse would need to to be computed by an high-level controller aware of the general system situation. Section \ref{sec:contact} present techniques to estimate impulsive contact forces based on a dynamic model of a robot that could be used by the high-level controller. 
 
 \begin{figure}[p]
 	\centering
