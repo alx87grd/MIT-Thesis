@@ -763,7 +763,7 @@ w_o^- \\ 0
 
 %\paragraph{Bad synchronization}
 %
-If the brake would be engaged with non-zero velocity, TODO
+If the brake would be engaged with non-zero velocity:
 \begin{align} 
 \left[
 \begin{array}{c}
@@ -773,11 +773,28 @@ w_o^+ \\ w_1^+
  = h_d( \vec{w}^- ) = 
 \left[
 \begin{array}{c}
-w_o^- + TODO(w_1^-) \\ 0
+w_o^- + \frac{w_1^-}{ R_1 \left( \frac{I_o}{I_2 R_2^2} + 1 \right) } \\ 0
 \end{array}
 \right]
 \label{eq:downshiftmap_nonideal}
 \end{align}
+%
+and the output would exhibit an undesirable impulsive deceleration. The impulsive mapping of eq.\eqref{eq:downshiftmap_nonideal} is derived using eq.\eqref{eq:manipulator_impact_velocity_delta}, where the contact Jacobian is defined by the zero velocity constraint on M1 when the brake close:
+\begin{align} 
+0 = J_c \vec{w} = 
+\left[
+\begin{array}{c c}
+0 & 1
+\end{array}
+\right] 
+\left[
+\begin{array}{c}
+w_0 \\ w_1 
+\end{array}
+\right]
+\label{eq:downshiftmap_nonideal_jacobian}
+\end{align}
+
 
 
 
