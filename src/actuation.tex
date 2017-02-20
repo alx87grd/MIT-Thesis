@@ -773,7 +773,7 @@ w_o^+ \\ w_1^+
  = h_d( \vec{w}^- ) = 
 \left[
 \begin{array}{c}
-w_o^- + \frac{w_1^-}{ R_1 \left( \frac{I_o}{I_2 R_2^2} + 1 \right) } \\ 0
+w_o^- - \frac{w_1^-}{ R_1 \left( \frac{I_o}{I_2 R_2^2} + 1 \right) } \\ 0
 \end{array}
 \right]
 \label{eq:downshiftmap_nonideal}
@@ -812,7 +812,7 @@ p_{ext} = \int_{t^-}^{t^+} \tau_{ext} dt
 %
 Section \ref{sec:impact} discuss how such impulsive forces can be computed with a dynamic model of a robotic system.
 
-\subsubsection{High-speed mode impact}
+\subsubsection{During High-speed Mode}
 
 During high-speed mode, applying eq. \eqref{eq:manipulator_impact}, it leads to to impulsive map:
 %
@@ -872,7 +872,7 @@ Hence, M2 velocity will be unchanged and the velocity discontinuity of the outpu
 \end{align}
 
 
-\subsubsection{High-force mode impact}
+\subsubsection{During High-force Mode}
 
 During high-force mode, assuming the brake is strong enough not to slip during the impact, the impulsive mapping is given by :
 %
@@ -1204,14 +1204,29 @@ and a $w_1$ closed-loop dynamic converging exponentially to zero if the synchron
 
 Hence, the output is not influenced by the braking law due to orthogonality, and is only controlled by the desired torque $\tau_d$. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturation. The other advantage of this approach over fully uncoupling the equations, is that the nullspace projection only required motor-side parameters and is valid even when load-side dynamic is unknown. 
 
-Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If undesirable coupling from main loop are too larges and conflicting with the downshift process, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes so large that both motor torques saturate then synchronization is guaranteed:
+Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If undesirable coupling from main loop are too larges and conflicting with the downshift process, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes so large that both motor torques saturate then synchronization is guaranteed. 
 
-equation with saturation torque
+In the worst-case scenario, $w_1$ is kept at a positive value for a long time because of a conflicting large $\tau_d$ command, which would eventually lead to saturation of torques with a large PI gain:
+%
+\begin{align}
+C \rightarrow \infty \quad\Rightarrow\quad 
+\left[ \begin{array}{c}
+\tau_1 \\ \tau_2
+\end{array} \right] \rightarrow
+\left[ \begin{array}{c}
+-\tau_{max} \\ \tau_{max}
+\end{array} \right]
+\end{align}
+%
+which lead to the behavior:
+%
+\begin{align}
+I_T \dot{w}_1 = - \left( R_1 b_o \right) w_o  - \left( R_1^2 + \frac{R_1^2 I_o }{R_2^2 I_2} + \frac{R_1 I_o}{R_2 I_2} \right) \tau_{max}
+\end{align}
+%
+If $w_1$ starts with a positive value, then $w_o$ is usually positive too and at worst a small negative value (due to kinematic constraints and motor speed saturations). Hence, the damping term is either negative or negligibly small. Hence $w_1$ is guaranteed to decrease and to eventually cross zero where the brake can be engaged. 
 
-assuming $\tau_d$ is bounded by XXXX.
-
-
-However, if the high-level is planning feasible gear-shifts than no down-shift in impossible situations should be commanded. 
+Note that however, if the high-level is planning only feasible gear-shifts than no down-shift in impossible situations should be commanded. Hence, in normal operation the down-shift controller should never reach this drastic synchronization mode. This mode is however useful when the DSDM controller receive command directly from a human operator. 
 
 \subsection{Preparation in the nullspace for faster down-shifts}
 \label{sec:prep}
