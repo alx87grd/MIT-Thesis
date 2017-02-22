@@ -331,7 +331,7 @@ In this section, the stability of motions when using the R* Sliding Mode Control
 The equation of motions can take this simple but general form:
 \begin{align}
 H_k \ddot{\vec{q}} + \vec{c}_k = R_k \vec{\tau} + \vec{d} \quad \forall k \in \{1,...,l\}
-\label{eq:eom_k}
+\label{eq:eom_kd}
 \end{align}
 where $\vec{d}$ is an unknown generalized force vector that can represent disturbance or modeling errors.
 
@@ -339,23 +339,98 @@ The proposed control law for motor torques takes the form
 %
 \begin{align}
 \vec{\tau} = R_k^{-1} \left( H_k \ddot{\vec{q}}_r + \vec{c}_k - G_k sgn( \vec{s} ) \right) 
+\label{eq:slidinglaw}
 \end{align}
 %
 leading to the following closed-loop behavior:
 %
 \begin{align}
 H_k ( \ddot{\vec{q}} - \ddot{\vec{q}}_r ) = \vec{d} - G_k sgn( \vec{s} ) \quad \forall k
+\label{eq:slidinglawcl}
 \end{align}
 %
 The following variables are then introduced:
 \begin{align}
-\vec{q}_e       &= \vec{q}_d       - \vec{q}
+\vec{q}_e       &= \vec{q}_d       - \vec{q} \\
 \dot{\vec{q}}_r &= \dot{\vec{q}}_d - \lambda  \vec{q}_e \\
 \vec{s}         &= \dot{\vec{q}}_e + \lambda  \vec{q}_e  = \dot{\vec{q}} - \dot{\vec{q}}_r \\
 \dot{\vec{s}}   &= \ddot{\vec{q}}_e + \lambda  \dot{\vec{q}}_e  = \ddot{\vec{q}} - \ddot{\vec{q}}_r \\
 \end{align}
 %
-Then convergence to the desired trajectory can be guaranteed if the sliding condition can be 
+where lambda is a positive constant. Then convergence to the desired trajectory can be guaranteed if the sliding variables $\vec{s}$ converge to zero \cite{slotine_applied_1991}. The basic idea is that if a Lyapunov-like quadratic function of the sliding variable is only decreasing in time, then sliding variables will converge to zero, which also implies that the error will converge to zero:
+%
+\begin{align}
+V = \vec{s}^T \vec{s} \rightarrow 0 \quad\Rightarrow\quad  \vec{s} \rightarrow \vec{0} \quad\Rightarrow\quad \vec{q}_e \rightarrow \vec{0}
+\end{align}
+%
+Note that here the Lyapunov-like function must be continuous and the same for all discrete mode, and its derivative negative definite for all discrete gear-ratio mode $k$ for the argument to hold for arbitrary sequence of gear-ratio $k$ \cite{liberzon_switching_2003}:
+%
+\begin{align}
+\dot{V}_k < -\eta \quad \forall k \quad \quad\Rightarrow\quad V \rightarrow 0
+\end{align}
+%
+where $\eta$ is a small positive constant. One way to guarantee the sliding condition is individually for each DoF:
+%
+\begin{align}
+\frac{d( s_i^2 )}{dt} < -\eta \quad \forall i \, \forall k
+\label{eq:slidingcondition}
+\end{align}
+%
+From eq.\eqref{eq:slidinglawcl}, sliding variable derivative is given by:
+%
+\begin{align}
+\dot{\vec{s}} = H_k^{-1}(\vec{d} - G_k sgn( \vec{s} ))
+\end{align}
+%
+Substituting in the sliding condition equation leads to:
+%
+\begin{align}
+s_i \dot{s}_i  = s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - \left[ H_k^{-1} G sgn(\vec{s}) \right]_i \right) < -\eta 
+\end{align}
+%
+If the matrix gain is parametrized in the following way:
+%
+\begin{align}
+G = H_k diag( \vec{K}_k )
+\end{align}
+%
+The the discontinuous gain term is uncoupled in the sliding condition equation:
+%
+\begin{align}
+s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - K_i sgn( s_i ) \right) < -\eta \\
+ \left[ H_k^{-1} \vec{d} \right]_i s_i + \eta < K_i \| s_i \| 
+\end{align}
+%
+which can be guaranteed if the gain are selected such that:
+%
+\begin{align}
+K_{i}(k) = \operatornamewithlimits{max}\limits_{\vec{d}} \left[ H_k^{-1} \vec{d} \right]_i + \eta
+\label{eq:slidinggain}
+\end{align}
+%
+Thus, if the gains are defined based on disturbance bounds and according to eq.\eqref{slidinggain}, the sliding condition is guaranteed for all gear-ratio mode, and thus convergence to the desired trajectory is guaranteed for any gear-ratio sequence.
+
+
+1-DoF example
+
+
+%
+\begin{align}
+\vec{\tau} = R_k^{-1} \left( H_k \ddot{\vec{q}}_r + \vec{c}_k - H_k K sgn( \vec{s} ) \right)
+\end{align}
+%
+with gain $K$ set to:
+%
+\begin{align}
+K = \frac{d_{max}}{H_k} + \eta
+\end{align}
+%
+\begin{align}
+\vec{\tau} = R_k^{-1} \left( H_k ( \ddot{\vec{q}}_r - \eta sgn( \vec{s} ) - d_{max}  sgn( \vec{s} ) + \vec{c}_k \right) \\
+\vec{\tau} =\frac{1}{R_k} \left(  H \underbrace{(\ddot{\vec{q}}_r - \eta sgn( \vec{s})}_{\ddot{\vec{q}}_a} + C \dot{\vec{q}} + D \dot{\vec{q}} + \vec{g} - d_{max}  sgn( \vec{s} ) \right) + R_k \left( I (\ddot{\vec{q}}_r - \eta sgn( \vec{s}) + B \dot{\vec{q}}  \right) \\
+\vec{\tau} =\frac{1}{R_k} \left( \tau_E( \ddot{\vec{q}}_a , \dot{\vec{q}} , \vec{q}) - d_{max}  sgn( \vec{s} \right)  + R_k \tau_I( \ddot{\vec{q}}_a , \dot{\vec{q}} )
+\end{align}
+%
 
 
 
@@ -365,6 +440,8 @@ Then convergence to the desired trajectory can be guaranteed if the sliding cond
 
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 
 
 
