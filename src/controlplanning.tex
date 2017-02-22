@@ -467,19 +467,11 @@ The proposed closed-loop controller, shown in Fig. \ref{fig:Rstar_block_big}, is
 	\label{fig:dq}
 \end{figure}
 
-\subsection{Robust Control}
+\subsection{Robustness Control}
 \label{sec:robustcontrol}
 
 In general Computed Torque Control is susceptible to modeling uncertainties and disturbances. This section presents two approaches to improving robustness: Adaptation and Sliding Mode Control. 
 
-\paragraph{Adaptation}
-If the uncertainty is structured as unknown model parameters in the extrinsic dynamics, the term represented by $\vec{\tau}_E$, then traditional adaptation schemes can be used for estimating the unknown parameters. Then, if adaptation converge to the correct computed torque, then the computed best gear-ratios will also converge to the true optimal gear-ratios:
-\begin{align}
-	\hat{\vec{\tau}}_E \rightarrow \vec{\tau}_E 
-    \quad \Rightarrow \quad 
-    \hat{R}^* \rightarrow R^*
- \label{eq:adapt}
-\end{align}
 
 \paragraph{Sliding Mode Control}
 
@@ -514,6 +506,15 @@ If the gear-ratio is selected to minimize the sliding mode torque, eq. \eqref{eq
 \end{align}
 Hence, if no disturbance is expected ($| d |_{max}=0$) gear-ratio selection is unaffected, but when large disturbances are expected ( $| d |_{max}$ is large) torque minimization naturally leads to selecting large gear-ratios.
 %
+
+\subsubsection{Adaptation}
+If the uncertainty is structured as unknown model parameters in the extrinsic dynamics, the term represented by $\vec{\tau}_E$, then traditional adaptation schemes can be used for estimating the unknown parameters. Then, if adaptation converge to the correct computed torque, then the computed best gear-ratios will also converge to the true optimal gear-ratios:
+\begin{align}
+	\hat{\vec{\tau}}_E \rightarrow \vec{\tau}_E 
+    \quad \Rightarrow \quad 
+    \hat{R}^* \rightarrow R^*
+ \label{eq:adapt}
+\end{align}
 
 
 \subsection{Implementation Aspects}

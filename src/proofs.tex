@@ -2,7 +2,7 @@
 \label{sec:proofs}
 
 
-\section{Simplified equation of motion for diagonal $R$}
+\section{Simplified equations of motion for diagonal $R$}
 \label{sec:Rdiagndof}
 
 Here the derivation of the simplified form of equations of motion, where intrinsic and extrinsic forces are two separate terms, is derived for arbitrary $n$-DoF fully actuated robots.
@@ -398,7 +398,7 @@ The the discontinuous gain term is uncoupled in the sliding condition equation:
 %
 \begin{align}
 s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - K_i sgn( s_i ) \right) < -\eta \\
- \left[ H_k^{-1} \vec{d} \right]_i s_i + \eta < K_i \| s_i \| 
+ \left[ H_k^{-1} \vec{d} \right]_i s_i + \eta < K_i | s_i |
 \end{align}
 %
 which can be guaranteed if the gain are selected such that:
@@ -493,15 +493,6 @@ C_k^{max} =  |\vec{\tau}_{k}|_{max}^T |\vec{\tau}_{k}|_{max}
 %
 where $|\vec{\tau}_{k}|_{max}$ is a vector of the highest possible computed joint torques in the domain of interest $D$.
 
-Fig. \ref{fig:rollouttrajs} gives a graphical support illutrating the 2D space, where at all time virtual trajectories branch-off the real robot trajectory.
-
-\begin{figure}[H]
-	\centering
-		\includegraphics[width=0.8\textwidth]{rollouttrajs.png}
-	\caption{Real trajectory and simulated virtual trajectory in the Rollout controller}
-	\label{fig:rollouttrajs}
-\end{figure}
-
 
 \subsection{On a trajectory}
 \label{sec:chat1}
@@ -586,4 +577,14 @@ Note that if there is more than 2 discrete gear-ratio options, this analysis giv
 
 \subsection{Arbitrary}
 \label{sec:chat2}
+
+Fig. \ref{fig:rollouttrajs} gives a graphical support illutrating the 2D space, where at all time virtual trajectories branch-off the real robot trajectory.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.8\textwidth]{rollouttrajs.png}
+	\caption{Real trajectory and simulated virtual trajectory in the Rollout controller}
+	\label{fig:rollouttrajs}
+\end{figure}
+
 
