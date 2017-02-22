@@ -53,26 +53,25 @@ The vector fields of Fig. \ref{fig:pp} illustrate the evolution of the system wi
 \subsection{Challenges and related works}
 \label{sec:chal}
 
-This chapter investigates control scheme for robots equipped with variable gear-ratio actuators. While variable gear-ratio actuators have been studied extensively for automobile power-trains, they have not yet been fully investigated in robotics, despite significant potential gains. Variable gear-ratio transmissions for electric motors have been proposed for legged locomotion \cite{hirose_design_1991}, grasping robotic hands \cite{shin_robot_2012} , propulsion system \cite{lee_new_2012} \cite{mckeegan_antonovs_2011} and actuation systems \cite{girard_two-speed_2015} \cite{hirose_development_1999} \cite{tahara_high-backdrivable_2011}. Some of those works address the issue of how to change the gear-ratio, but there is no general approach to the high-level control of automatically selecting the right gear-ratio for nonlinear, coupled multi-DoF robotic systems.
+This chapter investigates control scheme for robots equipped with variable gear-ratio actuators. While variable transmissions have been studied extensively for automobile power-trains, they have not yet been fully investigated in robotics, despite significant potential gains. Variable gear-ratio transmissions for electric motors have been proposed for legged locomotion \cite{hirose_design_1991}, grasping robotic hands \cite{shin_robot_2012} , propulsion system \cite{lee_new_2012} \cite{mckeegan_antonovs_2011} and actuation systems \cite{girard_two-speed_2015} \cite{hirose_development_1999} \cite{tahara_high-backdrivable_2011}. Some of those works address the issue of how to change the gear-ratio, but there is no general approach to the high-level control of automatically selecting the right gear-ratio for nonlinear, coupled multi-DoF robotic systems.
 
-From the control perspective, automating the gear-ratio selection in a robotic context is a new and challenging problem. Gear-shifting is a very non-linear process and the plant becomes a hybrid dynamical system if the usable gear-ratios are a set of discrete values. Hence most control engineering tools are not suited to tackle this problem. In simple scenarios, the gear-ratio selection can be based on simple principles. For instance, for a system running at a steady speed, the best gear-ratio can be selected based on efficiency. Alternatively, for rapid acceleration, the gear-ratio may be selected based on the actuator-load inertia matching \cite{giberti_effects_2010} \cite{chen_generalized_1991}. A robot, however, experiences diverse types of forces acting simultaneously. These include gravity, friction, and inertial forces as well as Coriolis and centrifugal forces. Hence, it is challenging to find a general control policy for selecting gear-ratios for the multitude of dynamically interacting actuators in the robotics context. 
+From the control perspective, automating the gear-ratio selection in a robotic context is a new and challenging problem. Gear-shifting is a very non-linear process (gear-ratios variables multiply other inputs and states in EoM) and moreover the plant becomes a hybrid dynamical system if the usable gear-ratios are a set of discrete values. Hence most control engineering tools are not suited to tackle this problem. In simple scenarios, the gear-ratio selection can be based on simple principles. For instance, for a system running at a steady speed, the best gear-ratio can be selected based on efficiency. Alternatively, for rapid acceleration, the gear-ratio may be selected based on the actuator-load inertia matching \cite{giberti_effects_2010} \cite{chen_generalized_1991}. A robot, however, experiences diverse types of forces acting simultaneously. These include gravity, friction, and inertial forces as well as Coriolis and centrifugal forces. Hence, it is challenging to find a general control policy for selecting gear-ratios for the multitude of dynamically interacting actuators in the robotics context. 
 
 \paragraph{Trajectory planning}
 
 In robotic, a trajectory planning problem is usually formulated as an optimization problem. Most optimal control techniques are based on either variational approaches or some form of gradient descent to find a trajectory that minimize a cost function \cite{betts_practical_2010}. Hence those techniques cannot be used directly to optimize discrete variables. An interesting approach to get around this problem is to use the switching instants as optimization parameters instead \cite{xu_optimal_2004}\cite{majdoub_hybrid_2010}. However, to use this approach a sequence of operating modes must be predefined first. Mixed-integer programming can be used to generate optimal open-loop trajectories of dynamical system with both continuous and discrete input variables \cite{richards_spacecraft_2002}. For instance, mixed-integer programming has been used to generate optimal open-loop trajectories for a car with both a continuous torque and a discrete gear-selection input \cite{gerdts_solving_2005}. Computation time was however in the order of hours for a 6 sec trajectory. 
 
-Sample-based planning scheme can also be used to find efficient trajectory \cite{lavalle_planning_2006}. These algorithms work generally better then optimization approaches when tackling highly-constrained system and when the goal is only to find a feasible trajectory and not necessary the optimum. The other advantage is that discrete control action can be considered without problem as these algorithm works with discretized version of the system evolution.
+Sample-based planning scheme can also be used to find efficient trajectory \cite{lavalle_planning_2006}. These algorithms work generally better then optimization approaches when tackling highly-constrained system and when the goal is only to find a feasible trajectory and not necessary the optimum. The other advantage is that discrete control action can be considered without complications as these algorithm works with discretized models.
 
-Open-loop trajectories can be unstable and if the system deviate from the original plan due to uncertainty, the optimized gear-ratio sequence might be completely unadapted after some time. For a robotic system to really leverage the advantage offered by multiple gear-ratios, it would be advantageous if gear-ratios are selected actively based on the actual conditions of the system. This chapter focus on finding closed-loop policy for the gear-ratios.
+Open-loop trajectories can be unstable and if the system deviate from the original plan due to uncertainty, the optimized gear-ratio sequence might be completely unadapted after some time. For a robotic system to really leverage the advantage offered by multiple gear-ratios, it would be advantageous if gear-ratios are selected actively based on the actual conditions of the system. This chapter focus on finding closed-loop policies for the gear-ratios.
 
 \paragraph{Feedback control}
 
 One possible approach for closing the loop would be simply to re-plan trajectory continuously online. However, the rate at which this would be possible for hybrid robotic system would not be sufficient. Here we aim at having control policies that can react to a situation in a matter of milliseconds, for instance down-shifting as a robotic leg touch the ground. 
 
-Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it only works for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section \ref{sec:DynamicProgrammingAproach}, which is an extention of work already published by the author \cite{girard_practical_2016}.
+Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it is computationally tractable for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section \ref{sec:DynamicProgrammingAproach}, which is an extension of work already published by the author \cite{girard_practical_2016}.
 
-An alternative model-based approach is proposed in section \ref{sec:HierachicalControlApproach} with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The work in that section is an extension of a journal paper, but present improved algorithms \cite{girard_leveraging_2017}.
-
+The main contribution of this chapter, is an alternative model-based approach is proposed in section \ref{sec:HierachicalControlApproach} with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The work in that section is an extension of a journal paper, but present improved algorithms \cite{girard_leveraging_2017}.
 
 
 \newpage
@@ -81,9 +80,9 @@ An alternative model-based approach is proposed in section \ref{sec:HierachicalC
 \label{sec:arch}
 
 This chapter proposed control schemes to dynamically select the optimal gear-ratios online. The focus is on feedback policies, that can react quickly to the states of the robot, and engage the appropriate gear-ratio with minimal delays (in the order of 20 ms). Two approaches are investigated and illustrated at Fig. \ref{fig:controlarchitectures}. 
-
+%
 \begin{figure}[H]
-				%\vspace{-10pt}
+				\vspace{-10pt}
         \centering
 				\subfloat[ Dynamic programming approach ]{ % intrinsic dynamics
 				\includegraphics[width=0.45\textwidth]{archi2.png}
@@ -95,8 +94,8 @@ This chapter proposed control schemes to dynamically select the optimal gear-rat
         \caption{Proposed Control Architectures}
 				\label{fig:controlarchitectures}
 \end{figure}
-
-The architecture of both control approaches is designed so the control signal is a torque and a gear-ratio for each actuator. Hence, it is assumed that low-level VGA controllers handle tracking the torque setpoint and the gear-shifting process. This is analogous to a situation where the robot would be a car with a semi-automatic transmission, and designing policies for the driver where the two control inputs are a throttle level a and shift-up/shift-down signal. The low-level VGA controllers would be specific to the type of actuator used in the system. For the particular case where the VGA are DSDM actuators, the low-lever controllers would be the control laws described in Chapter \ref{sec:MultipleSpeedActuationTechnology}. The architecture difference is that, for the dynamic programming approach given a goal (a target robot configuration $\vec{q}_{target}$) a feedback policy is generated directly. However, for the model-based approach the high-level controller is separated into two levels. A feedback policy for trajectory tracking and a open-loop motion planning algorithm a generate a reference trajectory to reach the goal. 
+%
+The architecture of both control approaches is designed so the control signal is a torque and a gear-ratio for each actuator. Note that in the case of discrete gear-ratio options, instead of transmitting the actual gear-ratio $R$, the control signal can be a label $k$ indexing the discrete $R_k$ options. Hence, it is assumed that low-level VGA controllers handle tracking the motor torque setpoint and the gear-shifting process. This is analogous to a situation where the robot would be a car with a semi-automatic transmission, and designing policies for the driver where the two control inputs are a throttle level a and shift-up/shift-down signal. The low-level VGA controllers would be specific to the type of actuator used in the system. For the particular case where the VGA are DSDM actuators, the low-level controllers would be the control laws described in Chapter \ref{sec:MultipleSpeedActuationTechnology}. The architecture difference is that, for the dynamic programming approach given a goal (a target robot configuration $\vec{q}_{target}$) a global feedback policy is synthesized directly. However, for the model-based approach the high-level controller is separated into two levels. A feedback policy for trajectory tracking and a open-loop motion planning algorithm that generate a reference trajectory to reach the goal. 
 
 \paragraph{Trajectory Generation} Algorithm synthesizing a dynamic trajectory that meets performance requirements for reaching the target robot configuration starting at the actual robot configuration: 
 %
@@ -110,7 +109,7 @@ Computation time is in the order of 1-10 sec depending the robot complexity. Hen
 \paragraph{Low-level actuator controller} Independent actuator controllers executing low-level hardware commands in response to given torques and gear-ratio set-points. For the particular case of a DSDM actuator the controller compute 
 %
 \begin{align}
-  M1_{pwm} , M2_{pwm} , Brake_{pwm} = f_{DSDM}(\tau_i, R_{ii})
+  \tau_1 , \tau_2 , b_{state} = f_{DSDM}(\tau_i, R_{ii})
 	\label{eq:low-level-dsdm}
 \end{align}
 %
@@ -186,7 +185,7 @@ In this section, a simple approach is proposed for modeling robot using variable
 \subsection{1-DoF system}
 \label{sec:1DOFSystem}
 
-First, a generic 1-DoF robot with a variable transmission is considered for simplicity. If the actuator's intrinsic resistive forces $\tau_I$ are approximated to a linear quantity, the equations of motion (EoM) can be written as:
+First, a generic 1-DoF robot with a variable transmission is considered for simplicity. If the actuator's intrinsic resistive forces $\tau_I$ (rotor intertia and friction) are approximated to a linear quantity, the equations of motion (EoM) can be written as:
 %
 \begin{align}
   H \ddot{q} + D \dot{q} + g( q )	&= R  \left[ \tau - I \dot{w} - B w	\right] \\
@@ -200,9 +199,10 @@ First, a generic 1-DoF robot with a variable transmission is considered for simp
 where the effect of the gear ratio can be seen clearly; increasing $R$ attenuates the external dynamic terms $\tau_{E}$ but amplify the intrinsic actuator losses $\tau_{I}$ for a given trajectory.
 %
 Variable gear-ratios can be modeled as variable transformer elements, using the bond-graph terminology. Fig. \ref{fig:bondgraph1} shows a bond-graph representation of the model.
+%
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.70\textwidth]{bondgraph1.pdf}
+		\includegraphics[width=0.60\textwidth]{bondgraph1.pdf}
 	\caption{Model of a 1-DoF robot with a variable gear-ratio actuator}
 	\label{fig:bondgraph1}
 \end{figure}
@@ -238,7 +238,7 @@ The EoM are then given by:
  \label{eq:eom_ndof}
 \end{align}
 %
-Note that, in the case of locomotion or manipulation where the robot interacts with the environment by physically contacting it, the dynamic model $\vec{\tau}_{E}$ must reflect the contact conditions, either by computing contact forces using constraint equations or by formulating $\vec{\tau}_{E}$ as a hybrid dynamical system.
+A very wide range of mechanical systems and robots can be represented with this form. Note that, in the case of locomotion or manipulation where the robot interacts with the environment by physically contacting it, the dynamic model $\vec{\tau}_{E}$ must reflect the contact conditions, either by computing contact forces using constraint equations or by formulating $\vec{\tau}_{E}$ as a hybrid dynamical system.
 
 In most practical cases, each actuator has its independent variable transmission and, thereby, the $R$ matrix will be diagonal and each diagonal value can be selected independently. Assuming this situation, the EoM can be simplified to a form, similar to the scalar case, illustrating the effect of the gear ratios matrix $R$: 
 %
@@ -262,7 +262,11 @@ The derivation of this simplified form is available in the Appendix \ref{sec:Rdi
 \subsection{Limitation of the simplified model}
 \label{sec:limitation}
 %
-The main assumption of the proposed model is that gear-ratios are considered as independent control inputs, neglecting all the dynamics and delays associated with the transition of gear-ratios. Physically this implies that the kinetic energy of the system may be discontinuous at a gear-shift since the energy necessary for the transition is not considered. In the case of a car transmission for instance, this model would not keep track of the energy used for accelerating or braking the engine during the synchronization process. This model can be used if the gear-shift process is fast compared to the dynamics of the robots and if the energetic losses due to the gear-shift are negligibly small. In addition this model also assumes that all motor rotors are in an inertial reference frame, neglecting gyroscopic effects, which may be induced when the axes of motor rotors are rotated.
+The main assumption of the proposed model is that gear-ratios are considered as independent control inputs, neglecting all the dynamics and delays associated with changing the gear-ratios. 
+
+For a system with discrete gear-ratio, this mean neglecting transition from one gear-ratio to another. Physically this implies that the kinetic energy of the system may be discontinuous at a gear-shift since the energy necessary for the transition is not considered. In the case of a car transmission for instance, this model would not keep track of the energy used for accelerating or braking the engine during the synchronization process. This model can be used if the gear-shift process is fast compared to the dynamics of the robots and if the energetic losses due to the gear-shift are negligibly small. Note that this modeling assumption is supported by the characteristic of DSDM actuators, that can change gear-ratio quickly and seamlessly. For a robot equipped with continuously varying transmissions, this model would neglected forces associated with $\dot{R}$, a kind of quasi-steady assumption. 
+
+In addition this model also assumes that all motor rotors are in an inertial reference frame, neglecting gyroscopic effects, which may be induced when the axes of motor rotors are rotated.
 
 \subsection{Uncertainty}
 \label{sec:uncertainty}
@@ -1017,7 +1021,6 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
 In this section, the advantages of dynamically changing the gear-ratios, using the R* computed torque controller, are illustrated using simulations of two robots: first a 1-DoF pendulum, then a 3-DoF arm. Both robots are considered having VGA with two possible gear-ratios: 1:1 or 1:10. Reference low-torque trajectories to reach target positions are computed offline using a sample-based search algorithm \cite{lavalle_planning_2006}. 
 %
 The first simulated experiment uses the robot of Fig. \ref{fig:bigpicture}, but here considering dissipative forces in the actuators, with the task of reaching the up-right position starting at the bottom. Fig. \ref{fig:sim1} shows the robot tracking the reference low-torque trajectory, where at first the robot accumulates energy, using the 1:1 gear-ratio, and then finishes the motion using the 1:10 gear-ratio. When the gravitational forces are pushing advantageous toward the trajectory the controller select the 1:1 gear-ratio, but when it is advantageous to fight the intrinsic actuator dynamics instead, the 1:10 gear-ratio is selected. 
-
 %
 \begin{figure}[htp]
 	\centering

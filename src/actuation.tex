@@ -763,7 +763,7 @@ w_o^- \\ 0
 
 %\paragraph{Bad synchronization}
 %
-If the brake would be engaged with non-zero velocity:
+If the brake would be engaged with non-zero $w_1$ velocity the output would exhibit an undesirable impulsive deceleration:
 \begin{align} 
 \left[
 \begin{array}{c}
@@ -779,7 +779,7 @@ w_o^- - \frac{w_1^-}{ R_1 \left( \frac{I_o}{I_2 R_2^2} + 1 \right) } \\ 0
 \label{eq:downshiftmap_nonideal}
 \end{align}
 %
-and the output would exhibit an undesirable impulsive deceleration. The impulsive mapping of eq.\eqref{eq:downshiftmap_nonideal} is derived using eq.\eqref{eq:manipulator_impact_velocity_delta}, where the contact Jacobian is defined by the zero velocity constraint on M1 when the brake close:
+The impulsive mapping of eq.\eqref{eq:downshiftmap_nonideal} is derived using eq.\eqref{eq:manipulator_impact_velocity_delta}, where the contact Jacobian is defined by the zero velocity constraint on M1 when the brake close:
 \begin{align} 
 0 = J_c \vec{w} = 
 \left[
@@ -1084,7 +1084,7 @@ Fig. \ref{fig:dsdm_control_architecture} shows the proposed hierarchical control
 	\label{fig:dsdm_control_architecture}
 \end{figure}
 
-This section discuss the design of the actuator-level controller, focusing on gear-shift transitions. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} will discuss extensively the design of centralized high-level controllers, and an implementation of the necessary low-level hardware controllers is presented in chapter \ref{sec:ExperimentalValidation}.
+This section discuss the design of the actuator-level controller, focusing on gear-shift transitions. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} will discuss extensively the design of centralized high-level controllers, and one implementation of the necessary low-level hardware controllers is presented in chapter \ref{sec:ExperimentalValidation}.
 
 
 \subsection{State-machine}
@@ -1204,9 +1204,7 @@ and a $w_1$ closed-loop dynamic converging exponentially to zero if the synchron
 
 Hence, the output is not influenced by the braking law due to orthogonality, and is only controlled by the desired torque $\tau_d$. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturation. The other advantage of this approach over fully uncoupling the equations, is that the nullspace projection only required motor-side parameters and is valid even when load-side dynamic is unknown. 
 
-Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If undesirable coupling from main loop are too larges and conflicting with the downshift process, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes so large that both motor torques saturate then synchronization is guaranteed. 
-
-In the worst-case scenario, $w_1$ is kept at a positive value for a long time because of a conflicting large $\tau_d$ command, which would eventually lead to saturation of torques with a large PI gain:
+Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If undesirable coupling from main loop are too larges and conflicting with the downshift process, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes so large that both motor torques saturate then synchronization is guaranteed. In the worst-case scenario, $w_1$ is kept at a positive value for a long time because of a conflicting large $\tau_d$ command, which would eventually lead to saturation of torques with a large PI gain:
 %
 \begin{align}
 C \rightarrow \infty \quad\Rightarrow\quad 
@@ -1224,14 +1222,16 @@ which lead to the behavior:
 I_T \dot{w}_1 = - \left( R_1 b_o \right) w_o  - \left( R_1^2 + \frac{R_1^2 I_o }{R_2^2 I_2} + \frac{R_1 I_o}{R_2 I_2} \right) \tau_{max}
 \end{align}
 %
-If $w_1$ starts with a positive value, then $w_o$ is usually positive too and at worst a small negative value (due to kinematic constraints and motor speed saturations). Hence, the damping term is either negative or negligibly small. Hence $w_1$ is guaranteed to decrease and to eventually cross zero where the brake can be engaged. 
+If $w_1$ is a positive value, then $w_o$ is usually positive too and at worst a small negative value (due to kinematic constraints and motor speed saturations). Hence, the damping term is either negative or negligibly small. Hence $w_1$ is guaranteed to continuously decrease and to eventually cross zero where the brake can be engaged. 
 
-Note that however, if the high-level is planning only feasible gear-shifts than no down-shift in impossible situations should be commanded. Hence, in normal operation the down-shift controller should never reach this drastic synchronization mode. This mode is however useful when the DSDM controller receive command directly from a human operator. 
+Note that if the high-level is planning only feasible gear-shifts, than no down-shift in impossible situations should be commanded. Hence, in normal operation the down-shift controller should never reach this drastic synchronization mode. This mode is however useful when the DSDM controller receive command directly from a human operator. 
 
 \subsection{Preparation in the nullspace for faster down-shifts}
 \label{sec:prep}
 
-Here a control scheme is proposed to prepare the actuator for a possible incoming down-shift command, using the secondary objective during regular high-speed operation, in a way that will make the synchronization process faster. The idea is that there is no need to wait to receive a down-shift signal to adjust velocities. The condition for engaging the brake is :
+Here a control scheme is proposed to prepare the actuator for a possible incoming down-shift command, using the secondary objective during regular high-speed operation, in a way that will make the synchronization process faster. The idea is that there is no need to wait to receive a down-shift signal to adjust velocities. 
+
+The condition for engaging the brake is :
 %
 \begin{align}
 w_1 = 0 \quad \Leftrightarrow \quad w_2 = R_2 w_o
@@ -1240,24 +1240,24 @@ w_1 = 0 \quad \Leftrightarrow \quad w_2 = R_2 w_o
 %
 Hence the ideal situation to be prepare for a down-shift, is having M2 alone providing the output velocity. This is however only possible for low output velocity, due to motor velocity constraints. When possible to use this approach, the synchronization is done in advance and the down-shift operation is faster, since only limited by the time the brake takes to close. More generally, matching eq.\eqref{eq:shiftcond} as close as possible will improve gear-shift time since synchronization error will be smaller to start with.
 
-This idea can be also extended to a more complex impulsive behavior situation. As illustrated by Fig. \ref{fig:app}, down-shifting can be particularly useful in contact situation happens in the context of manipulation or locomotion, where large forces must be bear rapidly after contact. For instance a robotic leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot. For this situation, where motor velocity will suddenly change right before the desired down-shift, the preparation condition take this form:
+This idea can be also extended to a more complex impulsive behavior situation. As illustrated by Fig. \ref{fig:app}, down-shifting can be particularly useful in contact situation happens in the context of manipulation or locomotion, where large forces must be bear rapidly after contact. For instance a robotic leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot. For this situation, where motor velocity will suddenly change right before the desired down-shift, the preparation condition takes this form:
 %
 \begin{align}
 w_1^+ = w_1^- + \Delta w_1 = 0 \quad \Leftrightarrow \quad w_2^+ = R_2 w_o^+ = w_2^- 
 \end{align}
 %
 %Note that $\Delta w_2 = 0$, see sec. \ref{sec:model_impact} analysis. 
-Hence, if the impulsive behavior is expected and can be estimated, then the preparation scheme can also be used to improve gear-shift time during a contact. Two control scheme implementing this preparation are presented, first a kinematic approach and then a more flexible dynamic approach. Equation are derived for the case where an impact is expected, but the simple non-impulsive situation can be extracted simply by setting the expected impulse to zero in the given equations.
+Hence, if the impulsive behavior is expected and can be estimated, then the preparation scheme can also be used to improve gear-shift time during a contact. Two control schemes implementing this preparation are presented, first a kinematic approach and then a more flexible dynamic approach. Equation are derived for the case where an impact is expected, but the simpler non-impulsive situation can be extracted simply by setting the expected impulse to zero.
 
 %\paragraph{Kinematic algo}
-Rearranging the results of section \ref{sec:model_impact} to express the two variables of interest (approaching speed $w_0^-$ and M1 velocity after the impact $w_1^+$), as a function of controllable inputs (from a kinematic point of view), lead to:
+Rearranging the results of section \ref{sec:model_impact} to express the two variables of interest (approaching speed $w_0^-$ and M1 velocity post-impact $w_1^+$), as a function of controllable inputs (from a kinematic point of view), lead to:
 %
 \begin{align}
 \left[ \begin{array}{c} w_0^- \\ w_1^+ \end{array} \right] &= \Bigg[ \begin{array}{c c} \frac{1}{R_1} & \frac{1}{R_2}\\ 1 & 0 \end{array} \Bigg] \left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] + \left[ \begin{array}{c} 0 \\ R_1 \frac{  p_{ext}  }{I_o + I_1 R_1^2} \end{array} \right]
 \label{eq:dsdm_impact_approx_sol}
 \end{align}
 %
-Hence it is possible to set both motor velocities so that the approaching speed and after impact M1 velocity can be set arbitrarily and independently using the nullspace, by determining velocity set-points as:
+Hence it is possible to set both motor velocities so that the approaching output speed $w_o^-$ and post-impact M1 velocity $w_1^+$ can be set arbitrarily and independently using the nullspace, by determining velocity set-points as:
 %
 \begin{align}
 \left[ \begin{array}{c} w_1^- \\ w_2^- \end{array} \right] &= \Bigg[ \begin{array}{c} R_1 \\ 0  \end{array} \Bigg] u_0  + 
@@ -1271,7 +1271,7 @@ leading to
  w_o^- = u_0 \quad \text{and} \quad w_1^+ = u_1
 \end{align}
 %
-Therefore, if an impact is expected and the upcoming impulsive impact reaction $p_{ext} = \int{\tau_{ext} dt}$ can be computed, using this control law lead to independent control of the approaching speed of the actuator output $w_o^-$, which would be used for the primary objective (for instance making contact with the object at the right place and time), and resulting velocity of M1 after the impact $w_1^+$, which would be set to zero to allow for instantaneous down-shift.
+Therefore, if an impact is expected and the upcoming impulsive impact reaction $p_{ext} = \int{\tau_{ext} dt}$ can be computed, using this control law lead to independent control of the approaching speed of the actuator output $w_o^-$, which would be used for the primary objective (for instance making contact with the object at the right place and time), and resulting velocity of M1 post-impact $w_1^+$, which would be set to zero to allow for instantaneous down-shift.
 
 %\paragraph{Dynamic algo}
 %
@@ -1300,7 +1300,7 @@ I_1 \\
 \end{array} \right]  \underbrace{ \tau_d }_{\text{Main Loop}}
 \end{align}
 %
-As discussed before, this will lead to independent output dynamics controlled with $\tau_d$ which would be used by the main robot control loop:
+As discussed before, this will lead to independent output dynamics controlled with $\tau_d$ which would be used by the main output control loop:
 \begin{align}
 I_T \dot{w}_o +
 b_T  w_o
@@ -1358,7 +1358,7 @@ The preparation controller is illustrated in the form of a block diagram at Fig.
 \section{Experimental Results}
 \label{sec:dsdm_exp}
 
-This section presents experimental results with the DSDM prototype illustrated at Fig. \ref{fig:dsdm_proto}. Refer to Chapter \ref{sec:ExperimentalValidation} for information regarding mecanical design and control implementation.
+This section presents experimental results with the DSDM prototype illustrated at Fig. \ref{fig:dsdm_proto}. Information regarding the mecanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, than the high-level control (recall Fig. \ref{fig:dsdm_control_architecture}) loop is a simple PID. 
 
 \subsection{DSDM Dynamic Behavior}
 
@@ -1427,7 +1427,7 @@ Fig. \ref{fig:dsdm_cstspd_shifts} illustrates the DSDM actuator maintaining a co
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_cstspd_shifts.pdf}
-	\caption[DSDM actuator tracking constant output velocity: shifts]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode }
+	\caption[DSDM actuator tracking constant output velocity: shifts]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode (no preparation) }
 	\label{fig:dsdm_cstspd_shifts}
 \end{figure}
 
@@ -1436,7 +1436,7 @@ Fig. \ref{fig:dsdm_cstspd_shifts_withprep} illustrates how the idea of preparati
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_cstspd_shifts_withprep.pdf}
-	\caption[DSDM actuator tracking constant output velocity: preparation]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode }
+	\caption[DSDM actuator tracking constant output velocity: preparation]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode (with preparation) }
 	\label{fig:dsdm_cstspd_shifts_withprep}
 \end{figure}
 
