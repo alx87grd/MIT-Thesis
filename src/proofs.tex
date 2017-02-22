@@ -19,7 +19,7 @@ R_{i,j} = 0 \quad \forall \; i \neq j
 Second, that dynamic forces related to viscous damping and inertial forces from the rotor side are linear with respect to rotor velocity:
 %
 \begin{align}
-\vec{\tau}_{rotor-inertia} = I \ddot{\vec{q}}  \quad  \vec{\tau}_{rotor-damping} = B \dot{\vec{q}}
+\vec{\tau}_{rotor-inertia} = I \dot{\vec{w}}  \quad  \vec{\tau}_{rotor-damping} = B \vec{w}
 \end{align}
 %
 
@@ -281,9 +281,91 @@ J^*   &= 2 \sum_i{ \left[ \tau_i^E \tau_i^I + \left| \tau_i^E \tau_i^I \right| \
 \subsection{R* Computed Torque Controller}
 \label{sec:stabrstar1}
 
+In this section, the stability of motions when using the R* Computed Torque Controller is demonstrated for any arbitrary sequence of selected gear-ratio. However, here perfect knowledge of the equation of motions is assumed.
+
+The equation of motions can take this simple but general form:
+\begin{align}
+H_k \ddot{\vec{q}} + \vec{c}_k = R_k \vec{\tau} \quad \forall k \in \{1,...,l\}
+\label{eq:eom_k}
+\end{align}
+where subscript $k$ is used to emphasized the dependence to the discrete gear-ratio selection. The total inertia matrix $H_k$ and state-dependent forces $c_k$ are given by:
+\begin{align}
+H_k       &= H(\vec{q}) + R_k^T I R_k \\
+\vec{c}_k &= \left( D + R_k^T B R_k \right) \dot{\vec{q}} + C( \dot{\vec{q}} , \vec{q} ) \dot{\vec{q}} + \vec{g}(\vec{q})
+\end{align}
+In the computed torque scheme, it is assumed that based on state measurement those term can be computed exactly. In addition here, it is assumed the controller is also aware of the discrete gear-ratio state $k$.
+
+The control law for motor torques takes the following form:
+\begin{align}
+\vec{\tau} = R_k^{-1} \left( H_k \ddot{\vec{q}}_r + \vec{c}_k \right) 
+\label{eq:ctc_k}
+\end{align}
+where the vector $\ddot{\vec{q}}_r$ represent instantaneous desired acceleration. The control law gear-ratio selection takes the form of an optimization, see eq. XXX, however here stability is demonstrated for the more general case of arbitrary gear-ratio sequence. Hence the stability result can be extended for any type of gear-ratio selection scheme used in conjunction with the computed torque. 
+
+When substituting the control law, eq.\eqref{eq:ctc_k}, in the equations of motion, eq.\eqref{eq:eom_k}, then the resulting closed-loop behavior is simply:
+\begin{align}
+\ddot{\vec{q}} = \ddot{\vec{q}}_r \quad \forall k
+\label{eq:cl_k}
+\end{align}
+Hence, the system is not only linear in behavior (form a $\ddot{\vec{q}}_r$ input point of view) but also continuous, non-linearities and discontinuities are compensated by computing the inverse dynamic of the system.
+
+Specifying $\ddot{\vec{q}}_r$ based on state is equivalent to designing a controller for a linear second-order $n$-DoF system. For trajectory tracking the following proportional-derivative control laws can be used:
+\begin{align}
+\ddot{\vec{q}}_r &= \ddot{\vec{q}}_d + K_D ( \dot{\vec{q}}_d - \dot{\vec{q}} ) + K_P \underbrace{( \vec{q}_d - \vec{q} ) }_{\vec{q}_e}
+\end{align}
+leading to second order error dynamics:
+\begin{align}
+0 &= \ddot{\vec{q}}_e + K_D \dot{\vec{q}}_e + K_P \vec{q}_e
+\end{align}
+Hence, convergence of error to zero is guaranteed if both gain matrix $K_D$ and $K_P$ are positive definite:
+\begin{align}
+\vec{q}_e \rightarrow \vec{0} \quad\text{ with }\quad K_D > 0 \, , \, K_P > 0
+\end{align}
+
 
 \subsection{R* Sliding Mode Controller}
 \label{sec:stabrstar2}
+
+In this section, the stability of motions when using the R* Sliding Mode Controller is demonstrated for any arbitrary sequence of selected gear-ratio, in the presence of bounded uncertainty.
+
+The equation of motions can take this simple but general form:
+\begin{align}
+H_k \ddot{\vec{q}} + \vec{c}_k = R_k \vec{\tau} + \vec{d} \quad \forall k \in \{1,...,l\}
+\label{eq:eom_k}
+\end{align}
+where $\vec{d}$ is an unknown generalized force vector that can represent disturbance or modeling errors.
+
+The proposed control law for motor torques takes the form
+%
+\begin{align}
+\vec{\tau} = R_k^{-1} \left( H_k \ddot{\vec{q}}_r + \vec{c}_k - G_k sgn( \vec{s} ) \right) 
+\end{align}
+%
+leading to the following closed-loop behavior:
+%
+\begin{align}
+H_k ( \ddot{\vec{q}} - \ddot{\vec{q}}_r ) = \vec{d} - G_k sgn( \vec{s} ) \quad \forall k
+\end{align}
+%
+The following variables are then introduced:
+\begin{align}
+\vec{q}_e       &= \vec{q}_d       - \vec{q}
+\dot{\vec{q}}_r &= \dot{\vec{q}}_d - \lambda  \vec{q}_e \\
+\vec{s}         &= \dot{\vec{q}}_e + \lambda  \vec{q}_e  = \dot{\vec{q}} - \dot{\vec{q}}_r \\
+\dot{\vec{s}}   &= \ddot{\vec{q}}_e + \lambda  \dot{\vec{q}}_e  = \ddot{\vec{q}} - \ddot{\vec{q}}_r \\
+\end{align}
+%
+Then convergence to the desired trajectory can be guaranteed if the sliding condition can be 
+
+
+
+
+
+
+
+
+
+
 
 
 \section{Chattering Bounds with Rollout Gear-selection}
