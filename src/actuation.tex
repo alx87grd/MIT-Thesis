@@ -1121,7 +1121,7 @@ During high-force mode, the role of the DSDM controller is simple: keeping M1 lo
 
 During high-speed mode, the role of the DSDM controller is to: keep the brake open, transmit the desired torque $\tau_d$ to M1 and optionally track a secondary objective, see Fig. \ref{fig:HS_loop}. Exploiting the nullspace (eq. \eqref{eq:dyn_null_proj}), a secondary objective can be achieved without influencing the output behavior. Note that the nullspace projection vector, see eq.\eqref{eq:dyn_null_proj}, depends only on parameters associated with the motors. Therefore, it is possible to project the secondary controller inputs on the output nullspace even if the output dynamic parameters that include the load inertia and damping are unknowns. 
 
-The nullspace can be used for many possible objectives. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary objective could also used for maximizing efficiency, avoiding speed saturation of M1, etc. This chapter focus is on using the secondary objective to achieve fast and seamless gear-shifts, see section \ref{sec:fastshifts} and \ref{sec:prep}.
+The nullspace can be used for many possible objectives. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary objective could also used for maximizing efficiency, avoiding speed saturation of M1, etc. This chapter focus is on using the secondary objective to achieve fast and seamless gear-shifts.
 
 %Fig. \ref{fig:HS_loop} and Fig. \ref{fig:HF_loop} show DSDM control algorithms implemented as intermediary control loops between hardware and high-level commands. The high-speed controller tracks a received desired torque by controlling the current in M1, and can also optionally track a secondary objective without affecting the main-loop, by projecting the secondary input into the nullspace of the main-loop. The high-force controller directly convert a received desired torque to a current set-point for M2.
 
@@ -1137,7 +1137,7 @@ In this case, the transition is simple because the system goes from 1 DoF to 2 D
 %
 
 \subsubsection{Down-shift: $k:2\rightarrow1$}
-In this case, the transition is harder because the system goes from 2 DoF to 1 DoF, and some synchronization work is needed. As described by eq. \eqref{eq:downshiftmap_nonideal}, closing the brake will lead to an undesirable impulsive behavior if M1 is not already still. M1 speed $w_1$ must thus be brought to zero so that the locking brake can be engaged smoothly without any impact. Hence, as illustrated at Fig. \ref{fig:automaticflow}, when a down-shift is commanded, and intermediary synchronization control mode is activated, and the brake is only closed after M1 as reach zero velocity. %Two algorithms, a kinematic and a dynamic approach, can be considered. 
+In this case, the transition is harder because the system goes from 2 DoF to 1 DoF, and some synchronization work is needed. As described by eq. \eqref{eq:downshiftmap_nonideal}, closing the brake will lead to an undesirable impulsive behavior if M1 velocity is not zero. M1 speed $w_1$ must thus be brought to zero so that the locking brake can be engaged smoothly without any impact. Hence, as illustrated at Fig. \ref{fig:automaticflow}, when a down-shift is commanded, and intermediary synchronization control mode is activated, and the brake is only closed after M1 as reach zero velocity (a small value when implemented in practice). %Two algorithms, a kinematic and a dynamic approach, can be considered. 
 
 \subsubsection{Synchronization controller}
 First, a solution from a kinematic point-of-view is considered, then more flexible dynamic approach is proposed. Assuming the two motor velocities $w_1$ and $w_2$ can be treated as control inputs, then using the nullspace projection vector from eq.\eqref{eq:kinematicnullspace}, the kinematic control law can be written as 
@@ -1204,7 +1204,7 @@ and a $w_1$ closed-loop dynamic converging exponentially to zero if the synchron
 
 Hence, the output is not influenced by the braking law due to orthogonality, and is only controlled by the desired torque $\tau_d$. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturation. The other advantage of this approach over fully uncoupling the equations, is that the nullspace projection only required motor-side parameters and is valid even when load-side dynamic is unknown. 
 
-Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If undesirable coupling from main loop are too larges and conflicting with the downshift process, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes so large that both motor torques saturate then synchronization is guaranteed. In the worst-case scenario, $w_1$ is kept at a positive value for a long time because of a conflicting large $\tau_d$ command, which would eventually lead to saturation of torques with a large PI gain:
+Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If the main loop behavior is conflicting with the synchronization, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes so large that both motor torques saturate then synchronization is guaranteed: %In the worst-case scenario, $w_1$ is kept at a positive value for a long time because of a conflicting large $\tau_d$ command, which would eventually lead to saturation of torques with a large PI gain:
 %
 \begin{align}
 C \rightarrow \infty \quad\Rightarrow\quad 
@@ -1224,7 +1224,7 @@ I_T \dot{w}_1 = - \left( R_1 b_o \right) w_o  - \left( R_1^2 + \frac{R_1^2 I_o }
 %
 If $w_1$ is a positive value, then $w_o$ is usually positive too and at worst a small negative value (due to kinematic constraints and motor speed saturations). Hence, the damping term is either negative or negligibly small. Hence $w_1$ is guaranteed to continuously decrease and to eventually cross zero where the brake can be engaged. 
 
-Note that if the high-level is planning only feasible gear-shifts, than no down-shift in impossible situations should be commanded. Hence, in normal operation the down-shift controller should never reach this drastic synchronization mode. This mode is however useful when the DSDM controller receive command directly from a human operator. 
+Note that if the high-level controller is planning only feasible gear-shifts, than no down-shift in impossible situations should be commanded. Hence, in normal operation the down-shift controller should never reach this drastic synchronization mode. This mode is however useful when the DSDM controller receive commands directly from a human operator.
 
 \subsection{Preparation in the nullspace for faster down-shifts}
 \label{sec:prep}
@@ -1358,7 +1358,7 @@ The preparation controller is illustrated in the form of a block diagram at Fig.
 \section{Experimental Results}
 \label{sec:dsdm_exp}
 
-This section presents experimental results with the DSDM prototype illustrated at Fig. \ref{fig:dsdm_proto}. Information regarding the mecanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, than the high-level control (recall Fig. \ref{fig:dsdm_control_architecture}) loop is a simple PID. 
+This section presents experimental results with the DSDM prototype illustrated at Fig. \ref{fig:dsdm_proto}. Information regarding the mecanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, than the high-level control loop (recall Fig. \ref{fig:dsdm_control_architecture}) is a simple PID controller. 
 
 \subsection{DSDM Dynamic Behavior}
 
@@ -1376,29 +1376,29 @@ This section presents experimental results with the DSDM prototype illustrated a
 	%\label{fig:dsdm_manual_motors}
 %\end{figure}
 
-Fig. \ref{fig:dsdm_manual_shift} gives an overview of how a DSDM actuator works. Before $t=2.5$, the brake is engaged and only M2 is used to drive the output. When is brake is engaged, the DSDM is in high-force mode and the effective gear-ratio is 474. At $t=2.5$, the brake is released and M1 start contributing to the motion. Releasing the brake will be referred to as an up-shift. Between $t=2.5$ and $t=6.5$, the brake is open, both motor contribute to the output speed; the DSDM is in high-speed mode and the effective gear-ratio is 23. At between $t=6.5$, a down-shift is manually commanded. Between $t=6.5$ and $t=7$, the synchronization controller then apply torques to brake M1 to zero speed and the brake is engaged at $t=7$ when M1 speed is detected to be null. This process of braking M1 and then engaging the brake will be referred as a down-shift.
-
-\begin{figure}[htp]
+Fig. \ref{fig:dsdm_manual_shift} gives an overview of how a DSDM actuator works. 
+%
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_manual_shift.pdf}
 	\caption[DSDM behavior overview]{DSDM actuator with torque and mode commands set from a joystick}
 	\label{fig:dsdm_manual_shift}
 \end{figure}
-
+%
+Before $t=2.5$, the brake is engaged and only M2 is used to drive the output. When is brake is engaged, the DSDM is in high-force mode and the effective gear-ratio is 474. At $t=2.5$, the brake is released and M1 start contributing to the motion. Releasing the brake will be referred to as an up-shift. Between $t=2.5$ and $t=6.5$, the brake is open, both motor contribute to the output speed; the DSDM is in high-speed mode and the effective gear-ratio is 23. At between $t=6.5$, a down-shift is manually commanded. Between $t=6.5$ and $t=7$, the synchronization controller then apply torques to brake M1 to zero speed and the brake is engaged at $t=7$ when M1 speed is detected to be null. This process of braking M1 and then engaging the brake will be referred as a down-shift.
+%
 Fig. \ref{fig:dsdm_position_tracking} shows the DSDM tracking postion set-points with PD controllers. This experiment illustrates that the high-force mode is slow and with a highly damped behavior, while the high-speed mode is fast and with a under-damped second order behavior. 
-
-\begin{figure}[htp]
+%
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_position_tracking.pdf}
 	\caption[DSDM actuator position control]{DSDM actuator tracking position commanded from a joystick }
 	\label{fig:dsdm_position_tracking}
 \end{figure}
-
-
+%
 Fig. \ref{fig:dsdm_speed_tracking} shows the DSDM tracking speed set-points with PI controllers. Note that the noisy behavior during high-speed mode is only due to an implementation limitation: at low speed there is a quantization problem as their is a small amounts of encoder ticks per control loop interval. 
-
-
-\begin{figure}[htp]
+%
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_speed_tracking.pdf}
 	\caption[DSDM actuator velocity control]{DSDM actuator tracking output velocity commanded from a joystick }
@@ -1409,11 +1409,11 @@ Fig. \ref{fig:dsdm_speed_tracking} shows the DSDM tracking speed set-points with
 \subsection{Nullspace}
 
 Fig. \ref{fig:dsdm_nullspace} illustrates the internal DoF of DSDM actuators. Here the DSDM tracks a constant output speed while motor speeds are varied by projecting additional torques in the nullspace.
-
-\begin{figure}[htp]
+%
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_nullspace.pdf}
-	\caption[DSDM actuator tracking constant output velocity: nullspace]{DSDM actuator tracking constant output velocity while sending manual command in the nullspace }
+	\caption[DSDM actuator tracking constant output velocity: nullspace]{Experimental demonstration of independence of the output with respect to the secondary controller input, with the DSDM actuator tracking constant output velocity while sending manual command in the nullspace }
 	\label{fig:dsdm_nullspace}
 \end{figure}
 
@@ -1423,16 +1423,16 @@ Fig. \ref{fig:dsdm_nullspace} illustrates the internal DoF of DSDM actuators. He
 \subsubsection{Constant Speed}
 
 Fig. \ref{fig:dsdm_cstspd_shifts} illustrates the DSDM actuator maintaining a constant output speed while shifting back-and-forth between high-speed and high-force mode.
-
+%
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_cstspd_shifts.pdf}
 	\caption[DSDM actuator tracking constant output velocity: shifts]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode (no preparation) }
 	\label{fig:dsdm_cstspd_shifts}
 \end{figure}
-
+%
 Fig. \ref{fig:dsdm_cstspd_shifts_withprep} illustrates how the idea of preparation, by adjusting M2 velocity in the nullspace, improve the gear-shifting time. 
-
+%
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_cstspd_shifts_withprep.pdf}
@@ -1440,32 +1440,32 @@ Fig. \ref{fig:dsdm_cstspd_shifts_withprep} illustrates how the idea of preparati
 	\label{fig:dsdm_cstspd_shifts_withprep}
 \end{figure}
 
-Fig. \ref{fig:dsdm_cstspd_shifts_withprep_zoom} shows a zoom in on a fast down-shift with preparation. 
+%Fig. \ref{fig:dsdm_cstspd_shifts_withprep_zoom} shows a zoom in on a fast down-shift with preparation. 
 
-\begin{figure}[htp]
-	\centering
-		\includegraphics[width=0.75\textwidth]{dsdm_cstspd_shifts_withprep_zoom.pdf}
-	\caption{ Fast down-shift }
-	\label{fig:dsdm_cstspd_shifts_withprep_zoom}
-\end{figure}
+%\begin{figure}[htp]
+	%\centering
+		%\includegraphics[width=0.75\textwidth]{dsdm_cstspd_shifts_withprep_zoom.pdf}
+	%\caption{ Fast down-shift }
+	%\label{fig:dsdm_cstspd_shifts_withprep_zoom}
+%\end{figure}
 
 \subsubsection{Contact with a Compliant Load}
 
-Experiment of the actuator making contact with a spring-like compliant load are illustrated at Fig. \ref{fig:dsdm_compliant_HF} using high-force mode, at Fig. \ref{fig:dsdm_compliant_HS} using high-speed mode and at \ref{fig:dsdm_ballon_down_shift_nice2} using both mode: making a down-shift as soon as contact is detected. 
-
-\begin{figure}[htp]
-	\centering
-		\includegraphics[width=0.75\textwidth]{dsdm_compliant_HF.pdf}
-	\caption{ Contact with a compliant load in high-force mode }
-	\label{fig:dsdm_compliant_HF}
-\end{figure}
-
-\begin{figure}[htp]
-	\centering
-		\includegraphics[width=0.75\textwidth]{dsdm_compliant_HS.pdf}
-	\caption{ Contact with a compliant load in high-speed mode }
-	\label{fig:dsdm_compliant_HS}
-\end{figure}
+An experiment of the actuator making contact with a spring-like compliant load and making a smooth down-shift as soon as contact is detected is illustrated at Fig. \ref{fig:dsdm_ballon_down_shift_nice2}. 
+%
+%\begin{figure}[htp]
+	%\centering
+		%\includegraphics[width=0.75\textwidth]{dsdm_compliant_HF.pdf}
+	%\caption{ Contact with a compliant load in high-force mode }
+	%\label{fig:dsdm_compliant_HF}
+%\end{figure}
+%
+%\begin{figure}[htp]
+	%\centering
+		%\includegraphics[width=0.75\textwidth]{dsdm_compliant_HS.pdf}
+	%\caption{ Contact with a compliant load in high-speed mode }
+	%\label{fig:dsdm_compliant_HS}
+%\end{figure}
 
 %\begin{figure}[H]
 	%\centering
@@ -1524,6 +1524,13 @@ Fig. \ref{fig:dsdm_stiff_down} illustrates an experiment where the DSDM make a q
 	%\label{fig:dsdm_stiff_auto_nullspace_wrong}
 %\end{figure}
 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
 
 \section{Summary}
 
