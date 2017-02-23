@@ -102,7 +102,7 @@ This chapter proposed control schemes to dynamically select the optimal gear-rat
 %
 The architecture of both control approaches is designed so the control signal is a torque and a gear-ratio for each actuator. Note that in the case of discrete gear-ratio options, instead of transmitting the actual gear-ratio $R$, the control signal can be a label $k$ indexing the discrete $R_k$ options. Hence, it is assumed that low-level VGA controllers handle tracking the motor torque setpoint and the gear-shifting process. This is analogous to a situation where the robot would be a car with a semi-automatic transmission, and designing policies for the driver where the two control inputs are a throttle level a and shift-up/shift-down signal. The low-level VGA controllers would be specific to the type of actuator used in the system. For the particular case where the VGA are DSDM actuators, the low-level controllers would be the control laws described in Chapter \ref{sec:MultipleSpeedActuationTechnology}. The architecture difference is that, for the dynamic programming approach given a goal, a global feedback policy is synthesized directly. However, for the model-based approach the high-level controller is separated into two levels. A feedback policy for trajectory tracking and a open-loop motion planning algorithm that generate a reference trajectory to reach the goal. 
 
-\paragraph{Trajectory Generation} Algorithm synthesizing a dynamic trajectory that meets performance requirements for reaching the target robot configuration starting at the actual robot configuration: 
+\paragraph{Trajectory generation} Algorithm synthesizing a dynamic trajectory that meets performance requirements for reaching the target robot configuration starting at the actual robot configuration: 
 %
 \begin{align}
   \ddot{\vec{q}}_d(:),\dot{\vec{q}}_d(:),\vec{q}_d(:) = f_{planner}(\vec{q}_{target}, \vec{q})
@@ -563,38 +563,65 @@ In the situation of discrete gear-ratios, this lead to a combinatorial optimizat
 However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly. For instance, for the robot presented in this paper, see Fig. \ref{fig:arm_proto}, there is 3 actuators each with 2 gear-ratio options, leading to $l=2^3=8$ possible matrix $R$.
 
 
-\subsubsection{Heuristic approach to minimize gearshift}
+\subsection{Improved gear-ratio selection schemes}
 
-Because the control effort during gear-shifts is neglected in the model, using the proposed controller can lead to rapid switching between gear-ratios in certain situations. To avoid this undesirable behavior, it is proposed to add hysteresis to the controller: the gear-ratio is only changed if the difference of computed torque, between using the optimal and the previously selected gear-ratio, is greater than a minimum torque threshold, and also if the elapsed time since the last change is greater than a minimum delay. 
+Because the control effort associated with gear-shifts is neglected in the model and the basic gear-selection scheme does do penalize mode transitions, using the proposed controller can lead to rapid switching between gear-ratios in certain situations. In practice, this is not desirable for most type of variable transmissions as changing the gear-ratio: 1) is not really instantaneous 2) the shifting process 
 
+\subsubsection{Hysteresis}
 
+To avoid this undesirable behavior, it is proposed to add hysteresis to the controller: the gear-ratio is only changed if the difference of computed torque, between using the optimal and the previously selected gear-ratio, is greater than a minimum torque threshold, and also if the elapsed time since the last change is greater than a minimum delay. 
 
-\subsection{Rollout Optimization}
+\subsubsection{Rollout gear-selection}
 
-
-
-
-\subsection{Guarantees and design guidelines}
-
-
-\subsubsection{Stability}
-
-Fixed target
-
-Convergence on desired trajectory
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.95\textwidth]{rollout.png}
+	\caption[Rollout gear-selection]{Rollout gear-selection}
+	\label{fig:rollout}
+\end{figure}
 
 
-\subsubsection{Chattering}
 
+\subsection{Stability}
+
+\paragraph{R* Computed Torque} Convergence to the desired trajectory is guaranteed assuming the model used by the controller is exact. Interestingly this results is valid for any arbitrary sequence of gear-ratios, see details in sec. \ref{sec:stabrstar1}, as long as the feedback law computing the continuous torques $\vec{\tau}$ is aware of the discrete operating mode $k$ specifying the right gear-ratio matrix $R_k$. Hence, any gear-ratio selection scheme can be used, without compromising the convergence to the desired trajectory. 
+
+\paragraph{R* Sliding Mode}
+
+
+\subsection{Chattering}
+
+\paragraph{Situations leading to chattering}
 
 If convergence is guaranteed, the zeno behavior is impossible unless the desired trajectory or point-target reside on a switching surface. 
 
+\paragraph{Minimum cycle time with Rollout}
 
-Minimum delay on a trajectory
+
+\subsection{Parameter selection guideline}
+
+\paragraph{R* Computed Torque} The only parameters with the computed torque controller are matrices $K_D$ and $K_P$. Those can be understood as multi-DoF proportional and derivative gains. Stability is guaranteed for any positive definite matrix.
+
+\paragraph{R* Sliding Mode} The main parameter in Discontinuous gain
+%
+\begin{align}
+K_{i}(k) = \operatornamewithlimits{max}\limits_{\vec{d}} \left[ H_k^{-1} \vec{d} \right]_i + \eta
+\label{eq:slidinggain}
+\end{align}
+%
+
+Convergence rate is driven by scalars parameters $\lambda$ and $\eta$, large values will make the controller more aggressive.
+
+\paragraph{Rollout gear-selection}
+
+Time horizon $h$
+
+gear-shift penalty $Q$
+
 
 Proof is detailed in Appendix \ref{sec:chat1}.
 
-Minimum delay in arbitrary situations
+
 
 
 
@@ -635,9 +662,12 @@ The control problem of obtaining the global desired behavior is formulated as mi
 
 The input valid set $U(\vec{x})$ is defined by allowable motor torque respecting saturation and the discrete options of gear-ratios that are feasible given actual joint velocities:
 \begin{align}
-	U(\vec{x}):&\\
-	&\tau_i \in [ -\tau_{max,i} , \tau_{max,i} ] \;\forall\; i\\
-	&k      \in \{ 0 , ... , l \} \quad\text{ such that }\quad \vec{w} = R_k \vec{\dot{q}} \in W
+	U(\vec{x}):&\left\{
+	\begin{array}{l}
+	\tau_i \in [ -\tau_{max} , \tau_{max} ] \;\forall\; i\\
+	k      \in \{ 0 , ... , l \} \quad\text{ such that }\quad \vec{w} = R_k \vec{\dot{q}} \in W
+	\end{array}
+	\right.
 \end{align}
 where $W$ is the set of allowable rotor velocities. The state valid set $X$ include a range of acceptable state and could exclude some regions if desired. 
 
@@ -1153,10 +1183,20 @@ To evaluate the performance gain of actively changing the gear-ratio, simulation
 %
 
 
+\subsection{Chattering}
+
+
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.80\textwidth]{chattering_compared.jpg}
+	\caption[Chattering Comparaison]{Chattering Comparaison}
+	\label{fig:ChatteringComparaison}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+\newpage
 \section{Experiments Results}
 \label{sec:shift_exp}
 

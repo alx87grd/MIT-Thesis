@@ -1106,6 +1106,7 @@ The proposed control scheme for the DSDM actuator-level controller has three dis
 \end{figure}
 
 
+
 \subsection{High-force mode controller}
 
 During high-force mode, the role of the DSDM controller is simple: keeping M1 locked with the brake closed and directly transmit the desired torque $\tau_d$ to M2, see Fig. \ref{fig:HF_loop}. 
@@ -1124,6 +1125,38 @@ During high-speed mode, the role of the DSDM controller is to: keep the brake op
 The nullspace can be used for many possible objectives. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary objective could also used for maximizing efficiency, avoiding speed saturation of M1, etc. This chapter focus is on using the secondary objective to achieve fast and seamless gear-shifts.
 
 %Fig. \ref{fig:HS_loop} and Fig. \ref{fig:HF_loop} show DSDM control algorithms implemented as intermediary control loops between hardware and high-level commands. The high-speed controller tracks a received desired torque by controlling the current in M1, and can also optionally track a secondary objective without affecting the main-loop, by projecting the secondary input into the nullspace of the main-loop. The high-force controller directly convert a received desired torque to a current set-point for M2.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.90\textwidth]{HF_ctl.png}
+	\caption{High-Force Mode Controller}
+	\label{fig:HF_loop}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.90\textwidth]{HS_ctl.png}
+	\caption{High-Speed Mode: Generic Controller}
+	\label{fig:HS_loop}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.90\textwidth]{down_ctl.png}
+	\caption{High-Speed Mode: Synchronization controller}
+	\label{fig:down_loop}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.90\textwidth]{imp_ctl.png}
+	\caption{High-Speed Mode: Impact Preparation Controller}
+	\label{fig:imp_loop}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsection{Fast and Seamless Transitions (gear-shift)}
@@ -1323,33 +1356,7 @@ Hence, it would be possible to engaged the brake and switch to high-force mode a
 
 The preparation controller is illustrated in the form of a block diagram at Fig. \ref{fig:imp_loop}. Note that the expected impulse would need to to be computed by an high-level controller aware of the general system situation. Section \ref{sec:contact} present techniques to estimate impulsive contact forces based on a dynamic model of a robot that could be used by the high-level controller. 
 
-\begin{figure}[p]
-	\centering
-		\includegraphics[width=0.90\textwidth]{HF_ctl.png}
-	\caption{High-Force Mode Controller}
-	\label{fig:HF_loop}
-\end{figure}
 
-\begin{figure}[p]
-	\centering
-		\includegraphics[width=0.90\textwidth]{HS_ctl.png}
-	\caption{High-Speed Mode: Generic Controller}
-	\label{fig:HS_loop}
-\end{figure}
-
-\begin{figure}[p]
-	\centering
-		\includegraphics[width=0.90\textwidth]{down_ctl.png}
-	\caption{High-Speed Mode: Synchronization controller}
-	\label{fig:down_loop}
-\end{figure}
-
-\begin{figure}[p]
-	\centering
-		\includegraphics[width=0.90\textwidth]{imp_ctl.png}
-	\caption{High-Speed Mode: Impact Preparation Controller}
-	\label{fig:imp_loop}
-\end{figure}
 
 %\section{Experimental Validation}
 
