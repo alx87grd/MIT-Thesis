@@ -469,7 +469,6 @@ The proposed closed-loop controller, shown in Fig. \ref{fig:Rstar_block_big}, is
 Then given the actual position $\vec{q}$, actual speed $\dot{\vec{q}}$ and desired acceleration $\ddot{\vec{q}}_r$ compute extrinsic and intrinsic forces for this dynamic state. Then compute the optimal gear-ratios $R^*$, as described previously for a known trajectory (sec. \ref{sec:optigeartraj}). Finally execute the optimal gear-ratio selection and the corresponding motor torques: 
 %
 \begin{align}
-R^*
 \vec{\tau}^* = (R^*)^{-1} 
 	\underbrace{ 
 	\vec{\tau}_{E}(\ddot{\vec{q}}_r,\dot{\vec{q}},\vec{q}) 
