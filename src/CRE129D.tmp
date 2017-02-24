@@ -690,40 +690,40 @@ In practice this brute force approach is usually feasible. For instance, for the
 
 \subsubsection{Point-by-point}
 
-In theory if the controlled robotic system would behave exactly like the proposed model, then selecting optimal gear-ratios $R_{k*}$ at each time steps would be the optimal behavior. However, because the control effort associated with gear-shifts is neglected in the model and the basic gear-selection scheme does do penalize mode transitions, using the proposed controller can lead to rapid switching between gear-ratios (chattering) in certain situations. In practice, this is not desirable since for most type of variable transmissions, since changing the gear-ratio: 1) is not really instantaneous 2) the shifting process would require some effort/energy 3) fast switching can lead to mechanical wear and also excite unmodeled vibration modes. 
+In theory if the controlled robotic system would behave exactly like the proposed model, then selecting optimal gear-ratio at each time step be the optimal behavior. However, because the control effort associated with gear-shifts is neglected in the model and the basic gear-selection scheme does do penalize mode transitions, using the proposed controller can lead to rapid switching between gear-ratios (chattering) in certain situations. In practice, this is not desirable since for most type of variable transmissions, since changing the gear-ratio: 1) is not really instantaneous 2) the shifting process would require some effort/energy 3) fast switching can lead to mechanical wear and also excite unmodeled vibration modes. 
 
 \subsubsection{Hysteresis}
 
-To avoid undesirable rapid switching behaviors, hysteresis can be added to the gear-selection logic. Instead of simply executing the optimal gear-ratio command at each time step, a logical step is added, which only allows mode change if a minimal amount of time $\Delta t$ as elapsed since the last mode change. This thus directly guaranteed a minimal period between gear-shifts. However, this technique is clearly sub-optimal in certain situations. For instance, imagine a system with two modes, on a trajectory where $k=1$ is optimal for all time except for the interval $t\in[1,1.1]$. If an hysteresis of $\Delta t = 1$ is used in the controller, then $k=2$ will be selected for the interval $t\in[1,2]$. Hence, not gear-shifting at all would have been better (sub-optimal during 0.1 sec) compared to shifting with hysteresis (sub-optimal during 0.9 sec), from the whole trajectory point of view. 
+To avoid undesirable chattering behavior, hysteresis can be added to the gear-selection logic. Instead of simply executing the optimal gear-ratio command at each time step, a logical step is added, which only allows mode change if a minimal amount of time $\Delta t$ as elapsed since the last mode change. This thus directly guaranteed a minimal period between gear-shifts. However, this technique is clearly sub-optimal in certain situations. For instance, imagine a system with two modes, on a trajectory where $k=1$ is optimal for all time except for the interval $t\in[1,1.1]$. If an hysteresis of $\Delta t = 1$ is used in the controller, then $k=2$ will be selected for the interval $t\in[1,2]$. Hence, not gear-shifting at all would have been better (sub-optimal during 0.1 sec) compared to shifting with hysteresis (sub-optimal during 0.9 sec), from the whole trajectory point of view. 
 
 \subsubsection{Minimax optimization for sliding mode}
 
-When optimizing the torque computed with the sliding mode, chattering can be very severe as components of $sgn( \vec{s} )$ can oscillate rapidly between values of $\pm1$. One approach to alleviate this is to reformulate the optimization to treat variables $sgn( \vec{s} )$ as random disturbance and optimize for the worst-case scenario:
+When optimizing the torque computed with the sliding mode, chattering can be very severe as the terms with $sgn( \vec{s} )$ can oscillate rapidly between values of $\pm1$. One approach to alleviate this is to reformulate the optimization to treat variables $sgn( \vec{s} )$ as random disturbance and optimize for the worst-case scenario:
 %
 \begin{align}
 R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \operatornamewithlimits{max}\limits_{sgn(\vec{s})} \left[ \vec{\tau}^T\vec{\tau}  \right] \quad\text{where}\quad \vec{\tau} = R^{-1} \vec{\tau}_{E} + R \vec{\tau}_{I} - R^{-1} G sgn( \vec{s} ) 
 \end{align} 
 %
-The result of this optimization is independent from the position of states with respect to the switching surface $s=0$, and would remove this source of rapid change of optimal gear-ratio solutions. Also, the sliding mode controller could be implemented with smoothing techniques for the discontinuous torque, many technique exist \cite{slotine_applied_1991} \cite{perruquetti_sliding_2002}. This would also alleviate one source of chattering for the gear-ratios selection.
+The result of this optimization is independent from the position of states with respect to the switching surface $s=0$, and would remove this source of fast jumps for the optimal gear-ratio solution. Also, the sliding mode controller could be implemented with smoothing techniques for the discontinuous torque, many technique exist \cite{slotine_applied_1991} \cite{perruquetti_sliding_2002}. This would also alleviate one source of chattering for the gear-ratios selection.
 
 \subsubsection{Rollout gear-selection}
 
 A better approach to the problem of avoiding fast gear-shifting, is to associate a one-time cost with transitions and optimize over a time-horizon. This way a trade-off between changing gear-ratio quickly to minimize torques and minimizing the number of gear-shifts can be formalized.
 
-The proposed approach to implement this idea in a closed-loop control scheme is to use predictive simulations over a receding time-horizon, analogous to the model predictive control scheme. Predicted trajectories are computed by simulating the robotic system under the control of a base policy that consist in 1) keep the gear-ratios fixed 2) motor torques controlled with the computed torque or sliding mode feedback law. An integral cost $J_k$ for each of those $l$ simulated trajectory with fixed gear-ratios is computed:
+The proposed approach to implement this idea in a closed-loop control scheme is to use predictive simulations over a receding time-horizon, analogous to the model predictive control scheme. Predicted trajectories are computed with the robotic system under the control of a base policy that consist in 1) keep the gear-ratio fixed 2) motor torque controlled with the computed torque or sliding mode feedback law. An integral cost $J_k$ for each of those simulated trajectory with fixed gear-ratios is computed:
 %
 \begin{align}
 J_k &= \int_t^{t+h} \vec{\tau}_k^T \vec{\tau}_k d\hat{t}
 \end{align}
 %
-where $t$ is actual real time, $h$ is the horizon, $\hat{t}$ is the simulation time and $\vec{\tau}_k$ are the control effort executed with the base policy in the simulation. Once those simulations and integrals are computed, the executed control actions are:
+where $t$ is actual real time, $h$ is the horizon, $\hat{t}$ is the simulation time and $\vec{\tau}_k$ are the control effort with the base policy in the simulation with fixed gear-ratios $k$. Once those simulation and integral are computed, the executed control actions are:
 %
 \begin{align}
 k^{*}      &= \operatornamewithlimits{argmin}\limits_{k} \left[ J_k + Q [[ k \neq k_{last}]] \right] \\
 \vec{\tau} &= \vec{\tau}_{k^*}( \dot{\vec{q}} , \vec{q} )
 \end{align}
 %
-where $Q$ is the cost penalty for gear-shifting. Hence, optimal gear-ratios executed are the optimal ones considering an integral cost over the future horizon $h$. Note that state errors are not penalized in the integral cost, because the base policy for motor torques already enforce trajectory tracking. The scheme is illustrated at Fig. \ref{fig:rollout}.
+where $Q$ is the cost penalty for gear-shifting. Hence, optimal gear-ratios executed are the optimal ones considering an integral cost over the future horizon $h$, given base policy for motor torques (either computed torque or sliding mode) and no subsequent gear-shifts. Note that state errors are not penalized in the integral cost, because the base policy for motor torques already enforce trajectory tracking. The scheme is illustrated at Fig. \ref{fig:rollout}.
 %
 \begin{figure}[htp]
 	\centering
@@ -754,73 +754,30 @@ Here stability properties of the proposed control laws are discussed.
 \paragraph{R* Sliding Mode} Guaranteed convergence to the desired trajectory, with the R* Sliding Mode controller, can be extended to situation where the uncertainty can be bounded, assuming gains $G$ are chosen accordingly, see details in sec. \ref{sec:stabrstar2}. Stability is also guaranteed for any sequence of discrete gear-ratio $k$ and thus would not be affected by the closed-loop gear-ratio selection scheme.
 
 %\paragraph{Arbitrary gear-selection} 
-The main interesting conclusion is that complex gear-selection schemes, such as Rollout, can be implemented in conjunction with the proposed base feedback policy for torques (computed torque or sliding mode), without affecting the stability results. 
+The main interesting conclusion is that complex gear-selection schemes, such as Rollout, can be implemented in conjunction with the proposed base feedback policy for torques (computed torque or sliding mode), without affecting the stability of the system. 
 
 \subsection{Chattering and high-frequency switching}
 
 This section discuss results regarding the chattering behavior when using the proposed control scheme. 
 
-\subsubsection{Decision boundaries}
-
-Chattering (quickly selecting back-and-forth) between two discrete mode $i$ and $j$ can occur when optimized cost is equal for both gear-ratios, for instance with the quadratic torque criterion when:
-%
-\begin{align}
-\vec{\tau}_i^T \vec{\tau}_i = \vec{\tau}_j^T \vec{\tau}_j
-\end{align}
-%
-If the policy for motor torque $\vec{\tau}_k(\vec{x})$ is substituted in the cost equality equation, the result is a decision boundary in the state-space, in the form:
-%
-\begin{align}
-r_{ij} ( \vec{x} ) = 0
-\end{align}
-%
-If $r_{ij}>0$ then the decision is $k=i$, while if $r_{ij}<0$ the decision is $k=j$. With the computed torque as policy for motor torque, for a 1-DoF system, the decision boundary between $k=i$ and $k=j$ takes the form
-%
-\begin{align}
-0 = r_{ij} ( \vec{x} )  = \left[ \frac{R_i^2-R_j^2}{\frac{1}{R_i^2}-\frac{1}{R_j^2}}\right] - \frac{\tau_E}{\tau_I}
-\end{align}
-%
-Boundary decision could also be created by the inequality constraints in the optimization. The most relevant example is motor speed saturation which can create decision boundaries of the type:
-%
-\begin{align}
-0 = r_{ij} ( \vec{x} )  = w_{max} \pm \frac{\dot{q}}{R_i}
-\end{align}
-%
-
-\subsubsection{Situations leading to fast gear-ratio switching}
-
-Fig. \ref{fig:chatsit} illustrates different possible class of situations leading to fast switching.
-%
-\begin{figure}[htp]
-        \centering
-				\subfloat[Staying on the decision boundary]{
-        \includegraphics[width=0.30\textwidth]{inv_sur.png}
-				\label{fig:inv_sur}}
-				\hspace{+3pt}
-        \subfloat[Decision boundary attracting all trajectory]{
-				\includegraphics[width=0.30\textwidth]{inv_sld_sur.png}
-				\label{fig:inv_sld_sur}}
-				\hspace{+3pt}
-				\subfloat[High-freq. crossing of the decision boundary]{
-				\includegraphics[width=0.30\textwidth]{hifreq_sur.png}
-				\label{fig:hifreq_sur}}
-        \caption{Situations leading to fast gear-ratio switching. $r_{ij}$ is a decision boundary between }\label{fig:chatsit}
-\end{figure}
+\paragraph{Situations leading to chattering}
 
 
-The theoretical closed-loop behavior, when exactly on the boundary decision is a degenerative case of ambiguous infinitely fast jumps between gear-ratios. In practical implementations, because decision are delayed, staying in the vicinity of the decision boundary $r_{ij} \approx 0 $ could lead to chattering, with a period depending on implementation aspects such as computing delay, sampling time and hysteresis in the gear-selection logic. 
 
-Fig. \ref{fig:inv_sur} and \ref{fig:inv_sld_sur} illustrate two possible class of behavior for which the system stay in the vicinity of the decision boundary and would lead to chattering behavior. A situation of type (a) represent a situation the system trajectory coincide with the boundary decision and a situation of type (b) represent a more severe case where all trajectory would be attracted to the decision boundary, i.e. a type of undesired sliding mode. Those two types of situation can be ruled-out as impossible, if conditions guaranteeing convergence to the desired trajectory are met. By contradiction, state cannot both converge on the desired trajectory and stay on the decision boundary, unless for very special cases where the desired trajectory is in the sub-domain defined by the decision boundary. 
 
-\paragraph{Example of gear-shift chattering with a car going up-hill}
 
-In practice, a situation of type (b) can be a typical failure mode of switched system. This section explore with a simple example how this situation can arise and how the proposed control schemes make sure this is avoided. Imagine a car with an automatic transmission going up-hill, with a gear-selection scheme only based on a velocity decision boundary. The car then start from rest with its low-gear $k=1$ and accelerate. After reaching reaching a threshold velocity, the automatic transmission then engage the high-gear $k=2$. With the high-gear however, the effect of gravity is much larger and the car slow down until it cross again the threshold velocity. The low-gear $k=1$ is then engaged again and the car starts accelerating, and the cycle would continue. What is happening here is that the car converge toward its velocity goal when $k=1$ but diverge when $k=2$. With the proposed R* Computed Torque controller, this could happen if gravity forces were underestimated in the model. However, if gravity forces are either correctly modeled, or alternatively included in the uncertainty bounds with the sliding mode controller, then convergence would be guaranteed for both modes, and enough torque to continue accelerating toward the target velocity would have been applied. %Furthermore, if it takes more torque to continuing accelerating with $k=2$, the the R* Computed Torque would not have selected the high-gear in this situation. 
 
-So far, situations of chattering in the vicinity of decision boundary, Fig. \ref{fig:inv_sur} and \ref{fig:inv_sld_sur}, have been ruled-out impossible if the controller is designed to guarantee convergence for all discrete mode $k$. However, situations of type (c), illustrated at Fig. \ref{fig:hifreq_sur} refer to as high-frequency switching, is still possible and un-desirable. The decision boundary can very complex for highly non-linear systems, hence even a simple trajectory can cross decision boundaries at undesirably high-frequencies. 
+Fig. XXX illustrate possible situation leading to chattering.
+
+\paragraph{Arbitrary gear-selection} 
+
+
+
+If convergence is guaranteed, the zeno behavior is impossible unless the desired trajectory or point-target reside on a switching surface. 
+
+
 
 \paragraph{Minimum cycle time with Rollout}
-
-The Rollout approach is efficient to avoid situations of type (c), high-frequency switching. By optimizing over a time horizon, the Rollout gear-selection scheme is acting as a low-pass filter. Moreover, with the Rollout approach, a minimum bound on the cycle period of gear-shifting back-and-forth between two gear-ratio can be guaranteed. 
 
 
 \subsection{Parameter selection guideline}
