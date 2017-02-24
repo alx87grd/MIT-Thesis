@@ -411,36 +411,6 @@ K_{i}(k) = \operatornamewithlimits{max}\limits_{\vec{d}} \left[ H_k^{-1} \vec{d}
 Thus, if the gains are defined based on disturbance bounds and according to eq.\eqref{slidinggain}, the sliding condition is guaranteed for all gear-ratio mode, and thus convergence to the desired trajectory is guaranteed for any gear-ratio sequence.
 
 
-1-DoF example
-
-
-%
-\begin{align}
-\vec{\tau} = R_k^{-1} \left( H_k \ddot{\vec{q}}_r + \vec{c}_k - H_k K sgn( \vec{s} ) \right)
-\end{align}
-%
-with gain $K$ set to:
-%
-\begin{align}
-K = \frac{d_{max}}{H_k} + \eta
-\end{align}
-%
-\begin{align}
-\vec{\tau} = R_k^{-1} \left( H_k ( \ddot{\vec{q}}_r - \eta sgn( \vec{s} ) - d_{max}  sgn( \vec{s} ) + \vec{c}_k \right) \\
-\vec{\tau} =\frac{1}{R_k} \left(  H \underbrace{(\ddot{\vec{q}}_r - \eta sgn( \vec{s})}_{\ddot{\vec{q}}_a} + C \dot{\vec{q}} + D \dot{\vec{q}} + \vec{g} - d_{max}  sgn( \vec{s} ) \right) + R_k \left( I (\ddot{\vec{q}}_r - \eta sgn( \vec{s}) + B \dot{\vec{q}}  \right) \\
-\vec{\tau} =\frac{1}{R_k} \left( \tau_E( \ddot{\vec{q}}_a , \dot{\vec{q}} , \vec{q}) - d_{max}  sgn( \vec{s} \right)  + R_k \tau_I( \ddot{\vec{q}}_a , \dot{\vec{q}} )
-\end{align}
-%
-
-
-
-
-
-
-
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 
 

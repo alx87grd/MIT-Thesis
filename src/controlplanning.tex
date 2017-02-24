@@ -460,33 +460,35 @@ In this section, control algorithms relying on a dynamic model of a robot and it
 \label{sec:RobustTrajectoryFollowingController}
 
 
-The proposed closed-loop controller, shown in Fig. \ref{fig:Rstar_block_big}, is based on the Computed Torque technique, see any robotic textbook such as \cite{asada_robot_1986}, but includes an optimization step to compute and select the optimal gear-ratios. As explored in section \ref{sec:dsdm_exp}, when accelerations, speeds and positions are given, locally optimal gear-ratios can be computed. The idea is thus as follow, first compute a desired instantaneous acceleration $\ddot{\vec{q}}_r$ leading to guaranteed convergence on the trajectory:
+The proposed closed-loop controller, shown in Fig. \ref{fig:Rstar_block_big}, is based on the Computed Torque technique, see any robotic textbook such as \cite{asada_robot_1986}, but includes an optimization step to compute and select the optimal gear-ratios. As explored in section \ref{sec:dsdm_exp}, when accelerations, speeds and positions are given, locally optimal gear-ratios can be computed. The idea is thus as follow, first compute a desired instantaneous acceleration $\ddot{\vec{q}}_r$ leading to guaranteed convergence to the desired trajectory:
 %
 \begin{align}
-\ddot{\vec{q}}_r &= \ddot{\vec{q}}_d + K_D ( \dot{\vec{q}}_d - \dot{\vec{q}} ) + K_P \underbrace{( \vec{q}_d - \vec{q} ) }_{\vec{q}_e}
+\ddot{\vec{q}}_r &= \ddot{\vec{q}}_d + K_D ( \dot{\vec{q}}_d - \dot{\vec{q}} ) + K_P ( \vec{q}_d - \vec{q} ) 
 \end{align} 
 %
-Then given the actual position $\vec{q}$, actual speed $\dot{\vec{q}}$ and desired acceleration $\ddot{\vec{q}}_r$ compute extrinsic and intrinsic forces for this dynamic state. Then compute the optimal gear-ratios $R^*$, as described previously for a known trajectory (sec. \ref{sec:optigeartraj}). Finally execute the optimal gear-ratio selection and the corresponding motor torques: 
+Then given the actual position $\vec{q}$, actual speed $\dot{\vec{q}}$ and desired instantaneous acceleration $\ddot{\vec{q}}_r$ compute extrinsic and intrinsic forces for this dynamic state:
 %
 \begin{align}
-\vec{\tau}^* = (R^*)^{-1} 
-	\underbrace{ 
-	\vec{\tau}_{E}(\ddot{\vec{q}}_r,\dot{\vec{q}},\vec{q}) 
-	}_{\text{External load dynamics}}
-	+ R^*
-	\underbrace{ 
-	\vec{\tau}_{I}(\ddot{\vec{q}}_r,\dot{\vec{q}})
-		}_{\text{Intrinsic losses}}
+	&\vec{\tau}_{E} = H \vec{ \ddot{q}_r } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \quad\quad
+	&\vec{\tau}_{I} = I \vec{ \ddot{q}_r } + B \vec{ \dot{q} } 
+\end{align}
+%
+Then the controller compute and execute the locally optimal gear-ratios $R^*$, as described previously for a known trajectory, and execute the corresponding motor torques: 
+%
+\begin{align}
+R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \vec{\tau}^T\vec{\tau}  \right] \quad\text{where}\quad \vec{\tau} = R^{-1} \vec{\tau}_{E} + R \vec{\tau}_{I}
+\\
+\vec{\tau}^* &= (R^*)^{-1} \vec{\tau}_{E} + R^* \vec{\tau}_{I}
 \end{align} 
 %
-
+Note that here a simple minimum torque square objective is illustrated for simplicity, but more complex cost functions can be used. As discussed in sec. \ref{sec:optigeartraj}, more complex objective for optimizing gear-ratios are possible, for instance including motor constraints, desired impedance, etc. 
+%
 The salient feature of the R* controller is that the optimal gear-ratio is selected based on state-feedback, i.e. even in situations not foreseen in the planner that generated the nominal trajectory. For instance, if a disturbance pushes the robot in a state where the robot faces a large gravitational force requiring a large gear-ratio, the controller will automatically select it. Similarly if facing a contact forces, if it is included in the model or estimated with a disturbance observer, the R* controller will automatically select the appropriate gear-ratio. Fig. \pageref{fig:dq} offer a graphical interpretation of the R* algorithm in the phase plane. 
 
 \begin{figure}[t]
 	\centering
 		\includegraphics[width=0.99\textwidth]{Rstar_block_big.pdf}
 	\caption{R* Computed Torque Controller}
-	%\vspace{-10pts}
 	\label{fig:Rstar_block_big}
 \end{figure}
 
@@ -497,70 +499,179 @@ The salient feature of the R* controller is that the optimal gear-ratio is selec
 	\label{fig:dq}
 \end{figure}
 
-\subsection{Robustness Control}
-\label{sec:robustcontrol}
+\subsection{R* Sliding Mode Control}
+\label{sec:slidingmode}
 
-In general Computed Torque Control is susceptible to modeling uncertainties and disturbances. This section presents two approaches to improving robustness: Adaptation and Sliding Mode Control. 
+In general Computed Torque Control is susceptible to modeling uncertainties and disturbances. This section presents an approach based on sliding mode control to improve robustness and guaranteeing performance despite uncertainty. Moreover, the presented control algorithm leverage the gear-ratios options to decrease sensitivity of the robot to disturbance when advantageous. 
 
-
-\paragraph{Sliding Mode Control}
-
-Alternatively, if the uncertainty (disturbances, noise and modeling errors) is bounded, Sliding Mode Control can be applied to improving robustness. %the gear-ratio selection can also be used to minimize the torques required to guarantee convergence to the trajectory. 
-Introducing intermediary variables defined as:
+First, the following intermediary variables are computed:
+%
 \begin{align}
-	\vec{q}_e        = \vec{q} - \vec{q}_d  \quad \quad
-	\vec{s}          = \dot{\vec{q}}_e + \lambda \vec{q}_e \quad \quad
-  \vec{\ddot{q}}_r = \ddot{\vec{q}}_d - \dot{\vec{q}}_e
+	&\vec{q}_e        = \vec{q}          -  \vec{q}_d   \quad\quad
+	&\dot{\vec{q}}_e  = \dot{\vec{q}}    -  \dot{\vec{q}}_d \\
+	&\vec{s}          = \dot{\vec{q}}_e  +  \lambda \vec{q}_e \quad\quad
+  &\vec{\ddot{q}}_r = \ddot{\vec{q}}_d -  \dot{\vec{q}}_e 
  \label{eq:slidingvar}
 \end{align}
-
-the computed torque, eq. \eqref{eq:eom_ndof2}, is modified to the following sliding mode control law: 
+%
+As for the R* Computed Torque, inverse dynamic for intrinsic and extrinsic forces are then computed for this dynamic state:
+%
+\begin{align}
+	&\vec{\tau}_{E} = H \vec{ \ddot{q}_r } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \quad\quad
+	&\vec{\tau}_{I} = I \vec{ \ddot{q}_r } + B \vec{ \dot{q} } 
+\end{align}
+%
+The instead of simply using the inverse dynamic equation to compute torques, a discontinuous gain is added:
+%
 \begin{align}
 	\vec{\tau} &=  R^{-1} 
 	\vec{\tau}_{E}(\ddot{\vec{q}}_r,\dot{\vec{q}},\vec{q}) 
 	+ R 
 	\vec{\tau}_{I}(\ddot{\vec{q}}_r,\dot{\vec{q}})
-    + R^{-1} G sgn( \vec{s} ) 
+  - R^{-1} G sgn( \vec{s} ) 
  \label{eq:slidingctl}
 \end{align}
-Convergence to the desired trajectory, despite the uncertainty, can be guaranteed using the Lyapunov function $V=\vec{s}^T \vec{s}$. The sliding condition is guarantee \cite{asada_robot_1986}, for any selected gear-ratios, if the discontinuous gain is set to:
+%
+Then the controller compute and execute the locally optimal gear-ratios $R^*$, minimizing the sliding mode torque that depends on selected gear-ratios, and execute the corresponding motor torques: 
+%
 \begin{align}
-	G &= \left[ H + R^T I_a R \right] diag( \vec{k} ) \\ k_{i} &> \max \left| \left(  \left[ H + R^T I_a R \right]^{-1} \vec{d} \right)_{i} \right|
- \label{eq:slidingcond}
+R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \vec{\tau}^T\vec{\tau}  \right] \quad\text{where}\quad \vec{\tau} = R^{-1} \vec{\tau}_{E} + R \vec{\tau}_{I} - R^{-1} G sgn( \vec{s} ) 
+\\
+\vec{\tau}^* &= (R^*)^{-1} \vec{\tau}_{E} + R^* \vec{\tau}_{I} - (R^*)^{-1} G sgn( \vec{s} ) 
+\end{align} 
+%
+To guarantee convergence despite uncertainty, the discontinuous gain are set as a function of bounds on uncertainty:
+%
+\begin{align}
+	G &= \left[ H + R^T I R \right] K \\ K_{ii} &> \max \left| \left(  \left[ H + R^T I R \right]^{-1} \vec{d} \right)_{i} \right| + \eta
 \end{align}
 %
-If the gear-ratio is selected to minimize the sliding mode torque, eq. \eqref{eq:slidingctl}, instead of the computed torque, eq. \eqref{eq:eom_ndof2}, then naturally larger gear-ratio  will be selected in response to large uncertainty. For instance, for a 1-DoF case:
+where $\vec{d}$ is an unknown generalized force vector, representing modeling uncertainty in the extrinsic dynamics and external disturbances, see section \ref{sec:uncertainty}. Note that the discontinuous gain is a function of the state-dependent inertia matrix, bounds on disturbances and the gear-ratios which the controller can select. The interesting features of the R* Sliding Mode Controller is that with gear-ratio is selected to minimize the sliding mode torque, then naturally larger gear-ratio  will be selected in response to large uncertainty. 
+
+\paragraph{1-DoF system} 
+
+To clarify the behavior, the simplified R* Sliding Mode control laws for a 1-DoF system are analyzed. The feedback law for torque in 1-DoF is reduced to 
+%
 \begin{align}
-	R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \tau^2 \right] = \sqrt{ \left | \frac{\tau_{E}(\ddot{q}_r,\dot{q},q) + | d |_{max} \, sgn( s ) }{\tau_{I}(\ddot{q}_r,\dot{q})} \right |   } 
+	\tau &=  \frac{\tau_{E}(\ddot{q}_r,\dot{q},q)}{R} 
+	+ R \tau_{I}(\ddot{q}_r,\dot{q})
+  - \frac{G sgn( s ) }{R} 
+\end{align}
+%
+and the discontinuous gain reduced to 
+%
+\begin{align}
+K &= \frac{d_{max}}{H + R^T I R} + \eta \\
+G &= \left[ H + R^T I R \right] K  =  d_{max} + \left[ H + R^T I R \right] \eta 
+\end{align}
+%
+Rearranging the torque law gives:
+%
+\begin{align}
+	\tau &=  \frac{\tau_{E}( \overbrace{ \ddot{q}_r - \eta sgn( s ) }^{\ddot{q}_a},\dot{q},q) - d_{max} sgn( s )  }{R} 
+	+ R \tau_{I}(\overbrace{\ddot{q}_r - \eta sgn( s )}^{\ddot{q}_a} ,\dot{q})
+\end{align}
+%
+Minimizing torque computed with this laws over possible $R$ also have a enlightening analytical solution:
+%
+\begin{align}
+	R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \tau^2 \right] = \sqrt{ \left | \frac{\tau_{E}(\ddot{q}_a,\dot{q},q) + | d |_{max} \, sgn( s ) }{\tau_{I}(\ddot{q}_a,\dot{q})} \right |   } 
 \label{eq:rstar_sliding}
 \end{align}
-Hence, if no disturbance is expected ($| d |_{max}=0$) gear-ratio selection is unaffected, but when large disturbances are expected ( $| d |_{max}$ is large) torque minimization naturally leads to selecting large gear-ratios.
+Hence, if no disturbance is expected ($| d |_{max}=0$) then the solution is, as before, a compromise between extrinsic and intrinsic forces. However, knowledge of uncertainty in the form of disturbances bound modify the optimal gear-ratio solution. When large disturbances are expected ($| d |_{max}$ is large) the solution is biased toward larger gear-ratios, which is consistent with the sensitivity analysis that concluded that larger gear-ratio attenuate the effect of disturbances. All in all, minimizing torque computed with the sliding mode law, is a way to naturally improve the decision regarding the best gear-ratios, in function of some knowledge of the expected uncertainty.
 %
 
-\subsubsection{Adaptation}
+\subsection{Adaptation}
 If the uncertainty is structured as unknown model parameters in the extrinsic dynamics, the term represented by $\vec{\tau}_E$, then traditional adaptation schemes can be used for estimating the unknown parameters. Then, if adaptation converge to the correct computed torque, then the computed best gear-ratios will also converge to the true optimal gear-ratios:
+%
 \begin{align}
 	\hat{\vec{\tau}}_E \rightarrow \vec{\tau}_E 
     \quad \Rightarrow \quad 
     \hat{R}^* \rightarrow R^*
  \label{eq:adapt}
 \end{align}
+%
+If used in conjunction with the R* Computed Torque controller, decisions regarding the optimal gear-ratio would improve as adaptation converge. Note that correct gear-ratio decision depends of the correct estimation of extrinsic torque, not model parameters explicitly, which are harder to estimate since requiring sufficient excitation. 
 
-
-\subsection{Implementation Aspects}
-
-\subsubsection{Numerical Online Optimization}
-
-If some of the assumptions used in the previous section are not valid or if the gear-ratios are limited to a few discrete choices, then the optimization must be computed numerically. The minimum needed is to have a model of the inverse dynamic, which could include any non-linearity, in the form:
+If the adaptation is always aware of the selected gear-ratio, then traditional adaption scheme can be implemented. For instance, for 1-DoF robot with the following EoM:
+%
 \begin{align}
-	\vec{\tau}  = f( \vec{\ddot{q}} , \vec{\dot{q}} , \vec{q} , \vec{d} , R ) 
+	\left[ H + R^2 I \right] \ddot{q} + \left[ R^2 B \right] \dot{q} + \left[ mg \sin( q ) \right] = R \tau
 \end{align}
-In the situation of discrete gear-ratios, this lead to a combinatorial optimization problems, adding a constraint on the gear selection in the form of:
+%
+Then the regression to identify unknown extrinsic parameters $H$ and $m$, could be built this way:
+%
+%
 \begin{align}
-	%R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[  \vec{\tau}^T  \vec{\tau} + \alpha \| M_{d} - M \|  \right] \quad \\
-	&  R \in \{R_1,R_2, ... , R_l\} 
+	\overbrace{
+	\underbrace{ \left[
+	\begin{array}{c c}
+		\frac{\ddot{q}}{R} &  \frac{ g \sin( q ) }{R}
+	\end{array} \right] }_{\vec{\phi}}
+	\underbrace{ \left[
+	\begin{array}{c}
+		H \\ m 
+	\end{array} \right] }_{\vec{\theta}}
+	}^{\tau_E} = \underbrace{ \tau -  \overbrace{ R I \ddot{q} -  R B \dot{q} }^{\tau_I} }_{y}
 \end{align}
-However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly. For instance, for the robot presented in this paper, see Fig. \ref{fig:arm_proto}, there is 3 actuators each with 2 gear-ratio options, leading to $l=2^3=8$ possible matrix $R$.
+%
+where $\vec{\theta}$ is a vector of unknown parameters, $\vec{\phi}$ is a known regressor vector and $y$ is a known scalar output. 
+
+Adaption on both the extrinsic and intrinsic dynamic parameters could also be conducted, with a regression constructed this way:
+%
+\begin{align}
+	\underbrace{ \left[
+	\begin{array}{c c c c}
+		\frac{\ddot{q}}{R} &  R\ddot{q} & R \dot{q} & \frac{ g \sin( q ) }{R}
+	\end{array} \right] }_{\vec{\phi}}
+	\underbrace{ \left[
+	\begin{array}{c}
+		H \\ I \\ B \\ m
+	\end{array} \right] }_{\vec{\theta}}
+	 = \underbrace{ \tau }_{y}
+\end{align}
+%
+However, care would need to be used since the first two terms in the regression vector would be fully correlated if data using a single gear-ratio is used, which makes the solution ambiguous in term of possible $H$ and $I$ parameters. If data with multiple different gear-ratios is used, then all terms could be independently identified. 
+
+
+\subsection{Generalization to more complex models}
+
+Many modeling assumption, for instance leading to extrinsic vs. intrinsic force separation, were assumed to hold during the control algorithm presentations mainly because it gives a lot of physical intuitions. However, this restricted class of model is not necessary to implement the proposed algorithms, the minimum needed is to have a model of the inverse dynamic, which could include any non-linearity, in the form:
+%
+\begin{align}
+	\vec{\tau}  = f( \vec{\ddot{q}} , \vec{\dot{q}} , \vec{q} , R )
+\end{align}
+%
+to compute necessary torque $\vec{\tau}$ to achieve a specified acceleration given actual state and selected gear-ratios.
+
+%PFL
+
+\subsection{Discrete set of gear-ratios}
+
+So-far the proposed control schemes can made no assumption regarding the different gear-ratios options, and analytical solutions assumed that gear-ratio have continuous domains. However, many variable transmission mechanisms, such as the technology proposed in this thesis, offer only a discrete set of possible values. Aspect of this discrete nature are discussed next. 
+
+When the variable transmissions have discrete configurations, the gear-ratio matrix can only take a set of discrete value:
+%
+\begin{align}
+	R_k \in \{R_1,R_2, ... , R_l\} 
+\end{align}
+%
+where the variable $k$ is a label indexing the different hybrid operating mode of the system, and $l$ is the total number of discrete operating modes. The subscript $k$ will be used to specify value specific to a discrete gear-ratio mode, for instance computed torque:
+%
+\begin{align}
+	\vec{\tau}_k =  R_k^{-1} \vec{\tau}_E + R_k \vec{\tau}_I
+\end{align}
+%
+represent the torque $\tau$ computed using gear-ratios $R_k$.
+
+The optimization step in the proposed control algorithm would be a combinatorial optimization problem where gear-ratios are limited to a discrete set. However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly to find the optimal discrete option:
+%
+\begin{align}
+k^{*} &= \operatornamewithlimits{argmin}\limits_{k} \left[  \vec{\tau}_1^T\vec{\tau}_1  , ... , \vec{\tau}_k^T\vec{\tau}_k , ...  , \vec{\tau}_l^T\vec{\tau}_l \right]
+\end{align}
+%
+In practice this brute force approach is usually feasible. For instance, for the robot presented in this thesis, there is 3 actuators each with 2 gear-ratio options, leading to only $l=2^3=8$ possible matrix $R$.
+
 
 
 \subsection{Improved gear-ratio selection schemes}
@@ -579,6 +690,14 @@ To avoid this undesirable behavior, it is proposed to add hysteresis to the cont
 	\caption[Rollout gear-selection]{Rollout gear-selection}
 	\label{fig:rollout}
 \end{figure}
+
+
+\subsubsection{Extension from Rollout to Model Predictive Control}
+
+
+
+\paragraph{Motion Primitive}
+
 
 
 
