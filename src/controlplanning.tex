@@ -704,7 +704,7 @@ When optimizing the torque computed with the sliding mode, chattering can be ver
 R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \operatornamewithlimits{max}\limits_{sgn(\vec{s})} \left[ \vec{\tau}^T\vec{\tau}  \right] \quad\text{where}\quad \vec{\tau} = R^{-1} \vec{\tau}_{E} + R \vec{\tau}_{I} - R^{-1} G sgn( \vec{s} ) 
 \end{align} 
 %
-The result of this optimization is independent from the position of states with respect to the switching surface $s=0$, and would remove this source of fast jumps for the optimal gear-ratio solution. Also, the sliding mode controller could be implemented with smoothing techniques for the discontinuous torque, many technique exist \ref{slotine_applied_1991} [sliding mode book ref]. This would also alleviate one source of chattering for the gear-ratios selection.
+The result of this optimization is independent from the position of states with respect to the switching surface $s=0$, and would remove this source of fast jumps for the optimal gear-ratio solution. Also, the sliding mode controller could be implemented with smoothing techniques for the discontinuous torque, many technique exist \cite{slotine_applied_1991} \cite{perruquetti_sliding_2002}. This would also alleviate one source of chattering for the gear-ratios selection.
 
 \subsubsection{Rollout gear-selection}
 
@@ -745,8 +745,9 @@ Furthermore, if the optimization would also be conducted over possible motor tor
 All in all, depending on the complexity of the controlled robotic system and the available computational power, the proposed control scheme can be adapted from a very easy to compute point-by-point optimization with hysteresis, to more optimal but computationally heavy predictive schemes with a variety of level of complexity. 
 
 
-
 \subsection{Stability}
+
+Here stability properties of the proposed control laws are discussed.
 
 \paragraph{R* Computed Torque} Convergence to the desired trajectory is guaranteed assuming the model used by the controller is exact. Interestingly this results is valid for any arbitrary sequence of gear-ratios, see details in sec. \ref{sec:stabrstar1}, as long as the feedback law computing the continuous torques $\vec{\tau}$ is aware of the discrete operating mode $k$ specifying the right gear-ratio matrix $R_k$. Hence, any gear-ratio selection scheme can be used, without compromising the convergence to the desired trajectory. 
 

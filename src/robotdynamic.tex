@@ -218,9 +218,35 @@ and solve the following smaller system of $n$ equations:
 \end{align}
 
 
-\subsection{Hybrid system and transitions}
-\label{sec:impact}
+\section{Hybrid system dynamics}
 
+Hybrid dynamical system needs can be represented in the general form:
+%
+\begin{align}
+\text{Continuous evolution: } \left(  \dot{\vec{x}} , \dot{k} \right) &=  \left( \, f_k( \vec{x} , \vec{u} , \vec{d} ) \, , \, 0 \, \right) \\
+\text{Discrete jumps: } \left(  \vec{x}^+ , k^+ \right) &=  \left( h_{ij}( \vec{x}^- ) , j \right) \quad\text{if}\quad \left(  \vec{x} , k , \vec{u} \right) \in D_{ij} 
+\end{align}
+%
+where $\vec{x}$ is a continuous state vector, and $k$ is a discrete mode and $D_{ij}$ is the domain mapping condition for a transition of type $k:i \rightarrow j$.
 
+For robotic systems, the discrete mode can represent discrete configurations of the robot and contact/non-contact conditions. The jump map can represent the impulsive response when contact is made.
+
+\subsection{Switched system}
+
+Restricted class of hybrid system, is switched system, for which the jump map for continuous state is the identify function:
+%
+\begin{align}
+\text{Continuous evolution: } \left(  \dot{\vec{x}} , \dot{k} \right) &=  \left( \, f_k( \vec{x} , \vec{u} , \vec{d} ) \, , \, 0 \, \right) \\
+\text{Discrete jumps: } \left(  \vec{x}^+ , k^+ \right) &=  \left( \vec{x}^- , j \right) \quad\text{if}\quad \left(  \vec{x} , k , \vec{u} \right) \in D_{ij} 
+\end{align}
+%
+
+\subsubection{Switched system where the discrete mode is a control input}
+
+In the situation where the discrete operating mode $k$ is a control input, then there no need to keep track of discrete mode evolution and only the piece wise equation of motions are sufficient to model the system evolution:
+%
+\begin{align}
+\dot{\vec{x}} = f_k( \vec{x} , \vec{u} , \vec{d} ) 
+\end{align}
 
 
