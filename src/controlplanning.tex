@@ -10,7 +10,6 @@
 \end{flushright}
 \vspace{10pt}
 
-
 The transmission gear-ratio that couples an actuator to a load has a significant effect upon the behavior of the actuator-load system. With a large reduction ratio, the load-side dynamics has no significant effect because it is attenuated by the factor of the square of the gear-ratio. The net load acting on the actuator is mostly its own intrinsic load, including rotor inertia and friction. In contrast, with a small reduction ratio or a direct drive system \cite{asada_direct-drive_1987}, the behavior is usually dominated by the load-side dynamics which consist of highly non-linear inertial and gravitational forces for robotics manipulators. Sometime it can be advantageous to exploit the load-side dynamics: gravity may push the robot in a desired direction; the robot may coast with small dissipative torques induced at the actuator side; or the robot joints become backdrivable to comply to an external force. In other situations, however, it may be advantageous to isolate the actuators from the load-side dynamics and external disturbances: using a large gear-ratio to bear a large load or moving it slowly against gravity, for example.
 
 This chapter aims to explore the potentials of actuator transmissions that can be switched dynamically, such as the technology presented in chapter \ref{sec:MultipleSpeedActuationTechnology}, to either attenuate or leverage the natural dynamics of the system. Robots using lightweight VGA have the potential for achieving fast motions, high load-bearing, compliance and high-impedance, as required by diverse load conditions encountered by robotic systems. However, to truly exploit those salient features of VGA, control laws to select dynamically gear-ratios based on the current situation and task of the robot must be developed. Here in this chapter, feedback laws for robot control including gear-ratio selection are thus explored. The variable gear-ratio is used not merely for increasing maximum torque and speed, but also to significantly alter the dynamic properties, including load sensitivity, robustness, and backdrivability advantageously given the situation.
@@ -269,7 +268,7 @@ The derivation of this simplified form is available in the Appendix \ref{sec:Rdi
 \label{sec:limitation}
 %
 The main assumption of the proposed model is that gear-ratios are considered as independent control inputs, neglecting all the dynamics and delays associated with changing the gear-ratios. For a system with discrete gear-ratio, transient behaviors from one gear-ratio to another are thus neglected. Physically this implies that the kinetic energy of the system may be discontinuous at a gear-shift since the energy necessary for the transition is not considered. In the case of a car transmission for instance, this model would not keep track of the energy used for accelerating or braking the engine during the synchronization process. This model can be used if the gear-shift process is fast compared to the dynamics of the robots and if the energetic losses due to the gear-shift are negligibly small. Note that this modeling assumption is supported by the characteristic of DSDM actuators, that can change gear-ratio quickly and seamlessly. For a robot equipped with continuously varying transmissions, this model would neglect forces associated with $\dot{R}$, a type of quasi-steady assumption. 
-
+%
 In addition this model also assumes that all motor rotors are in an inertial reference frame, neglecting gyroscopic effects, which may be induced when the axes of motor rotors are rotated.
 
 \subsection{Uncertainty}
@@ -681,7 +680,7 @@ to compute necessary torque $\vec{\tau}$ to achieve a specified acceleration giv
 
 \subsection{Discrete set of gear-ratios options}
 
-So-far the proposed control schemes can made no assumption regarding the different gear-ratios options, and analytical solutions assumed that gear-ratio have continuous domains. However, many variable transmission mechanisms, such as the technology proposed in this thesis, offer only a discrete set of possible values. The optimization step in the proposed control algorithms would than be a combinatorial optimization problem. However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly to find the optimal discrete option:
+So-far the proposed control schemes made no assumption regarding the different gear-ratios options, and analytical solutions assumed that gear-ratio have continuous domains. However, many variable transmission mechanisms, such as the technology proposed in this thesis, offer only a discrete set of possible values. The optimization step in the proposed control algorithms would than be a combinatorial optimization problem. However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly to find the optimal discrete option:
 %
 \begin{align}
 k^{*} &= \operatornamewithlimits{argmin}\limits_{k} \left[  \vec{\tau}_1^T\vec{\tau}_1  , ... , \vec{\tau}_k^T\vec{\tau}_k , ...  , \vec{\tau}_l^T\vec{\tau}_l \right]
@@ -702,10 +701,10 @@ To avoid undesirable chattering behavior, hysteresis can be added to the gear-se
 When optimizing the torque computed with the sliding mode, chattering can be very severe as the terms with $sgn( \vec{s} )$ can oscillate rapidly between values of $\pm1$. One approach to alleviate this is to reformulate the optimization to treat variables $sgn( \vec{s} )$ as random disturbance and optimize for the worst-case scenario:
 %
 \begin{align}
-R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \operatornamewithlimits{max}\limits_{\vec{s}} \left[ \vec{\tau}^T\vec{\tau}  \right] \quad\text{where}\quad \vec{\tau} = R^{-1} \vec{\tau}_{E} + R \vec{\tau}_{I} - R^{-1} G sgn( \vec{s} ) 
+R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \operatornamewithlimits{max}\limits_{sgn(\vec{s})} \left[ \vec{\tau}^T\vec{\tau}  \right] \quad\text{where}\quad \vec{\tau} = R^{-1} \vec{\tau}_{E} + R \vec{\tau}_{I} - R^{-1} G sgn( \vec{s} ) 
 \end{align} 
 %
-Also, the sliding mode controller could be implemented with smoothing techniques for the discontinuous torque, many technique exist \ref{slotine_applied_1991} [sliding mode book ref]. This would also alleviate one source of chattering for the gear-ratios selection.
+The result of this optimization is independent from the position of states with respect to the switching surface $s=0$, and would remove this source of fast jumps for the optimal gear-ratio solution. Also, the sliding mode controller could be implemented with smoothing techniques for the discontinuous torque, many technique exist \ref{slotine_applied_1991} [sliding mode book ref]. This would also alleviate one source of chattering for the gear-ratios selection.
 
 \subsubsection{Rollout gear-selection}
 
