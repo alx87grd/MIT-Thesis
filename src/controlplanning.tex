@@ -678,9 +678,9 @@ to compute necessary torque $\vec{\tau}$ to achieve a specified acceleration giv
 
 %PFL
 
-\subsection{Discrete set of gear-ratios options}
+\subsection{Closed-loop selection of discrete gear-ratios}
 
-So-far the proposed control schemes made no assumption regarding the different gear-ratios options, and analytical solutions assumed that gear-ratio have continuous domains. However, many variable transmission mechanisms, such as the technology proposed in this thesis, offer only a discrete set of possible values. The optimization step in the proposed control algorithms would than be a combinatorial optimization problem. However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly to find the optimal discrete option:
+So-far the proposed control schemes made no assumption regarding the different gear-ratios options, and analytical solutions assumed that gear-ratio have continuous domains. However, many variable transmission mechanisms, such as the technology proposed in this thesis, offer only a discrete set of possible values. In that situation, the optimization step in the proposed control algorithms would than be a combinatorial optimization problem. However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly to find the optimal discrete option:
 %
 \begin{align}
 k^{*} &= \operatornamewithlimits{argmin}\limits_{k} \left[  \vec{\tau}_1^T\vec{\tau}_1  , ... , \vec{\tau}_k^T\vec{\tau}_k , ...  , \vec{\tau}_l^T\vec{\tau}_l \right]
@@ -734,7 +734,7 @@ where $Q$ is the cost penalty for gear-shifting. Hence, optimal gear-ratios exec
 %
 This scheme is very related to the Rollout approach \cite{bertsekas_dynamic_2000}. However here the optimization is conducted only over the gear-ratio options, not all possible control action at time $t$ like in the original technique. The two reasons for not implementing a full scale optimization including also many possible torque inputs at time $t$ are: 1) computational limitations and 2) By applying the base policy torques at time $t$ convergence can be guaranteed. 
 
-Advantageous features of the Rollout gear-selection scheme are 1) filtering-out fast un-desirable gear-shifts 2) commanding gear-shift in advance (situation just entering the horizon at time $t+h$ influence the gear selection at time $t$) which can compensate for gear-shift delay with the physical system.
+Advantageous features of the Rollout gear-selection scheme are 1) filtering-out fast un-desirable gear-shifts 2) commanding gear-shift in advance (situation just entering the horizon at time $t+h$ influence the gear selection at time $t$ which can compensate for gear-shift delay with the physical system.
 
 \subsubsection{Extension from Rollout to Model Predictive Control (MPC)}
 
