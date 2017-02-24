@@ -725,11 +725,15 @@ where $Q$ is the cost penalty for gear-shifting. Hence, optimal gear-ratios exec
 %
 This scheme is very related to the Rollout approach \cite{bertsekas_dynamic_2000}. However here the optimization is conducted only over the gear-ratio options, not all possible control action at time $t$ like in the original technique. The two reasons for not implementing a full scale optimization including also many possible torque inputs at time $t$ are: 1) computational limitations and 2) By applying the base policy torques at time $t$ convergence can be guaranteed. 
 
+Advantageous features of the Rollout gear-selection scheme are 1) filtering-out fast un-desirable gear-shifts 2) commanding gear-shift in advance (situation just entering the horizon at time $t+h$ influence the gear selection at time $t$) which can compensate for gear-shift delay with the physical system.
+
 \subsubsection{Extension from Rollout to Model Predictive Control (MPC)}
 
-The proposed control scheme require simulating $l$ trajectory at each time steps, which is usually tractable computationally. However, this is sub-optimal in the sense that gear-ratio are fixed on each trajectory. With more computational power, additional options of more complex sequences of discrete gear-ratios could be included. Each option of a predetermined sequence of gear-ratios could be seen as a form of motion primitive, a proposed approach to simpified control/planning when the number of possible action is too large fully explore []. This would also connect with the idea of family of modes proposed to simplify MPC control of hybrid systems []. 
+The proposed control scheme require simulating $l$ trajectory at each time steps, which is usually tractable computationally. However, this is sub-optimal in the sense that gear-ratio are fixed on each trajectory. With more computational power, additional options of more complex sequences of discrete gear-ratios could be included. Each option of a predetermined sequence of gear-ratios could be seen as a form of motion primitive, a proposed approach to simpified control/planning when the number of possible action is too large fully explore \cite{gray_predictive_2012}. This would also connect with the idea of family of modes proposed to simplify MPC control of hybrid systems \cite{_feedback_????}. 
 
-Furthermore, if the optimization would also be conducted over possible motor torques, instead of constraining them to always follow a given feedback law, then this would the control scheme would correspond to full scale MPC. However, MPC is in general very hard to implement at satisfactory fast rate for robotic systems, especially when the system is hybrid [].
+Furthermore, if the optimization would also be conducted over possible motor torques, instead of constraining them to always follow a given feedback law, then the control scheme would correspond to full scale MPC. However, MPC is in general very hard to implement at satisfactory fast rate for non-linear multi-DOF robotic systems, especially when the system is hybrid \cite{_feedback_????}.
+
+All in all, depending on the complexity of the controlled robotic system and the available computational power, the proposed control scheme can be adapted from a very easy to compute point-by-point optimization with hysteresis, to more optimal but computationally heavy predictive schemes with a variety of level of complexity. 
 
 
 
