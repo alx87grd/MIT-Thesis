@@ -886,16 +886,21 @@ This is motivated by the fact that in that case, most predicted trajectory with 
 \section{Trajectory planning}
 \label{sec:SamplingBasedTrajectoryPlanner}
 
-Although the focus of this thesis, this section briefly discuss motion planning algorithms that are an essential piece of the puzzle for the model-based control architecture. As discussed before, the two class of algorithm that are suited to solve a motion planning problem for a hybrid robotic system are mixed-integer programming or sampling-based search algorithms. The approach that was implemented here, focus on finding feasible trajectory quickly, and is based on rapidly-exploring random trees.
+Although the focus of this thesis, this section briefly discuss motion planning algorithms that are an essential piece of the puzzle for the model-based control architecture. The proposed model-based controllers are theoretically globally stable; given a fixed goal $\vec{q}_d$ the closed system would converge to this position. However, this not considering:
+%
+\begin{itemize}
+	\item Motor torque saturation (generally input constraints)
+	\item Possible obstacle on the path (generally state constraints)
+\end{itemize}
+%
+Moreover, while gear-ratio 
+
+
+As discussed before, the two class of algorithm that are suited to solve a motion planning problem for a hybrid robotic system are mixed-integer programming or sampling-based search algorithms. The approach that was implemented here, focus on finding feasible trajectory quickly, and is based on rapidly-exploring random trees.
 
 \subsection{RRT algorithm for Robot with Discrete Gear-ratios}
 
-Rapidly-exploring random trees
-
-Rapidly-exploring random trees (RRT) have received increased
-attention over the past decade as a sampling-based
-approach to quickly identify feasible trajectories in complex
-motion planning problems .
+Rapidly-exploring random trees (RRT) have been highly popular over the past decade as a sampling-based approach to quickly identify feasible trajectories in complex motion planning problems \cite{lavalle_rapidly-exploring_1998}\cite{lavalle_planning_2006}.
 
 
 
