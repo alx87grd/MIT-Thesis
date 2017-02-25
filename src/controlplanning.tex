@@ -877,7 +877,7 @@ For the time horizon $h$ it is not necessary a case of larger is better, since t
 h = E \left[ \Delta t \right]
 \end{align}
 %
-Then simulations and experiments can be used to experimentally adjust this parameter. If the optimization would be computed over rich options of various sequence of gear-ratios, then there would almost no downside of pushing the time horizon as far as possible. 
+This is motivated by the fact that in that case, most predicted trajectory with a fixed gear-ratio will be representative of the real future trajectory. Simulations and experiments can be used to experimentally adjust this parameter. If the optimization would be computed over rich options of various sequence of gear-ratios, then there would be no downside of pushing the time horizon as far as possible, except in term of computational cost.
 
 
 
@@ -885,6 +885,20 @@ Then simulations and experiments can be used to experimentally adjust this param
 \newpage
 \section{Trajectory planning}
 \label{sec:SamplingBasedTrajectoryPlanner}
+
+Although the focus of this thesis, this section briefly discuss motion planning algorithms that are an essential piece of the puzzle for the model-based control architecture. As discussed before, the two class of algorithm that are suited to solve a motion planning problem for a hybrid robotic system are mixed-integer programming or sampling-based search algorithms. The approach that was implemented here, focus on finding feasible trajectory quickly, and is based on rapidly-exploring random trees.
+
+\subsection{RRT algorithm for Robot with Discrete Gear-ratios}
+
+Rapidly-exploring random trees
+
+Rapidly-exploring random trees (RRT) have received increased
+attention over the past decade as a sampling-based
+approach to quickly identify feasible trajectories in complex
+motion planning problems .
+
+
+
 
 
 
