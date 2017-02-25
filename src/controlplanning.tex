@@ -897,15 +897,14 @@ Although the focus of this thesis, this section briefly discuss motion planning 
 Moreover, when simply given a fixed goal $\vec{q}_d$ to the R* Computed Torque controller, while the gear-ratio selection is locally optimized, the overall trajectory is given by 
 %
 \begin{align}
-\vec{q}_e(t) = \vec{q}_e e^{-\frac{t}{\tau}}
-\vec{q}(t)   = (\vec{q}_0 - \vec{q}_d)  e^{-\frac{t}{\tau}} + \vec{q}_s
+\vec{q}(t)   = (\vec{q}_0 - \vec{q}_d)  e^{-\frac{t}{\tau}} + \vec{q}_d
 \end{align}
 %
-if the controller is parametrized as described by eq. \eqref{eq:ctctau}. Hence, the followed trajectory would be simply a decreasing exponential for each joint angles, which can be clearly highly inefficient and sub-optimal. Hence the role of the motion planning algorithm is to find a feasible trajectory away from state and inputs constraints, and ideally an optimal trajectory in term of an integral cost. As discussed before, the two class of algorithm that are suited to solve a motion planning problem for a hybrid robotic system are mixed-integer programming or sampling-based search algorithms. The approach that was implemented here, focus on finding feasible trajectory quickly, and is based on rapidly-exploring random trees.
+if the controller is parametrized as described by eq. \eqref{eq:ctctau}. Hence, the followed trajectory would be simply a decreasing exponential for each joint angles, which can be clearly highly inefficient and sub-optimal. Hence the role of the motion planning algorithm is to find a feasible reference trajectory away from state and inputs constraints, and ideally an optimal trajectory in term of an integral cost. As discussed before, the two class of algorithm that are suited to solve a motion planning problem for a hybrid robotic system are mixed-integer programming or sampling-based search algorithms. The approach that was implemented here, focus on finding feasible trajectory quickly, and is based on rapidly-exploring random trees.
 
 \subsection{RRT algorithm for Robot with Discrete Gear-ratios}
 
-Rapidly-exploring random trees (RRT) have been highly popular over the past decade as a sampling-based approach to quickly identify feasible trajectories in complex motion planning problems \cite{lavalle_rapidly-exploring_1998}\cite{lavalle_planning_2006}.
+Rapidly-exploring random trees (RRT) have been highly popular over the past decade as a sampling-based approach to quickly identify feasible trajectories in complex motion planning problems \cite{lavalle_rapidly-exploring_1998}\cite{lavalle_planning_2006}. Its main feature is its property of biasing the random search toward un-explored region of the state space. This technique
 
 
 
