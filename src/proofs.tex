@@ -300,7 +300,7 @@ The control law for motor torques takes the following form:
 \vec{\tau} = R_k^{-1} \left( H_k \ddot{\vec{q}}_r + \vec{c}_k \right) 
 \label{eq:ctc_k}
 \end{align}
-where the vector $\ddot{\vec{q}}_r$ represent instantaneous desired acceleration. The control law gear-ratio selection takes the form of an optimization, see eq. XXX, however here stability is demonstrated for the more general case of arbitrary gear-ratio sequence. Hence the stability result can be extended for any type of gear-ratio selection scheme used in conjunction with the computed torque. 
+where the vector $\ddot{\vec{q}}_r$ represent instantaneous desired acceleration. The control law for the gear-ratio selection takes the form of an optimization, however here stability is demonstrated for the more general case of arbitrary gear-ratio sequence. Hence the stability result can be extended for any type of gear-ratio selection scheme used in conjunction with the computed torque. 
 
 When substituting the control law, eq.\eqref{eq:ctc_k}, in the equations of motion, eq.\eqref{eq:eom_k}, then the resulting closed-loop behavior is simply:
 \begin{align}
@@ -391,24 +391,24 @@ s_i \dot{s}_i  = s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - \left[ H_k^{-1} 
 If the matrix gain is parametrized in the following way:
 %
 \begin{align}
-G = H_k diag( \vec{K}_k )
+G_k = H_k K_k
 \end{align}
 %
-The the discontinuous gain term is uncoupled in the sliding condition equation:
+where $K_k$ is a diagonal matrix. The the discontinuous gain term is uncoupled in the sliding condition equation:
 %
 \begin{align}
-s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - K_i sgn( s_i ) \right) < -\eta \\
- \left[ H_k^{-1} \vec{d} \right]_i s_i + \eta < K_i | s_i |
+s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - K_{ii} sgn( s_i ) \right) < -\eta \\
+ \left[ H_k^{-1} \vec{d} \right]_i s_i + \eta < K_{ii} | s_i |
 \end{align}
 %
 which can be guaranteed if the gain are selected such that:
 %
 \begin{align}
-K_{i}(k) = \operatornamewithlimits{max}\limits_{\vec{d}} \left[ H_k^{-1} \vec{d} \right]_i + \eta
+K_{ii} = \operatornamewithlimits{max}\limits_{\vec{d}} \left[ H_k^{-1} \vec{d} \right]_i + \eta
 \label{eq:slidinggain}
 \end{align}
 %
-Thus, if the gains are defined based on disturbance bounds and according to eq.\eqref{slidinggain}, the sliding condition is guaranteed for all gear-ratio mode, and thus convergence to the desired trajectory is guaranteed for any gear-ratio sequence.
+Thus, if the gains are defined based on disturbance bounds and according to eq.\eqref{eq:slidinggain}, the sliding condition is guaranteed for all gear-ratio mode $k$, and thus convergence to the desired trajectory is guaranteed for any gear-ratio sequence.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5

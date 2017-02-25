@@ -70,10 +70,10 @@ One possible approach for closing the loop would be simply to re-plan trajectory
 
 Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it is computationally tractable for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section \ref{sec:DynamicProgrammingAproach}, which is an extension of work already published by the author \cite{girard_practical_2016}.
 
-\subsection{Main contributions}
+\subsection{Original contributions}
 \label{sec:maincont}
 
-The main contribution of this chapter, is an alternative model-based approach (section \ref{sec:HierachicalControlApproach}) with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The work is an extension of a journal paper, but present improved algorithms \cite{girard_leveraging_2017}. The main ideas to make tractable closed-loop control of this type of multi-DoF non-linear hybrid system are 1) Using a simple modeling approach for variable transmissions that does not augment the number of state variables. 2) Exploiting the structure in the equations of motion when expressed in the inverse-dynamic form.  3) Using outer-loop first specifying an instantaneously desired acceleration $\ddot{\vec{q}}_r$, which fix locally the trajectory and makes possible computation of optimal instantaneous gear-ratios.
+The main original contribution of this chapter, is an alternative model-based approach (section \ref{sec:HierachicalControlApproach}) with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The work is an extension of a journal paper, but present improved algorithms \cite{girard_leveraging_2017}. The main ideas to make tractable closed-loop control of this type of multi-DoF non-linear hybrid system are 1) Using a simple modeling approach for variable transmissions that does not augment the number of state variables. 2) Exploiting the structure in the equations of motion when expressed in the inverse-dynamic form.  3) Using outer-loop first specifying an instantaneously desired acceleration $\ddot{\vec{q}}_r$, which fix locally the trajectory and makes possible computation of optimal instantaneous gear-ratios.
 
 To the best knowledge of the author, this is the first exploration of closed-loop selection of gear-ratios for multi-DoF robotic systems. Many conceptual insight regarding gear-ratios selection when fighting different type of forces and unknown disturbances are explored. The treatment also encompass the very wide class of $n$-DoF mechanical system with EoM that can take the form of so-called manipulator equations (eq. \eqref{eq:manipulator}, and is valid for many type of variable transmission. The main restriction is that each joint of the system must be actuated, although it could also be extended to under-actuated systems when applying partial feedback linearization. 
 
@@ -99,7 +99,7 @@ This chapter proposed control schemes to dynamically select the optimal gear-rat
 				\label{fig:controlarchitectures}
 \end{figure}
 %
-The architecture of both control approaches is designed so the control signal is a torque and a gear-ratio for each actuator. Note that in the case of discrete gear-ratio options, instead of transmitting the actual gear-ratio $R$, the control signal can be a label $k$ indexing the discrete $R_k$ options. Hence, it is assumed that low-level VGA controllers handle tracking the motor torque setpoint and the gear-shifting process. This is analogous to a situation where the robot would be a car with a semi-automatic transmission, and designing policies for the driver where the two control inputs are a throttle level a and shift-up/shift-down signal. The low-level VGA controllers would be specific to the type of actuator used in the system. For the particular case where the VGA are DSDM actuators, the low-level controllers would be the control laws described in Chapter \ref{sec:MultipleSpeedActuationTechnology}. The architecture difference is that, for the dynamic programming approach given a goal, a global feedback policy is synthesized directly. However, for the model-based approach the high-level controller is separated into two levels. A feedback policy for trajectory tracking and a open-loop motion planning algorithm that generate a reference trajectory to reach the goal. 
+The architecture of both control approaches is designed so the control signal is a torque and a gear-ratio for each actuator. Note that in the case of discrete gear-ratio options, instead of transmitting the actual gear-ratio $R$, the control signal can be a label $k$ indexing the discrete $R_k$ options. Hence, it is assumed that low-level VGA controllers handle tracking the motor torque setpoint and the gear-shifting process. This is analogous to automating a car equipped with a semi-automatic transmission, and designing policies replacing the driver for which the two control inputs are a throttle level a and shift-up/shift-down signal. The low-level VGA controllers would be specific to the type of actuator used in the system. For the particular case where the VGA are DSDM actuators, the low-level controllers would be the control laws described in Chapter \ref{sec:MultipleSpeedActuationTechnology}. The architecture difference is that, for the dynamic programming approach given a goal, a global feedback policy is synthesized directly. However, for the model-based approach the high-level controller is separated into two levels. A feedback policy for trajectory tracking and a open-loop motion planning algorithm that generate a reference trajectory to reach the goal. 
 
 \paragraph{Trajectory generation} Algorithm synthesizing a dynamic trajectory that meets performance requirements for reaching the target robot configuration starting at the actual robot configuration: 
 %
@@ -110,7 +110,7 @@ The architecture of both control approaches is designed so the control signal is
 %
 Computation time is in the order of 1-10 sec depending the robot complexity. Hence, this step is done offline in advance, or alternatively in closed-loop by re-planning continuously but at a very low rate. 
 
-\paragraph{Low-level actuator controller} Independent actuator controllers executing low-level hardware commands in response to given torques and gear-ratio set-points. For the particular case of a DSDM actuator the controller compute 
+\paragraph{Low-level actuator controller} Independent actuator controllers executing low-level hardware commands in response to given torques and gear-ratio set-points. For the particular case of a DSDM actuator the controller computes:
 %
 \begin{align}
   \tau_1 , \tau_2 , b_{state} = f_{DSDM}(\tau_i, R_{ii})
@@ -580,9 +580,9 @@ To guarantee convergence despite uncertainty, the discontinuous gain are set as 
 %
 where $\vec{d}$ is an unknown generalized force vector, representing modeling uncertainty in the extrinsic dynamics and external disturbances, see section \ref{sec:uncertainty}. Note that the discontinuous gain is a function of the state-dependent inertia matrix, bounds on disturbances and the gear-ratios which the controller can select. The interesting features of the R* Sliding Mode Controller is that with gear-ratio is selected to minimize the sliding mode torque, then naturally larger gear-ratio  will be selected in response to large uncertainty. 
 
-\paragraph{1-DoF system} 
+\subsubsection{1-DoF system exemplified} 
 
-To clarify the behavior, the simplified R* Sliding Mode control laws for a 1-DoF system are analyzed. The feedback law for torque in 1-DoF is reduced to 
+To clarify the behavior of R* Sliding Mode, the simplified control laws for a 1-DoF system are analyzed. The feedback law for torque in 1-DoF is reduced to 
 %
 \begin{align}
 	\tau &=  \frac{\tau_{E}(\ddot{q}_r,\dot{q},q)}{R} 
@@ -801,7 +801,7 @@ Fig. \ref{fig:chatsit} illustrates different possible class of situations leadin
 				\includegraphics[width=0.30\textwidth]{inv_sld_sur.png}
 				\label{fig:inv_sld_sur}}
 				\hspace{+3pt}
-				\subfloat[High-freq. crossing of the decision boundary]{
+				\subfloat[High-frequency crossing of the decision boundary]{
 				\includegraphics[width=0.30\textwidth]{hifreq_sur.png}
 				\label{fig:hifreq_sur}}
         \caption{Situations leading to fast gear-ratio switching. $r_{ij}$ is a decision boundary between }\label{fig:chatsit}
@@ -814,41 +814,70 @@ Fig. \ref{fig:inv_sur} and \ref{fig:inv_sld_sur} illustrate two possible class o
 
 \paragraph{Example of gear-shift chattering with a car going up-hill}
 
-In practice, a situation of type (b) can be a typical failure mode of switched system. This section explore with a simple example how this situation can arise and how the proposed control schemes make sure this is avoided. Imagine a car with an automatic transmission going up-hill, with a gear-selection scheme only based on a velocity decision boundary. The car then start from rest with its low-gear $k=1$ and accelerate. After reaching reaching a threshold velocity, the automatic transmission then engage the high-gear $k=2$. With the high-gear however, the effect of gravity is much larger and the car slow down until it cross again the threshold velocity. The low-gear $k=1$ is then engaged again and the car starts accelerating, and the cycle would continue. What is happening here is that the car converge toward its velocity goal when $k=1$ but diverge when $k=2$. With the proposed R* Computed Torque controller, this could happen if gravity forces were underestimated in the model. However, if gravity forces are either correctly modeled, or alternatively included in the uncertainty bounds with the sliding mode controller, then convergence would be guaranteed for both modes, and enough torque to continue accelerating toward the target velocity would have been applied. %Furthermore, if it takes more torque to continuing accelerating with $k=2$, the the R* Computed Torque would not have selected the high-gear in this situation. 
+In practice, a situation of type (b) can be a typical failure mode of switched system. This section explore with a simple example of how this situation can arise and how the proposed control schemes make sure this is avoided. Imagine a car with an automatic transmission going up-hill, with a gear-selection scheme only based on a velocity decision boundary. The car then start from rest with its low-gear $k=1$ and accelerate. After reaching reaching a threshold velocity, the automatic transmission then engage the high-gear $k=2$. With the high-gear however, the effect of gravity is much larger and the car slow down until it cross again the threshold velocity. The low-gear $k=1$ is then engaged again and the car starts accelerating, and the cycle would continue. What is happening here is that the car converge toward its velocity goal when $k=1$ but diverge when $k=2$. With the proposed R* Computed Torque controller, this could happen if gravity forces were underestimated in the model. However, if gravity forces are either correctly modeled, or alternatively included in the uncertainty bounds with the sliding mode controller, then convergence would be guaranteed for both modes, and enough torque to continue accelerating toward the target velocity would have been applied. %Furthermore, if it takes more torque to continuing accelerating with $k=2$, the the R* Computed Torque would not have selected the high-gear in this situation. 
 
 So far, situations of chattering in the vicinity of decision boundary, Fig. \ref{fig:inv_sur} and \ref{fig:inv_sld_sur}, have been ruled-out impossible if the controller is designed to guarantee convergence for all discrete mode $k$. However, situations of type (c), illustrated at Fig. \ref{fig:hifreq_sur} refer to as high-frequency switching, is still possible and un-desirable. The decision boundary can very complex for highly non-linear systems, hence even a simple trajectory can cross decision boundaries at undesirably high-frequencies. 
 
 \paragraph{Minimum cycle time with Rollout}
 
-The Rollout approach is efficient to avoid situations of type (c), high-frequency switching. By optimizing over a time horizon, the Rollout gear-selection scheme is acting as a low-pass filter. Moreover, with the Rollout approach, a minimum bound on the cycle period of gear-shifting back-and-forth between two gear-ratio can be guaranteed. 
+The Rollout approach is efficient to avoid situations of type (c), high-frequency switching. By optimizing over a time horizon, the Rollout gear-selection scheme is acting as a low-pass filter. Moreover, with the Rollout approach, a minimum value for the cycle period of gear-shifting back-and-forth between two gear-ratios can be guaranteed. 
+
+The cycle time $\Delta t$ of gear-shifting from arbitrary mode $i$, to another arbitrary mode $j$, and back to the initial mode $i$, is lower bounded. When the has reached and follow a desired trajectory the minimum value is:
+%
+\begin{align}
+\Delta t \geq \frac{Q}{C^{max}}
+\label{eq:minshifttime}
+\end{align}
+%
+where $Q$ is the cost penalty for changing the gear-ratio, $C^{max}$ is the maximum instantaneous cost. With the usual quadratic torque criterion:
+%
+\begin{align}
+C^{max} = \operatornamewithlimits{max}\left[ \vec{\tau}^T \vec{\tau} \right]
+\end{align}
+%
+In an arbitrary situation the minimum value is:
+%
+\begin{align}
+\Delta t \geq \frac{ Q }{ C^{max} + \dot{C}^{max} h }
+\end{align}
+%
+where the variable $h$ is the time horizon and $\dot{C}$ represent the sensitivity of cost due to changes of trajectory in the predictive simulations. When the system has reach the desired trajectory, the real trajectory and all simulated trajectories follow the desired one, and this sensitivity term vanish. Details of those derivations are available in appendix \ref{sec:chat}.
 
 
-\subsection{Parameter selection guideline}
+\subsection{Parameters selection guidelines}
 
 \paragraph{R* Computed Torque} The only parameters with the computed torque controller are matrices $K_D$ and $K_P$. Those can be understood as multi-DoF proportional and derivative gains. Stability is guaranteed for any positive definite matrix.
 
-\paragraph{R* Sliding Mode} The main parameter in Discontinuous gain
+For simplicity, matrix can be diagonal and parametrized by:
 %
 \begin{align}
-K_{i}(k) = \operatornamewithlimits{max}\limits_{\vec{d}} \left[ H_k^{-1} \vec{d} \right]_i + \eta
-\label{eq:slidinggain}
+K^D_{ii} = \frac{2}{\tau} \quad   K^P_{ii} = \left(\frac{1}{\tau}\right)^2
+\end{align}
+%
+where $\tau$ is a time constant parameter driving the desired error convergence rate.
+
+\paragraph{R* Sliding Mode} For the sliding mode controller, there is two parameters to tune the convergence rate, $\lambda$ which is inversely proportional to error convergence time constant after reaching the sliding surface, and $\eta$ which is inversely proportional to the guaranteed time for reaching the sliding surface. The discontinuous gain should then be set to based on disturbance bounds as follow, to guarantee convergence:
+%
+\begin{align}
+K_{ii} = \operatornamewithlimits{max}\limits_{\vec{d}} \left[ H_k^{-1} \vec{d} \right]_i + \eta
 \end{align}
 %
 
-Convergence rate is driven by scalars parameters $\lambda$ and $\eta$, large values will make the controller more aggressive.
-
 \paragraph{Rollout gear-selection}
-
-Time horizon $h$
-
-gear-shift penalty $Q$
-
-
-Proof is detailed in Appendix \ref{sec:chat1}.
-
-
-
-
+%
+For the Rollout gear-selection scheme, there is two free parameters, the time horizon $h$ and the gear-shift penalty $Q$. If the VGA used by the robot have a gear-shift switching delay of $\Delta t_{shift}$, the the $Q$ value can be set, using eq. \eqref{eq:minshifttime}, to guaranteed that the robot-level controller never ask its actuators for gear-shifts faster then physically possible:
+%
+\begin{align}
+Q = \Delta t_{shift} \operatornamewithlimits{max} \left[ \vec{\tau}^T \vec{\tau} \right]
+\end{align}
+%
+For the time horizon $h$ it is not necessary a case of larger is better, since the cost computed with a fixed gear-ratio over a long simulated period does not represent well the real future cost since gear-shift are possible in the real future. Very short time horizon would largely inhibit gear-shifting since gain of changing the gear-ratio on a short period would be small compared to the gear-shift penalty. A rule of thumbs, as a starting point, is to set the time horizon to the expected average amount of time spent between two gear-shifts:
+%
+\begin{align}
+h = E \left[ \Delta t \right]
+\end{align}
+%
+Then simulations and experiments can be used to experimentally adjust this parameter. If the optimization would be computed over rich options of various sequence of gear-ratios, then there would almost no downside of pushing the time horizon as far as possible. 
 
 
 
@@ -1408,7 +1437,7 @@ To evaluate the performance gain of actively changing the gear-ratio, simulation
 %
 
 
-\subsection{Chattering}
+\subsection{Chattering reduction}
 
 
 \begin{figure}[htp]
