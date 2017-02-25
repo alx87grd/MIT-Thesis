@@ -887,11 +887,11 @@ This is motivated by the fact that in that case, most predicted trajectory with 
 \section{Trajectory planning}
 \label{sec:SamplingBasedTrajectoryPlanner}
 
-Although the focus of this thesis, this section briefly discuss motion planning algorithms that are an essential piece of the puzzle for the model-based control architecture. The proposed model-based controllers are theoretically globally stable; given a fixed goal $\vec{q}_d$ the closed system would converge to this position. However, this not considering:
+Although not the focus of this thesis, this section briefly discuss motion planning algorithms that are an essential piece of the puzzle for the model-based control architecture. The proposed model-based controllers are theoretically globally stable; given a fixed goal $\vec{q}_d$ the closed system would converge to this position. However, this not considering:
 %
 \begin{itemize}
-	\item Motor torque saturation (generally input constraints)
-	\item Possible obstacle on the path (generally state constraints)
+	\item Motor torque saturation (more generally input constraints)
+	\item Possible obstacle on the path (more generally state constraints)
 \end{itemize}
 %
 Moreover, when simply given a fixed goal $\vec{q}_d$ to the R* Computed Torque controller, while the gear-ratio selection is locally optimized, the overall trajectory is given by 
@@ -900,15 +900,82 @@ Moreover, when simply given a fixed goal $\vec{q}_d$ to the R* Computed Torque c
 \vec{q}(t)   = (\vec{q}_0 - \vec{q}_d)  e^{-\frac{t}{\tau}} + \vec{q}_d
 \end{align}
 %
-if the controller is parametrized as described by eq. \eqref{eq:ctctau}. Hence, the followed trajectory would be simply a decreasing exponential for each joint angles, which can be clearly highly inefficient and sub-optimal. Hence the role of the motion planning algorithm is to find a feasible reference trajectory away from state and inputs constraints, and ideally an optimal trajectory in term of an integral cost. As discussed before, the two class of algorithm that are suited to solve a motion planning problem for a hybrid robotic system are mixed-integer programming or sampling-based search algorithms. The approach that was implemented here, focus on finding feasible trajectory quickly, and is based on rapidly-exploring random trees.
+if the controller is parametrized as described by eq. \eqref{eq:ctctau}. Hence, the followed trajectory would be simply a decreasing exponential function of time for each joint angles, which can be clearly highly inefficient and sub-optimal. Hence the role of the motion planning algorithm is to find a feasible reference trajectory away from state and inputs constraints, and ideally an optimal trajectory in term of an integral cost. 
+
+As discussed in section \ref{sec:chal}, the two class of algorithm that are suited to solve a motion planning problem for a hybrid robotic systems are:
+%
+\begin{itemize}
+	\item Mixed-integer programming
+	\item Sampling-based search algorithms
+\end{itemize}
+%
+In general, mixed-integer programming is better suited to find optimal solution to simple situations, while sampling-based approach are more efficient at finding feasible sub-optimal solutions in complex situations (many constraints), for instance finding a path in a maze. The approach that was implemented here, focus on finding feasible trajectory quickly, and is based on rapidly-exploring random trees.
 
 \subsection{RRT algorithm for Robot with Discrete Gear-ratios}
 
-Rapidly-exploring random trees (RRT) have been highly popular over the past decade as a sampling-based approach to quickly identify feasible trajectories in complex motion planning problems \cite{lavalle_rapidly-exploring_1998}\cite{lavalle_planning_2006}. Its main feature is its property of biasing the random search toward un-explored region of the state space. This technique
+Rapidly-exploring random trees (RRT) have been highly popular over the past decade as a sampling-based approach to quickly identify feasible trajectories in complex motion planning problems \cite{lavalle_rapidly-exploring_1998}\cite{lavalle_planning_2006}. Its main feature is its property of biasing the random search toward un-explored region of the state space. This technique also naturally works with discretized action-space, which makes it a good fit for switched dynamics system where the discrete mode is a control input.
 
 
+\paragraph{Action set}
+%
+To implement the algorithm for robot using variable gear-ratios actuators the action space is parametrized into a finite set of possible actions at each time steps. Each actuator torque is split into $p$ possible level:
+%
+\begin{align}
+\tau_i  \in \boldsymbol{T} : \{ -\tau_{max} , ... , 0 , ... , +\tau_{max} \}
+\end{align}
+%
+where $p$ is a odd number bigger or equal to 3. Possible gear-ratios modes, are already a discrete set, but the possible selectable gear-ratios set $\boldsymbol{K}$ is state-dependent:
+%
+\begin{align}
+k \in \boldsymbol{K}(\dot{\vec{q}}) : \big\{ k \in \{0,..,l\} \,|\, \vec{w} = R_k \dot{\vec{q}} \in \boldsymbol{W} \big\}
+\end{align}
+%
+in order to satisfy rotor-velocity constraints. Hence the global possible action set at each time step is the combination of all those those possible $p$ torque levels for the $m$ actuators and the available state-dependent gear-ratios options:
+%
+\begin{align}
+a \in \boldsymbol{A}(\dot{\vec{q}}) : \big\{ \left( \vec{\tau} , k \right) \,|\, \tau_1  \in \boldsymbol{T}  , ...  ,  \tau_m  \in \boldsymbol{T} ,  k \in \boldsymbol{K}(\dot{\vec{q}})  \big\}
+\end{align}
+%
+The maximum number of possible discrete actions at each step is thus $l\,p^m$.
 
 
+\paragraph{State-space}
+%
+The search is then conducted in the full dynamic state space of the robotic system (as opposed to simply searching in the configuration space):
+%
+\begin{align}
+\vec{x} = \left( \dot{\vec{q}} , \vec{q} \right)
+\end{align}
+%
+hence the dimension of the state-space is $2n$. The state constraints are defined by:
+%
+\begin{align}
+\vec{x} \in \boldsymbol{X}: \big\{ \left( \dot{\vec{q}} , \vec{q} \right) \,|\,  \vec{q} \in \boldsymbol{C}_{free} \;,\; \dot{\vec{q}} \in \boldsymbol{V} \big\}
+\end{align}
+%
+The constraints on joint positions is the free configuration space $\boldsymbol{C}_{free}$, which exclude configuration leading to collision with obstacle. The constrains on joint velocities are defined as the set for which there exist at least one gear-ratio configuration $k$ leading to allowable rotor velocities:
+%
+\begin{align}
+\boldsymbol{V} : \big\{ \dot{\vec{q}} \,|\, \exists k \in \{0,..,l\} \Rightarrow R_k \dot{\vec{q}} \in \boldsymbol{W} \big\}
+\end{align}
+%
+Note that $\boldsymbol{W}$ is the allowable rotor velocity set defined as:
+%
+\begin{align}
+\boldsymbol{W} : \big\{ \vec{w} \,|\,  -w_{max} < w_i < w_{max}  \quad \forall \; i \big\}
+\end{align}
+%
+
+\paragraph{System evolution}
+%
+The discrete state evolution of the system can be modeled with proposed dynamical model presented in section \ref{sec:model}, projecting in the future with a small time step $\Delta t$:
+%
+\begin{align}
+\dot{\vec{q}}_{t+1} &= H_k^{-1} \left[ R_k \tau - \vec{c}_k( \dot{\vec{q}}_t , \vec{q}_t ) \right] \Delta t + \dot{\vec{q}}_{t} \\
+      \vec{q}_{t+1} &=  \dot{\vec{q}}_{t} \Delta t + \vec{q}_{t}
+\end{align}
+%
+ 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
