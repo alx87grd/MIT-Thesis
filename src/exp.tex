@@ -1,4 +1,4 @@
-\chapter{Robot Design and Control Implementation}
+\chapter{The DSDM-Lightweight Arm \\ { \large Mechanical Design, Control and Software Architecture } }
 \label{sec:ExperimentalValidation}
 
 {
@@ -14,25 +14,48 @@
 %\end{flushright}
 
 
-This chapter present a novel robot prototype using DSDM actuators. The mechanical design of the DSDM actuators and robotic arm prototype and controllers implementation are described.
+This chapter present a novel robot prototype using DSDM actuators, see Fig. \ref{fig:dsdm_arm_zoom} and Fig. \ref{fig:dsdm_arm}. The mechanical design of the DSDM actuators and the robotic arm is discussed, as well as the control and software implementation.
+
+\begin{figure}[htb]
+	\centering
+		\includegraphics[width=0.70\textwidth]{arm_proto_zoom.jpg}
+	\caption{one joint of the DSDM-Arm}
+	\label{fig:dsdm_arm_zoom}
+\end{figure}
 
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.90\textwidth]{arm_proto_3.jpg}
+		\includegraphics[width=0.95\textwidth]{arm_proto_3.jpg}
 	\caption{3-DoF custom arm using 3 DSDM actuators}
 	\label{fig:dsdm_arm}
 \end{figure}
 
 
-\section{Lightweight Arm Design}
-\label{sec:DSDMArm}
+\section{Mechanical Design}
 
-A custom robotic arm using 3 DSDM actuators was designed and built, see Fig. \ref{fig:dsdm_arm}. This arm is very strong and fast for its weight when compared to traditional robotic arms. 
-
-\section{DSDM Actuator Design}
+\subsection{DSDM Actuator Design}
 \label{sec:ActuatorDesign}
  
-Three actuator prototypes were developed, with different mechanical advantage for the shoulder, elbow and wrist DoF of the arm. All of them use discrete components for the ease of implementation and modularity. The shoulder actuator is designed to drive a ballscrew, for a large efficient reduction, and the others actuators are embedded into revolute joints. 
+Three actuator prototypes were developed for the shoulder, elbow and wrist DoF of the arm, with different mechanical advantages. The shoulder actuator is designed to drive a ballscrew, for a large efficient reduction, and the others actuators are embedded into revolute joints. 
+
+\subsubsection{3-port Differential gear-box}
+
+On
+
+\begin{figure}[htp]
+        \centering
+				\subfloat[Linear Actuator]{ % intrinsic dynamics
+				\includegraphics[width=0.40\textwidth]{gears.jpg} }
+				\hspace{+5pt}
+        \subfloat[Revolute Joint]{ % intrinsic dynamics
+				\includegraphics[width=0.40\textwidth]{gears_new.jpg} }
+        \caption{Differential gear-box implemented with a planetary}
+				\label{fig:differnentials}
+\end{figure}
+
+
+\subsubsection{Brake}
+
 
 \subsubsection{Revolute Joint Actuators}
 
@@ -40,7 +63,7 @@ Fig. \ref{fig:dsdm_act} shows the prototype for a revolute DSDM actuator. The el
 
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.75\textwidth]{dsdm_proto_2.jpg}
+		\includegraphics[width=0.50\textwidth]{dsdm_proto_2.jpg}
 	\caption{Revolute joint DSDM actuator prototype } %Max continuous torque of 40 Nm and maximum velocity of 100 RPM
 	\label{fig:dsdm_act}
 \end{figure}
@@ -70,31 +93,45 @@ The differential in the gear-box is implemented using a planetary gear-train, wh
 
 To achieve the large reduction needed for the shoulder actuator of the robot, while keeping the mechanism back-drivable during high-speed mode, a large-lead ballscrew linear stage is used. 
 
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.95\textwidth]{proto_linear.pdf}
+	\caption{linear actuator assembly} 
+	\label{fig:linact}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=0.90\textwidth]{dsdm_parts_old.jpg}
+	\caption{Dsdm parts}
+	\label{fig:dsdm_parts_old}
+\end{figure}
+
 
 \subsubsection{Specifications}
 
+For instance, the actuation and joint unit shown at Fig. \ref{fig:dsdm_cad} weights 1.5 Kg (un-optimized first prototype), can reach a 100 RPM velocity and a maximum continuous torque of 40 Nm (based on the very conservative torque rating of Maxon motor [ref] 
 
 
-%Shown in Fig. \ref{fig:arm_proto}, a 3-DoF robotic arm using variable gear-ratio actuators has been designed and custom built. The variable gear-ratio actuators consist of dual-speed dual-motor (DSDM) actuators, as shown in Fig. \ref{fig:dsdm_cad}. Those actuators have two discrete operating modes, one for high-speed operation, and the other for low-speed, high-load operation, where the net gear-ratios are more than 20-times different. DSDM actuators are lighter than would be single motors sized to reach the same maximum speed and maximum torque \cite{girard_two-speed_2015}. Also, the dual-motor architecture has the advantages of allowing fast and seamless gear-shifts, by doing the synchronization in the nullspace, which support the modeling assumption discussed at sec. \ref{sec:mod}. 
+\subsection{Arm Design}
+\label{sec:DSDMArm}
+
+A custom robotic arm using 3 DSDM actuators was designed and built, see Fig. \ref{fig:dsdm_arm}. This arm is very strong and fast for its weight when compared to traditional robotic arms. 
 
 
-%For instance, the actuation and joint unit shown at Fig. \ref{fig:dsdm_cad} weights 1.5 Kg (un-optimized first prototype), can reach a 100 RPM velocity and a maximum continuous torque of 40 Nm (based on the very conservative torque rating of Maxon motor [ref] )
+\subsubsection{Shoulder 4-bar mechanism}
 
-%\begin{figure}[htp]
-	%\centering
-		%\includegraphics[width=0.45\textwidth]{arm_proto_3.jpg}
-	%\caption{Prototype 3-DOF arm with variable gear-ratio actuators}
-	%\label{fig:arm_proto}
-%\end{figure}
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{4bar.jpg}
+	\caption{Shoulder 4-bar mechanism}
+	\label{fig:4bar}
+\end{figure}
 
 
 
-\section{Control Software}
+\section{Control and Software Architecture}
 \label{sec:ControlSoftwareArchitecture}
-
-The control algorithms are implemented on a computer using ROS \cite{quigley_ros:_2009}, the trajectory generation algorithm and the R* Computed Torque controller are written in \textit{Python}. The computer is communicating over USB with open-source \textit{Flexsea} motor-drivers \cite{duval_flexsea-execute:_2016} that handle the low-level current loops. The trajectory is generated offline in advance and loaded in memory upon initialization. The main R* control loop is running at a 500 Hz sampling rate. The low-level actuator controllers, receiving the torque and gear-ratio set-points, communicating with both motor drivers and handling the gear-shifting process (see Fig. \ref{fig:control_achitecture}), are ... TODO
-
-%also implemented in \textit{Python} and use the algorithm described in \cite{girard_two-speed_2015}. Transition from one gear-ratio to another are found to be consistently under 50 ms.
 
 \subsection{Architecture}
 
@@ -106,9 +143,37 @@ The control algorithms are implemented on a computer using ROS \cite{quigley_ros
 \end{figure}
 
 
-%\subsection{Motor drivers}
+The control algorithms are implemented on a computer using ROS \cite{quigley_ros:_2009}, the trajectory generation algorithm and the R* Computed Torque controller are written in \textit{Python}. The computer is communicating over USB with open-source \textit{Flexsea} motor-drivers that handle the low-level current loops. The trajectory is generated offline in advance and loaded in memory upon initialization. The main R* control loop is running at a 500 Hz sampling rate. The low-level actuator controllers, receiving the torque and gear-ratio set-points, communicating with both motor drivers and handling the gear-shifting process (see Fig. \ref{fig:control_achitecture}), are ... TODO
+
+%also implemented in \textit{Python} and use the algorithm described in \cite{girard_two-speed_2015}. Transition from one gear-ratio to another are found to be consistently under 50 ms.
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{ros_graph_3_dsdm.png}
+	\caption{ROS architecture for controlling the full robot}
+	\label{fig:ros_3dsdm}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.95\textwidth]{ros_graph_single_dsdm.png}
+	\caption{ROS architecture for controlling a single DSDM actuator directly}
+	\label{fig:ros_dsdm}
+\end{figure}
+
+
+\subsection{Motor drivers}
+
+The first generation NI Labview
+
+Scaling to 6 motors and ROS connectivity
+
+Second gen use micro-controllers \cite{duval_flexsea-execute:_2016} 
 
 \subsection{DSDM Actuator Controllers}
+
+
 
 \subsection{Robot Controller}
 

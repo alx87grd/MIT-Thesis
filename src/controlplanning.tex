@@ -953,7 +953,7 @@ hence the dimension of the state-space is $2n$. The state constraints are define
 \vec{x} \in \boldsymbol{X}: \big\{ \left( \dot{\vec{q}} , \vec{q} \right) \,|\,  \vec{q} \in \boldsymbol{C}_{free} \;,\; \dot{\vec{q}} \in \boldsymbol{V} \big\}
 \end{align}
 %
-The constraints on joint positions is the free configuration space $\boldsymbol{C}_{free}$, which exclude configuration leading to collision with obstacle. The constrains on joint velocities are defined as the set for which there exist at least one gear-ratio configuration $k$ leading to allowable rotor velocities:
+The constraints on joint positions are defined by the free configuration space domain $\boldsymbol{C}_{free}$ \cite{lozano-perez_algorithm_1979}, which exclude configuration leading to collision with obstacle. The constrains on joint velocities are defined as the set for which there exist at least one gear-ratio configuration $k$ leading to allowable rotor velocities:
 %
 \begin{align}
 \boldsymbol{V} : \big\{ \dot{\vec{q}} \,|\, \exists k \in \{0,..,l\} \Rightarrow R_k \dot{\vec{q}} \in \boldsymbol{W} \big\}
@@ -976,6 +976,9 @@ The discrete state evolution of the system can be modeled with proposed dynamica
 \end{align}
 %
  
+\paragraph{Implementation}
+%
+With the discrete action set, the state-space constraints and the discrete time system evolution, the RRT algorithm can be applied to search for feasible solutions. The other steps are a textbook application of the RRT algorithm \cite{lavalle_planning_2006} and are omitted here.  After execution the algorithm return both a trajectory of states and control inputs. However, the proposed model-based controller only required the trajectory to use as a reference and control inputs are fully computed online in closed-loop. Details on the software implementation used for the experimental robotic system is discussed in Chapter \ref{sec:ExperimentalValidation}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -989,31 +992,29 @@ The discrete state evolution of the system can be modeled with proposed dynamica
 \small"The true logic of this world is in the calculus of probabilities." \\ \emph{-- James Clerk Maxwell}
 \end{flushright}
 
-The proposed approach in this section is to discretize the continuous control problem into a graph search problem, with transition probability, where the discrete input actions can be considered naturally. Then dynamic programming approaches can be used to find global optimal feedback policies. 
-
-%First, a simplified low-dimensional model of the controlled system is derived to keep the problem tractable. Second, the optimal control problem is solved using dynamic programming. Third, the resulting optimal policies are approximated with simple feedback laws, to conduct a stability analysis and also for the ease of implementation.
+The proposed approach in this section is to discretize the continuous control problem into a graph search problem, with transition probability, where the discrete input actions can be considered naturally. Dynamic programming approaches can than be used to find global optimal feedback policies. 
 
 \subsection{Problem formulation}
 
 The control problem of obtaining the global desired behavior is formulated as minimizing a scalar cost $J$ that is a function of the state trajectory $\vec{x}(:)$ and the inputs trajectory $\vec{u}(:)$, while constraining both states and inputs to be in their respective domains:
 \begin{align}
 	\operatornamewithlimits{min}\limits_{\vec{u}(:)} \; & J(\vec{x}(:),\vec{u}(:)) \\
-	s.t. \quad & \vec{\dot{x}} = f(\vec{x}, \vec{u}) \quad \vec{u} \in U(\vec{x}) \quad \vec{x} \in X 
+	s.t. \quad & \vec{\dot{x}} = f(\vec{x}, \vec{u}) \quad \vec{u} \in \boldsymbol{U}(\vec{x}) \quad \vec{x} \in \boldsymbol{X}
 	\label{eq:min}
 \end{align}
 
 \subsection{Constraints}
 
-The input valid set $U(\vec{x})$ is defined by allowable motor torque respecting saturation and the discrete options of gear-ratios that are feasible given actual joint velocities:
+The input valid set $\boldsymbol{U}(\vec{x})$ is defined by allowable motor torque respecting saturation and the discrete options of gear-ratios that are feasible given actual joint velocities:
 \begin{align}
-	U(\vec{x}):&\left\{
+	\boldsymbol{U}(\vec{x}):&\left\{
 	\begin{array}{l}
 	\tau_i \in [ -\tau_{max} , \tau_{max} ] \;\forall\; i\\
-	k      \in \{ 0 , ... , l \} \quad\text{ such that }\quad \vec{w} = R_k \vec{\dot{q}} \in W
+	 k      \in \{ 0 , ... , l \} \; | \; \vec{w} = R_k \vec{\dot{q}} \in \boldsymbol{W} 
 	\end{array}
 	\right.
 \end{align}
-where $W$ is the set of allowable rotor velocities. The state valid set $X$ include a range of acceptable state and could exclude some regions if desired. 
+where $\boldsymbol{W}$ is the set of allowable rotor velocities. The state valid set $X$ include a range of acceptable state and could exclude some regions if desired. 
 
 \subsection{Cost function}
 \label{sec:CostFunction}
@@ -1045,7 +1046,7 @@ Note that in this section, the goal is fixed and set to zero $\boldsymbol{x}_d=\
 \subsection{Value Iteration}
 \label{sec:VI}
 
-A dynamic programming algorithm, also known as value iteration, is used to solve for almost exact optimal infinite horizon policies for the one-link robot. Two simplification to the problem are made, first the disturbances will be fixed to their typical values (certainty equivalence control) and second, the state space and possible control actions will be discretized.
+A dynamic programming algorithm, also known as value iteration, is used to solve for almost exact optimal infinite horizon policies for the one-link robot. %Two simplification to the problem are made, first the disturbances will be fixed to their typical values (certainty equivalence control) and second, the state space and possible control actions will be discretized.
 
 \subsubsection{Discretization and conversion to a Stochastic Shortest Path problem}
 \label{sec:ConvertionToAStocasticShortestPathProblem}
@@ -1053,52 +1054,59 @@ A dynamic programming algorithm, also known as value iteration, is used to solve
 Here a evenly spaced grid of nodes is used to represent the state space. However, the equations of motion of the system can lead the system to a future state that will not be exactly a grid point corresponding to a discrete node. To solve this problem the cost-to-go of the next point is computed by interpolating the cost-to-go of the neighboring grid points based on geometric interpolation weight, see Figure \ref{fig:Probinterpolation}:
 %
 \begin{align}
-	J(\boldsymbol{x}(t+1)) \approx \sum{ w_j J(\boldsymbol{x}_j(t+1)) } 
+	J(\boldsymbol{x}(t+1)) \approx \sum{ w_j J(\boldsymbol{x}_j(t+1)) }  \quad \quad \sum{ w_i  } = 1
 	\label{eq:interpol}
-\end{align}
-%
-where the weight factors add-up to one:
-%
-\begin{align}
-	 \sum{ w_i  } = 1
-	\label{eq:w}
 \end{align}
 %
 Thus the value iteration algorithm will have the form:
 %
 \begin{align}
-	J_{k+1}(\boldsymbol{x}_i) =  \min_u{\left[ g(\boldsymbol{x}_i,\boldsymbol{u}) + \sum{ w_j J(\boldsymbol{x}_j(t+1))}  \right]}
+	J(\boldsymbol{x}_i) \Leftarrow \min_u{\left[ g(\boldsymbol{x}_i,\boldsymbol{u}) + \sum{ w_j J(\boldsymbol{x}_j(t+1))}  \right]}
 	\label{eq:interpol}
 \end{align}
 %
 \begin{figure}[htp]
-	\centering
-		\includegraphics[width=0.40\textwidth]{interpolation.png}
-	\caption{Approximation of the cost-to-go using interpolation}
-	\label{fig:interpolation}
+        \centering
+				\subfloat[Interpolation]{
+				\includegraphics[width=0.40\textwidth]{interpolation.png}
+				\label{fig:interpolation}}
+        \subfloat[Agregation probabilities]{
+				\includegraphics[width=0.40\textwidth]{Probinterpolation.png}
+				\label{fig:Probinterpolation}}
+       \caption{Approximation of the cost-to-go: two interpretations }
+			\label{fig:aaa}
 \end{figure}
 %
-The interpolation can also be interpreted as computing an expected value where the weight factor are probabilities. As illustrated at Figure. \ref{fig:Probinterpolation}, this scheme can also be interpreted as aggregating the continuous space state into discrete nodes with the weight factors corresponding to aggregation probabilities. Hence, the problem that is solved correspond to a stochastic shortest path problem. Note that even if the uncertainty of the system is not modeled directly, this scheme has similar effects of including a disturbance leading to an uncertainty on the state evolution of roughly the size of the grid.  
+The interpolation can also be interpreted as computing an expected value where the weight factor are probabilities. As illustrated at Figure. \ref{fig:Probinterpolation}, this scheme can also be interpreted as aggregating the continuous space state into discrete nodes with the weight factors corresponding to aggregation probabilities. Hence, the problem that is solved correspond to a stochastic shortest path problem. Note that even if the uncertainty of the system is not modeled directly, this scheme has similar effects of including a disturbance leading to an uncertainty on the state evolution of roughly the size of the grid. Knowledge regarding stochastic distribution of disturbances could be included with this formulation. 
+
+
+%\subsubsection{Termination conditions}
+%\label{sec:TerminationCondtions}
+%
+%In order to guarantee the good behavior of the value iteration scheme, nodes close to the goal state are aggregated into a big cost free and absorbing termination node.  Moreover, when the equations of motion for a given state and control lead to out-of-bound states, it is considered that the system reach with a very large cost an artificial termination node with probability one. Since it is clear from the physics that there exist proper policies that can reach the termination node, and the cost is positive definite (for both the quadratic and minimum time cost functions) it is also clear that any improper policy will be associated to an infinite cost for an infinite horizon. Thus, given those conditions value iteration algorithm is guarantee to converge to the optimal cost-to-go for any initial conditions.
+
+\subsection{Studied systems}
+
+This section present numerical results of feedback policy to reach a fixed-target with two robotics system using VGA. The first system, see Fig. \ref{fig:vi_sys1}, is a single-axis linear actuator with two gear-ratios, the output dynamic is considered to be a linear mass-damper and rotor-velocity saturations are included. The second system, see Fig. \ref{fig:vi_sys2}, is a non-linear inverted pendulum with no rotor-velocity saturation. 
 %
 \begin{figure}[htp]
-	\centering
-		\includegraphics[width=0.40\textwidth]{Probinterpolation.png}
-	\caption{Interpolation as agregation probabilities}
-	\label{fig:Probinterpolation}
+        \centering
+				\subfloat[Linear mass-damper]{
+				\includegraphics[width=0.40\textwidth]{vi_sys1.png}
+				\label{fig:vi_sys1}}
+				\hspace{+5pt}
+        \subfloat[Inverted pendulum]{
+				\includegraphics[width=0.40\textwidth]{vi_sys2.png}
+				\label{fig:vi_sys2}}
+       \caption{Two studied robotic systems}
+			\label{fig:studiedsys}
 \end{figure}
+%
 
-\subsubsection{Termination conditions}
-\label{sec:TerminationCondtions}
-
-In order to guarantee the good behavior of the value iteration scheme, nodes close to the goal state are aggregated into a big cost free and absorbing termination node.  Moreover, when the equations of motion for a given state and control lead to out-of-bound states, it is considered that the system reach with a very large cost an artificial termination node with probability one. Since it is clear from the physics that there exist proper policies that can reach the termination node, and the cost is positive definite (for both the quadratic and minimum time cost functions) it is also clear that any improper policy will be associated to an infinite cost for an infinite horizon. Thus, given those conditions value iteration algorithm is guarantee to converge to the optimal cost-to-go for any initial conditions.
-
-\subsubsection{Implementation}
+\subsection{Implementation}
 \label{sec:Methodology}
 
-
-The Value Iteration algorithm is implemented for two single-axis robot using a two-speed actuator. In the first case the output dynamic is a linear mass-damper system while in the second case the output is a non-linear inverted pendulum. 
-
-The discretization parameters used are as follow: the state space is discretized into a 101 x 101 grid (101 equally spaced angles and 101 equally spaced speed values) leading to 10201 possible nodes, the actuator torque is discretized into 21 possible torque values, leading to a total of 41 possibles control actions including the gear ratio selection. The state transition is computed using a time discretization of $\Delta t$ = 0.05 sec. The interpolation weights are computed using a bivariate spline approximation. The value iterations are stopped manually when the maximum difference between $J_k$ and $J_{k+1}$ are many orders of magnitude smaller then the variations of $J$ across the state space. The computation takes on average 200-500 iterations and 2-5 minutes.
+The discretization parameters used are as follow: the state space is discretized into a 101 x 101 grid (101 equally spaced positions and 101 equally spaced speed values) leading to 10201 possible nodes, the actuator torque is discretized into 21 possible torque values, leading to a total of 42 possibles control actions including the gear ratio selection. The state transition is computed using a time discretization of $\Delta t$ = 0.05 sec. The interpolation weights are computed using a bivariate spline approximation. The value iterations are stopped manually when the maximum difference between $J_k$ and $J_{k+1}$ are many orders of magnitude smaller then the variations of $J$ across the state space. The computation takes on average 200-500 iterations and 2-5 minutes.
 
 %\subsection{Reinforcement Learning}
 %
@@ -1207,61 +1215,65 @@ The discretization parameters used are as follow: the state space is discretized
 
 \subsection{Numerical results}
 
-\subsubsection{Linear 1-DoF robot}
-Fig. \ref{fig:J} to \ref{fig:u1} illustrate the numerical results of the Value Iteration algorithm for the linear mass-damper output case. Three different cost functions are explored, a quadratic cost function, a mininimum time cost and minimum energy case which is simply a special case of the quadratic cost where weight are sets to drastically penalize control inputs over state error. The absence of color indicates states with no solution (a constraint will be violated for any possible control actions). Fig. \ref{fig:phase_plane} shows the closed loop behavior of the system in the phase plane when the optimal policy is applied.
+\subsubsection{System 1 - Linear mass-damper robot}
+Fig. \ref{fig:J} to \ref{fig:u1} illustrate the numerical results for system 1. Three different cost functions are explored, a quadratic cost function, a mininimum time cost and minimum energy case which is simply a special case of the quadratic cost where weight are sets to drastically penalize control inputs over state error. The absence of color indicates states with no solution (a constraint will be violated for any possible control actions). Fig. \ref{fig:phase_plane} shows the closed loop behavior of the system in the phase plane when the optimal policy is applied.
 %
-\begin{figure}[H]
+\begin{figure}[p]
+				\vspace{-2pt}
         \centering
 				\subfloat[Minimum time]{
-        \includegraphics[width=0.32\textwidth]{Jt.png}
+        \includegraphics[width=0.31\textwidth]{Jt.png}
 				\label{fig:J_time}}
         \subfloat[Quadratic cost]{
-				\includegraphics[width=0.32\textwidth]{Jq.png}%J_LQR.png
+				\includegraphics[width=0.31\textwidth]{Jq.png}%J_LQR.png
 				\label{fig:J_LQR}}
 				\subfloat[Minimum energy]{
-				\includegraphics[width=0.32\textwidth]{Je.png}
+				\includegraphics[width=0.31\textwidth]{Je.png}
 				\label{fig:J_energy}}
         \caption{Optimal cost-to-go $J^*$}\label{fig:J}
 \end{figure}
 %
-\begin{figure}[H]
+\begin{figure}[p]
+				\vspace{-2pt}
         \centering
 				\subfloat[Minimum time]{
-        \includegraphics[width=0.32\textwidth]{u1t.png}
+        \includegraphics[width=0.31\textwidth]{u1t.png}
 				\label{fig:u0_time}}
         \subfloat[Quadratic cost]{
-				\includegraphics[width=0.32\textwidth]{u1q.png}
+				\includegraphics[width=0.31\textwidth]{u1q.png}
 				\label{fig:u0_LQR}}
 				\subfloat[Minimum energy]{
-				\includegraphics[width=0.32\textwidth]{u1e.png}
+				\includegraphics[width=0.31\textwidth]{u1e.png}
 				\label{fig:u0_energy}}
-        \caption{Optimal policy for the continuous torque command $u_1$ [Nm]}\label{fig:u0}
+        \caption{Optimal policy for the continuous torque command $\tau$ [Nm]}\label{fig:u0}
 \end{figure}
 %
-\begin{figure}[H]
+\begin{figure}[p]
+				\vspace{-2pt}
         \centering
 				\subfloat[Minimum time]{
-        \includegraphics[width=0.32\textwidth]{u2t.png}
+        \includegraphics[width=0.31\textwidth]{u2t.png}
 				\label{fig:u1_time}}
         \subfloat[Quadratic cost]{
-				\includegraphics[width=0.32\textwidth]{u2q.png}
+				\includegraphics[width=0.31\textwidth]{u2q.png}
 				\label{fig:u1_LQR}}
 				\subfloat[Minimum energy]{
-				\includegraphics[width=0.32\textwidth]{u2e.png}
+				\includegraphics[width=0.31\textwidth]{u2e.png}
 				\label{fig:u1_energy}}
-        \caption{Optimal policy for the mode selection $u_2$}\label{fig:u1}
+        \caption{Optimal policy for the gear-ratio mode selection $k$}\label{fig:u1}
 \end{figure}
 %
-\begin{figure}[H]
+\begin{figure}[p]
+				\vspace{-2pt}
         \centering
 				\subfloat[Minimum time]{
-        \includegraphics[width=0.32\textwidth]{ppt.pdf}
+        \includegraphics[width=0.31\textwidth]{ppt.pdf}
 				\label{fig:phase_plane_time}}
         \subfloat[Quadratic cost]{
-				\includegraphics[width=0.32\textwidth]{ppq.pdf}
+				\includegraphics[width=0.31\textwidth]{ppq.pdf}
 				\label{fig:phase_plane_LQR}}
 				\subfloat[Minimum energy]{
-				\includegraphics[width=0.32\textwidth]{ppe.pdf}
+				\includegraphics[width=0.31\textwidth]{ppe.pdf}
 				\label{fig:phase_plane_energy}}
         \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane}\label{fig:phase_plane}
 \end{figure}
@@ -1276,13 +1288,13 @@ For the quadratic cost, the gear-ratio selection optimal policy is almost as sim
 
 \paragraph{Minimum energy}
 \label{sec:MinimumEnergy}
-For the minimum energy controller, interestingly the mode selection policy is not trivial even for this simple linear model.  This shows that it does not take much complexity to have non-trivial optimal policies for hybrid systems. Here, the large reduction ratio is used almost only for braking, and in quadrant II and IV the small reduction ratio is used even at low speed to coast with low viscous resistance. Also globally the gains are much lower than the other controllers except for zones where it is necessary to use energy to stay in the domain. 
+For the minimum energy controller, interestingly the mode selection policy is not trivial even for this simple linear model.  This shows that it does not take much complexity to have non-trivial optimal policies for hybrid systems. Here, the large reduction ratio is used almost only for braking, and in quadrant II and IV the small reduction ratio is used even at low speed to coast with low viscous resistance. Also globally the gains are much lower than the other controllers except for zones where it is necessary to use energy to stay in the state-domain. 
 
-\subsubsection{Non-linear 1-DoF robot}
-
+\subsubsection{System 2 - Inverted pendulum robot}
+%
 Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted pendulum system for both a minimal time goal and a quadratic cost minimization. Figure \ref{fig:u0} shows the optimal torque policy and Figure \ref{fig:u1} shows the optimal gear selection policy. The resulting closed loop behavior is illustrated in the phase plane at Figure \ref{fig:phase_plane}. Figure \ref{fig:phase_plane} also shows closed-loop state trajectories and control inputs for a simulation starting at $q$ = -2 rad.
 
-\begin{figure*}[htpb]
+\begin{figure}[p]
         \centering
 				\subfloat[Minimum time]{
         \includegraphics[width=0.48\textwidth]{J_time.png}
@@ -1291,9 +1303,9 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
 				\includegraphics[width=0.48\textwidth]{J_quadratic.png}%J_LQR.png
 				\label{fig:J_LQR}}
         \caption{Optimal cost-to-go $J^*$}\label{fig:J}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[htpb]
+\begin{figure}[p]
         \centering
 				\subfloat[Minimum time]{
         \includegraphics[width=0.48\textwidth]{u0_time.png}
@@ -1302,9 +1314,9 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
 				\includegraphics[width=0.48\textwidth]{u0_quadratic.png}
 				\label{fig:u0_LQR}}
         \caption{Optimal policy for the continuous torque command $\tau$ [Nm]}\label{fig:u0}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[htpb]
+\begin{figure}[p]
         \centering
 				\subfloat[Minimum time]{
         \includegraphics[width=0.48\textwidth]{u1_time.png}
@@ -1313,9 +1325,9 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
 				\includegraphics[width=0.48\textwidth]{u1_quadratic.png}
 				\label{fig:u1_LQR}}
         \caption{Optimal policy for the discrete gear selection $k \in [1,2]$}\label{fig:u1}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[htpb]
+\begin{figure}[p]
         \centering
 				\subfloat[Minimum time]{
         \includegraphics[width=0.48\textwidth]{PP_time.png}
@@ -1324,21 +1336,11 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
 				\includegraphics[width=0.48\textwidth]{PP_quadratic.png}
 				\label{fig:phase_plane_LQR}}
         \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane. Two trajectories starting at $q=-2$ are illustrated, blue is open-loop, red is closed loop}\label{fig:phase_plane}
-\end{figure*}
+\end{figure}
+
+For both cost functions the optimal policy for the discrete gear-ratio mode $k$ is quite complex. This illustrates that optimal solutions for this type non-linear hybrid system representative of robotic systems are not trivial, even for a single axis. One observation regarding the gear-ratio selection policy, is that the larger second gear-ratio is used often in situation where the robot needs to be drastically deviated from its natural motion, and the small second gear-ratio is used when the controller let the robot move in the natural direction. This connect with the idea of attenuating the load-dynamics with a large gear-ratio when it is advantageous, or leverage the load-dynamics with a small gear-ratio when the natural motion is advantageous. 
 
 
-%\begin{figure*}[htpb]
-        %\centering
-				%\subfloat[Minimum time]{
-        %\includegraphics[width=0.48\textwidth]{Traj_time.png}
-				%\label{fig:phase_plane_time}}
-        %\subfloat[Quadratic cost]{
-				%\includegraphics[width=0.48\textwidth]{Traj_quadratic.png}
-				%\label{fig:phase_plane_LQR}}
-        %\caption{State trajectories and control inputs for a closed loop simulation starting at $q=-2$}\label{fig:phase_plane}
-%\end{figure*}
-
-%The only issues that was found with those computations is that care need to be be used when picking the out-of bound termination conditions. Indeed, because of the stochastic state evolution, the high-cost assigned to out-of-bound terminations diffuse inside the boundary and reach states that should be able to never go out-of-bound (with a deterministic evolution). To alleviate this problem, the out-of-bound termination cost is set to a value just slightly bigger that the maximum expected optimal cost-to-go reaching the goal. Also, the boundary is set so that the boundary layer affected by this diffusion is not reaching the zone of interest.
 
 
 %\subsection{Feedback laws simplification}
@@ -1413,6 +1415,9 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
 %
 
 
+\subsection{Advanced dynamic programming techniques}
+
+Value iteration is a powerful tool, but computation are intractable for high-dimensional systems. However, there exist many approximate techniques that can be used; approximate dynamic programming is also refer as reinforcement learning. The approach proposed in this section, of formulating the control of hybrid robot as a stochastic shortest path problem, could thus be use in conjunction with many approach derived in the field of artificial intelligence such as Q-learning. However, the problem of approximating cost-to-go, state-space or policies in a lower dimensional space, to make computation tractable, is not trivial for non-linear robotic system.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1421,11 +1426,11 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
 \label{sec:shift_sim}
 
 
-\subsection{Model-based controller}
+\subsection{Model-based approach}
 
-In this section, the advantages of dynamically changing the gear-ratios, using the R* computed torque controller, are illustrated using simulations of two robots: first a 1-DoF pendulum, then a 3-DoF arm. Both robots are considered having VGA with two possible gear-ratios: 1:1 or 1:10. Reference low-torque trajectories to reach target positions are computed offline using a sample-based search algorithm \cite{lavalle_planning_2006}. 
+Here, the advantages of dynamically changing the gear-ratios, using the R* computed torque controller, are illustrated using simulations of two robots: first a 1-DoF pendulum, then a 3-DoF arm. Both robots are considered having VGA with two possible gear-ratios: 1:1 or 1:10. Reference low-torque trajectories to reach target positions are computed with a RRT algorithm. 
 %
-The first simulated experiment uses the robot of Fig. \ref{fig:bigpicture}, but here considering dissipative forces in the actuators, with the task of reaching the up-right position starting at the bottom. Fig. \ref{fig:sim1} shows the robot tracking the reference low-torque trajectory, where at first the robot accumulates energy, using the 1:1 gear-ratio, and then finishes the motion using the 1:10 gear-ratio. When the gravitational forces are pushing advantageous toward the trajectory the controller select the 1:1 gear-ratio, but when it is advantageous to fight the intrinsic actuator dynamics instead, the 1:10 gear-ratio is selected. 
+The first simulated experiment uses a single-axis inverted pendulum equipped with a VGA, see Fig. \ref{fig:vi_sys2}, with the task of reaching the up-right position starting at the bottom. Fig. \ref{fig:sim1} shows the robot tracking the reference low-torque trajectory, where at first the robot accumulates energy, using the 1:1 gear-ratio, and then finishes the motion using the 1:10 gear-ratio. When the gravitational forces are pushing advantageous toward the trajectory the controller select the 1:1 gear-ratio, but when it is advantageous to fight the intrinsic actuator dynamics instead, the 1:10 gear-ratio is selected. This can be seen by comparing the trajectory to natural phase plane vectors as illustrated by Fig. \ref{fig:pps}.
 %
 \begin{figure}[htp]
 	\centering
@@ -1462,7 +1467,7 @@ The first simulated experiment uses the robot of Fig. \ref{fig:bigpicture}, but 
 	%\label{fig:simpp2}
 %\end{figure}
 
-In the second experiment, a 3-DoF manipulator is tasked with going from configuration A to configuration B with the 3D trajectory shown at Fig. \ref{fig:3d_traj}. For this robot the controller is actively selecting the best gear-ratios matrix $R$ out of the possible $2^3=8$ options. Fig. \ref{fig:3d_u} shows the control inputs activity. During the initial falling-down phase, at around $t=1$, the robot is using 1:1 gear-ratios for all actuators, leveraging gravitational torques. In contrast, during the final lifting phase, at around $t=6$, the robot is using 1:10 gear-ratios for all actuators. 
+In the second experiment, a 3-DoF manipulator is tasked with going from configuration A to configuration B with the 3D trajectory shown at Fig. \ref{fig:3d_traj}. For this robot the controller is actively selecting the best gear-ratios matrix $R_k$ out of the possible $2^3=8$ options. Fig. \ref{fig:3d_u} shows the control inputs activity. During the initial falling-down phase, at around $t=1$, the robot is using 1:1 gear-ratios for all actuators, leveraging gravitational torques. In contrast, during the final lifting phase, at around $t=6$, the robot is using 1:10 gear-ratios for all actuators. 
 %
 %
 %
@@ -1492,16 +1497,10 @@ In the second experiment, a 3-DoF manipulator is tasked with going from configur
 
 
 
-
-\subsection{Value iteration}
-
+\subsubsection{Comparison to fixed-gear performance}
 
 
-
-\subsection{Comparison}
-
-
-To evaluate the performance gain of actively changing the gear-ratio, simulations with fixed gear-ratios are conducted where a regular computed torque controller tracks the same trajectories. Results are summarized in TABLE \ref{tab:MaximumTorqueComparison}, in terms of maximum absolute torque, which relates to the required size and weight of motors, and integral of torque squared, which relates to power consumption. Active gear-ratio selection is found to greatly improve both metrics, especially for the 3-DoF robot trajectory where the arm must both achieve high-speeds and also sustain a constant gravitational load at the final configuration. Note that in those simulations high-velocity with 1:10 reductions is inhibited by friction in the motors, no maximum rotor velocity is enforced. For the 3-DoF trajectory, active gear-shifting is found to reduce the maximum torque required by a factor two and the integral of the torque square by a factor 10, compared to any of the fixed-gear options. Those results show the potential of using variable gear-ratio transmissions for huge improvements in terms of actuator size and power consumption. Moreover, here in the simulations, the load was always the same manipulator in different dynamic situations. As discussed in section \ref{sec:app}, if the load dynamics is radically changing because of different contact situations with the environment, the performance gain of changing the gear-ratio could be even greater. 
+To evaluate the performance gain of actively changing the gear-ratio, simulations with fixed gear-ratios are conducted where a regular computed torque controller tracks the same trajectories. Results are summarized in TABLE \ref{tab:MaximumTorqueComparison}, in terms of maximum absolute torque, which relates to the required size and weight of motors, and integral of torque squared, which relates to power consumption. Active gear-ratio selection is found to greatly improve both metrics, especially for the 3-DoF robot trajectory where the arm must both achieve high-speeds and also sustain a constant gravitational load at the final configuration. Note that in those simulations high-velocity with 1:10 reductions is inhibited by friction in the motors, no maximum rotor velocity is enforced. For the 3-DoF trajectory, active gear-shifting is found to reduce the maximum torque required by a factor two and the integral of the torque square by a factor 10, compared to any of the fixed-gear options. Those results show the potential of using variable gear-ratio transmissions for huge improvements in terms of actuator size and power consumption. Moreover, here in the simulations, the load was always the same manipulator in different dynamic situations. If the load dynamics is radically changing because of different contact situations with the environment, the performance gain of changing the gear-ratio could be even greater. 
 %
 \begin{table}[htp]
 	\centering
@@ -1527,15 +1526,24 @@ To evaluate the performance gain of actively changing the gear-ratio, simulation
 %
 
 
-\subsection{Chattering reduction}
+\subsection{Fast gear-shifting inhibition}
 
-
+In the simulation presented so-far, fast gear-shifts were not inhibited by any of the proposed fast-switching inhibiting schemes. Fig. \ref{fig:ChatteringComparaison} shows simulation results, illustrating the gear-ratio command, for the same situation but with three different controllers. 
+%
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.80\textwidth]{chattering_compared.jpg}
-	\caption[Chattering Comparaison]{Chattering Comparaison}
+		\includegraphics[width=0.70\textwidth]{chattering_compared.jpg}
+	\caption{Fast gear-shifting inhibition scheme comparison}
 	\label{fig:ChatteringComparaison}
 \end{figure}
+
+This figure shows that the hysteresis scheme is not necessary an improvement over the point-by-point gear-ratio selection, since for the gear-shift at $t=1.8$, it would have been better to avoid it completely. The Rollout approach is shown more successful at filtering-out high-frequency switching. Furthermore, another interesting advantageous side effect is observed: with the Rollout approach, the first gear-shift is commanded slightly in advance. This can be advantageous when controlling a real system where the gear-shift process is executed with a delay. 
+
+\subsection{Value iteration vs. model-based controllers}
+
+For low-dimensional systems, numerical results obtain with value iteration when resolution is very fine can almost be seen as a ground truth of the optimal trajectory and control actions. It is thus interesting to compared the model-based approach (RRT planning + R* Computed Torque) to a value iteration solution, to evaluate how far from the global optimum is the model-based control scheme in some situations.
+
+TODO include side-by-side simulated trajectory with both control policy
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1544,14 +1552,16 @@ To evaluate the performance gain of actively changing the gear-ratio, simulation
 \section{Experiments Results}
 \label{sec:shift_exp}
 
-\subsection{Model-based controller}
+This section presents experimental results, focusing on the high-level control aspect, obtained with the experimental DSDM-arm presented in Chapter \ref{sec:ExperimentalValidation}.
 
-First a trajectory following experiments using the last DoF of the robot only is presented. A 1.5 Kg load is mounted on the end-effector, and the task is to bring it from the bottom position ($q=-\pi$) to the up-right position ($q=0$) using as little torques as possible. An RRT trajectory planning algorithm is used to search for a low torque trajectory reaching the goal, see Fig. \ref{fig:exp_rrt}. Then the R* Computed Torque Controller is used to track the reference trajectory. The experimental results are shown in Fig. \ref{fig:exp_traj} and a video of this experiment is also available in the multimedia attachment. 
+\subsection{R* Computed Torque controller and RRT trajectory}
+
+First a trajectory following experiments using only one joitn the robot is presented. A 1.5 Kg load is mounted on the end-effector, and the task is to bring it from the bottom position ($q=-\pi$) to the up-right position ($q=0$) using as little torques as possible. An RRT trajectory planning algorithm is used to search for a feasible low torque trajectory reaching the goal, see Fig. \ref{fig:exp_rrt}. Then the R* Computed Torque Controller is used to track the reference trajectory. The experimental results are shown in Fig. \ref{fig:exp_traj}.
 %
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.75\textwidth]{rrt_fig.pdf}
-	\caption{Trajectory generation algorithm searching for a low torque solution}
+	\caption{RRT algorithm searching for a low torque solution}
 	\label{fig:exp_rrt}
 \end{figure}
 %
@@ -1565,7 +1575,10 @@ First a trajectory following experiments using the last DoF of the robot only is
 %
 Results show that the robot is using its 1:23 gear-ratio to accumulate kinetic energy by swinging the arm link back and forth. Also the R* controller selects the 1:474 gear-ratio automatically to attenuate the load dynamics, when the actuator has to force the robot to stay with the trajectory.  Interestingly, the reference trajectory was planned so the robot would accumulate enough kinetic energy to swing straight up with the last swing. However, in the experiment, the dissipative forces are greater than anticipated by the planner, and the last swing is too small (the robot almost stop at $q=-0.9$ at $t=2.6$ in Fig. \ref{fig:exp_traj}). Then, the R* controller automatically engage the large 1:474 gear-ratio, to continue converging on the desired trajectory with much smaller torques than those required if keeping using the 1:23 gear-ratio in this situation (no momentum and a large gravitational force to overpower). This illustrates that including the gear-ratio selection in the feedback loop also increase the robustness of the system. Without the 1:474 gear-ratio option, tracking would have failed as the computed torque with 1:23 in this situation was greater than the maximum allowable motor torque.
 
-Fig. \ref{fig:rob} shows four additional experiments for demonstrating how disturbance rejection can be improved by using the sliding mode version of the R* controller. Here the controller is only given a simple fixed point-target in all cases. First, when a low uncertainty bound is given to the controller, the robot can reach its target when unloaded (a) but failed when an unknown (to the controller) 0.4 Kg load is added to the end-effector (b). However, when a larger uncertainty bound is given, the robot can reach its target in both cases, unloaded (c) and loaded (d). Note that the discontinuous torque required to guarantee convergence despite disturbances is greatly reduced when down-shifting to a large gear-ratio at low speeds. For an improved performance, smoothing techniques should be implemented to avoid exciting the unmodeled high-frequency modes. Videos of all the experiments discussed above, and additional demonstrations are available in the media attachment.
+
+\subsection{R* Sliding Mode controller}
+
+Fig. \ref{fig:rob} shows four additional experiments for demonstrating how disturbance rejection can be improved by using the  R* Sliding Mode controller. Here the controller is only given a simple fixed point-target in all cases. First, when a low uncertainty bound is given to the controller, the robot can reach its target when unloaded (a) but failed when an unknown (to the controller) 0.4 Kg load is added to the end-effector (b). However, when a larger uncertainty bound is given, the robot can reach its target in both cases, unloaded (c) and loaded (d). 
 
 \begin{figure}[htp]
 				%\vspace{-10pt}
@@ -1586,8 +1599,9 @@ Fig. \ref{fig:rob} shows four additional experiments for demonstrating how distu
 				\label{fig:rob}
 \end{figure}
 
+Note that the discontinuous torque required to guarantee convergence despite disturbances is bigger for the case when the disturbance bound is increased, and also is greatly reduced when down-shifting to a large gear-ratio at low speeds (since the required discontinuous gain is inversely proportional to the gear-ratio). In a practical implementation, smoothing techniques should be implemented to avoid exciting the unmodeled high-frequency modes with the chattering coming from the discontinuous torque chattering.
 
-
+TODO include figure of data for experiment with 2-DOF
 
 
 \section{Summary}
