@@ -229,7 +229,7 @@ The mechanical advantage between linear motion and shoulder rotation is thus on 
 	\label{tab:robotspec}
 \end{table}
 
-Arm length 0.25, 0.25 , 0.5
+Table \ref{tab:robotspec2}, shows the DSDM arm joint specifications transposed to end-effector space where they are more meaningful. For doing so, a configuration where all link are aligned and tube lengths are ( 0.5 m , 0.25 m and 0.25 m ) is assumed, see Fig. XXX TODO. All in all, with the designed reduction ratios, with high-speed mode the end-point inertia due to reflected motor inertia is negligible and speed can reach multiple meter per second. With the high-force mode, the end-point force capability reach 50 N even in this most disadvantageous fully extended configuration, with the end-effector at arms' length.  
 
 \begin{table}[htbp]
 	\centering
@@ -246,8 +246,10 @@ Arm length 0.25, 0.25 , 0.5
 			 Shoulder & 0.1  & 2.5  & 108 &  6  & 13  & 0.04    \\
 			\hline
 		\end{tabular}
-	\label{tab:robotspec}
+	\label{tab:robotspec2}
 \end{table}
+
+Note that the DSDM-Arm is strong enough to sustain its own weight in all configurations when using HF modes. However, this is not the case when using the actuators in HS mode. 
 
 \section{Control and Software Architecture}
 \label{sec:ControlSoftwareArchitecture}
