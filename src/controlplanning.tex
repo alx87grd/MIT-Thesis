@@ -804,7 +804,7 @@ Fig. \ref{fig:chatsit} illustrates different possible class of situations leadin
 				\subfloat[High-frequency crossing of the decision boundary]{
 				\includegraphics[width=0.30\textwidth]{hifreq_sur.png}
 				\label{fig:hifreq_sur}}
-        \caption{Situations leading to fast gear-ratio switching. $r_{ij}$ is a decision boundary between }\label{fig:chatsit}
+        \caption[Situations leading to fast gear-ratio switching]{Situations leading to fast gear-ratio switching. $r_{ij}$ is a decision boundary between $k^*=i$ and $k^*=j$ }\label{fig:chatsit}
 \end{figure}
 
 
@@ -855,7 +855,7 @@ K^D_{ii} = \frac{2}{\tau} \quad   K^P_{ii} = \left(\frac{1}{\tau}\right)^2
 \label{eq:ctctau}
 \end{align}
 %
-where $\tau$ is a time constant parameter driving the desired error convergence rate.
+where $\tau$ is a time constant parameter driving the desired exponential error convergence rate.
 
 \paragraph{R* Sliding Mode} For the sliding mode controller, there is two parameters to tune the convergence rate, $\lambda$ which is inversely proportional to error convergence time constant after reaching the sliding surface, and $\eta$ which is inversely proportional to the guaranteed time for reaching the sliding surface. The discontinuous gain should then be set to based on disturbance bounds as follow, to guarantee convergence:
 %
@@ -992,7 +992,7 @@ With the discrete action set, the state-space constraints and the discrete time 
 \small"The true logic of this world is in the calculus of probabilities." \\ \emph{-- James Clerk Maxwell}
 \end{flushright}
 
-The proposed approach in this section is to discretize the continuous control problem into a graph search problem, with transition probability, where the discrete input actions can be considered naturally. Dynamic programming approaches can than be used to find global optimal feedback policies. 
+The proposed approach in this section is to discretize the continuous control problem into a graph search problem, with transition probability, where the discrete input actions can be considered naturally. Dynamic programming approaches can then be used to find global optimal feedback policies. 
 
 \subsection{Problem formulation}
 
@@ -1106,7 +1106,7 @@ Thus the value iteration updates have the form:
 		\label{eq:interpol}
 \end{align}
 %
-and the optimal control policy is computed for all nodes as:
+and the optimal control policy $\pi:\vec{x}\mapsto\vec{u}$ is computed for all nodes as:
 %
 \begin{align}
 \pi(\boldsymbol{x}_i) = \operatornamewithlimits{argmin}\limits_{\boldsymbol{u}} 

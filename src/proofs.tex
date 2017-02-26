@@ -354,7 +354,7 @@ The following variables are then introduced:
 \vec{q}_e       &= \vec{q}_d       - \vec{q} \\
 \dot{\vec{q}}_r &= \dot{\vec{q}}_d - \lambda  \vec{q}_e \\
 \vec{s}         &= \dot{\vec{q}}_e + \lambda  \vec{q}_e  = \dot{\vec{q}} - \dot{\vec{q}}_r \\
-\dot{\vec{s}}   &= \ddot{\vec{q}}_e + \lambda  \dot{\vec{q}}_e  = \ddot{\vec{q}} - \ddot{\vec{q}}_r \\
+\dot{\vec{s}}   &= \ddot{\vec{q}}_e + \lambda  \dot{\vec{q}}_e  = \ddot{\vec{q}} - \ddot{\vec{q}}_r
 \end{align}
 %
 where lambda is a positive constant. Then convergence to the desired trajectory can be guaranteed if the sliding variables $\vec{s}$ converge to zero \cite{slotine_applied_1991}. The basic idea is that if a Lyapunov-like quadratic function of the sliding variable is only decreasing in time, then sliding variables will converge to zero, which also implies that the error will converge to zero:
@@ -366,13 +366,13 @@ V = \vec{s}^T \vec{s} \rightarrow 0 \quad\Rightarrow\quad  \vec{s} \rightarrow \
 Note that here the Lyapunov-like function must be continuous and the same for all discrete mode, and its derivative negative definite for all discrete gear-ratio mode $k$ for the argument to hold for arbitrary sequence of gear-ratio $k$ \cite{liberzon_switching_2003}:
 %
 \begin{align}
-\dot{V}_k < -\eta \quad \forall k \quad \quad\Rightarrow\quad V \rightarrow 0
+\dot{V}_k < -\Phi( V ) < 0 \quad \forall k \quad \quad\Rightarrow\quad V \rightarrow 0
 \end{align}
 %
-where $\eta$ is a small positive constant. One way to guarantee the sliding condition is individually for each DoF:
+where $\eta$ is a small positive constant. One way to guarantee the sliding condition is individually for each DoF $i$ and each possible mode $k$:
 %
 \begin{align}
-\frac{d( s_i^2 )}{dt} < -\eta \quad \forall i \, \forall k
+\frac{d( s_i^2 )}{dt} < -\eta |s_i| \; \quad \forall i \; \forall k
 \label{eq:slidingcondition}
 \end{align}
 %
@@ -385,7 +385,7 @@ From eq.\eqref{eq:slidinglawcl}, sliding variable derivative is given by:
 Substituting in the sliding condition equation leads to:
 %
 \begin{align}
-s_i \dot{s}_i  = s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - \left[ H_k^{-1} G sgn(\vec{s}) \right]_i \right) < -\eta 
+s_i \dot{s}_i  = s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - \left[ H_k^{-1} G sgn(\vec{s}) \right]_i \right) < -\eta |s_i|
 \end{align}
 %
 If the matrix gain is parametrized in the following way:
@@ -397,8 +397,9 @@ G_k = H_k K_k
 where $K_k$ is a diagonal matrix. The the discontinuous gain term is uncoupled in the sliding condition equation:
 %
 \begin{align}
-s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - K_{ii} sgn( s_i ) \right) < -\eta \\
- \left[ H_k^{-1} \vec{d} \right]_i s_i + \eta < K_{ii} | s_i |
+s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - K_{ii} sgn( s_i ) \right) &< -\eta |s_i| \\
+ \left[ H_k^{-1} \vec{d} \right]_i s_i + \eta |s_i| &< K_{ii} | s_i | \\
+ \eta  \pm  \left[ H_k^{-1} \vec{d} \right]_i &< K_{ii} 
 \end{align}
 %
 which can be guaranteed if the gain are selected such that:
@@ -408,7 +409,7 @@ K_{ii} = \operatornamewithlimits{max}\limits_{\vec{d}} \left[ H_k^{-1} \vec{d} \
 \label{eq:slidinggain}
 \end{align}
 %
-Thus, if the gains are defined based on disturbance bounds and according to eq.\eqref{eq:slidinggain}, the sliding condition is guaranteed for all gear-ratio mode $k$, and thus convergence to the desired trajectory is guaranteed for any gear-ratio sequence.
+Thus, if the gains are defined based on disturbance bounds and according to eq.\eqref{eq:slidinggain}, the sliding condition is guaranteed for all gear-ratio mode $k$, and thus convergence to the desired trajectory is guaranteed for any gear-ratio sequence. Note that the gain $K_{ii}$ is a function of the discrete selected gear-ratio mode $k$. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
