@@ -151,7 +151,7 @@ To achieve the large reduction needed for the shoulder actuator of the robot, wh
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.95\textwidth]{proto_linear.pdf}
-	\caption{Linear actuator assembly in a preliminary tests configuration} 
+	\caption{Linear actuator assembly in a preliminary test configuration} 
 	\label{fig:linact}
 \end{figure}
 
@@ -162,7 +162,7 @@ To achieve the large reduction needed for the shoulder actuator of the robot, wh
 	\label{fig:dsdm_parts_old}
 \end{figure}
 
-The linear actuator assembly was initially designed as an experimental test bench for the DSDM technology \cite{girard_two-speed_2015}. Unlike the revolute actuators, the transmission is sealed and lubricated with oil and flexible coupling are used to connect all the components.  The linear actuator is thus more heavy duty, but bigger and heavier. However, this assembly is fixed to the ground and not a moving part of the DSDM-Arm, hence drawback of weight and volume are limited. 
+The linear actuator assembly was initially designed as an experimental test bench for the DSDM technology \cite{girard_two-speed_2015}. Unlike the revolute actuators, the transmission is sealed and lubricated with oil and flexible coupling are used to connect all the components.  The linear actuator is thus more heavy duty, bigger and heavier than the revolute actuators. However, the linear actuator assembly is fixed to the ground and not a moving part of the DSDM-Arm, hence drawback of its weight and volume are limited. 
 
 Two \textit{Maxon} RE-25 motors capable of continuous operation of 20 Watts and 0.03 Nm are used for both M1 and M2. Only M2 is equipped with a gear-head for the linear actuator; the reduction provided by the ball-screw and the differential are sufficient for the high-speed mode. Overall gear-ratios in the design and resulting specifications are given at Table. \ref{tab:specrev}.
 
@@ -191,14 +191,21 @@ The DSDM-arm is built using very lightweight square tubing of carbon fiber. 3D p
 
 \subsubsection{Shoulder 4-bar mechanism}
 
-\begin{figure}[H]
+A 4-bar mechanism is designed to transmit the linear actuator motion to the revolute shoulder joint, see Fig. \ref{fig:4bar}. This combination of ballscrew with a 4-bar mechanism allows for very large mechanical advantage to be achieved, with very good transmission efficiency, compared to using only gearing.  
+
+\begin{figure}[htbp]
 	\centering
 		\includegraphics[width=0.95\textwidth]{4bar.jpg}
 	\caption{Shoulder 4-bar mechanism}
 	\label{fig:4bar}
 \end{figure}
 
+The geometry of the 4-bar mechanism has been designed to achieve the desired range of angles for the shoulder, and keeping the kinematic relationship, between linear displacement and shoulder angle, as linear as possible. Fig. XXX illustrate the kinematic relationship of the designed mechanism. Note that in the software controlling the arm, this kinematic relationship is computed explicitly for the inverse-kinematic but the forward kinematic is approximated with a numerical interpolation (computing the shoulder position based on encoder measurement of the linear actuator). The shoulder forward kinematic as a unique solution for the range of physically possible value with prototype.
 
+
+TODO include 4-bar kinematic graph
+
+The mechanical advantage between linear motion and shoulder rotation is thus on average about XXX. This correspond to average total reduction ratios $R_1 = ??? $ and $R_2 = ???$. Surprisingly, the shoulder joint mechanism is backdrivable, even during high-force mode. This illustrates the efficiency of ballscrew-based reduction mechanism. During high-speed mode, a human can easily move the first joint of the robot with almost no resistance. During high-force mode, the reflected inertia is incredibly large, but a human can still make the shoulder joint move very slowly by pushing hard (with open circuit for the motor). However, if there is a small damping force at M2 motor shaft (by closing the motor electric circuit for instance), than backdriving the system is almost impossible.   
 
 \begin{table}[htbp]
 	\centering
