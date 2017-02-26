@@ -1046,26 +1046,13 @@ Note that in this section, the goal is fixed and set to zero $\boldsymbol{x}_d=\
 \subsection{Value Iteration}
 \label{sec:VI}
 
-A dynamic programming algorithm, also known as value iteration, is used to solve for almost exact optimal infinite horizon policies for the one-link robot. %Two simplification to the problem are made, first the disturbances will be fixed to their typical values (certainty equivalence control) and second, the state space and possible control actions will be discretized.
+A dynamic programming algorithm, also known as value iteration, is used to solve for almost exact optimal infinite horizon policies for the one-link robot. 
 
 \subsubsection{Discretization and conversion to a Stochastic Shortest Path problem}
 \label{sec:ConvertionToAStocasticShortestPathProblem}
 
-Here a evenly spaced grid of nodes is used to represent the state space. However, the equations of motion of the system can lead the system to a future state that will not be exactly a grid point corresponding to a discrete node. To solve this problem the cost-to-go of the next point is computed by interpolating the cost-to-go of the neighboring grid points based on geometric interpolation weight, see Figure \ref{fig:Probinterpolation}:
 %
-\begin{align}
-	J(\boldsymbol{x}(t+1)) \approx \sum{ w_j J(\boldsymbol{x}_j(t+1)) }  \quad \quad \sum{ w_i  } = 1
-	\label{eq:interpol}
-\end{align}
-%
-Thus the value iteration algorithm will have the form:
-%
-\begin{align}
-	J(\boldsymbol{x}_i) \Leftarrow \min_u{\left[ g(\boldsymbol{x}_i,\boldsymbol{u}) + \sum{ w_j J(\boldsymbol{x}_j(t+1))}  \right]}
-	\label{eq:interpol}
-\end{align}
-%
-\begin{figure}[htp]
+\begin{figure}[t]
         \centering
 				\subfloat[Interpolation]{
 				\includegraphics[width=0.40\textwidth]{interpolation.png}
@@ -1075,9 +1062,67 @@ Thus the value iteration algorithm will have the form:
 				\label{fig:Probinterpolation}}
        \caption{Approximation of the cost-to-go: two interpretations }
 			\label{fig:aaa}
+			\vspace{-10pt}
 \end{figure}
 %
-The interpolation can also be interpreted as computing an expected value where the weight factor are probabilities. As illustrated at Figure. \ref{fig:Probinterpolation}, this scheme can also be interpreted as aggregating the continuous space state into discrete nodes with the weight factors corresponding to aggregation probabilities. Hence, the problem that is solved correspond to a stochastic shortest path problem. Note that even if the uncertainty of the system is not modeled directly, this scheme has similar effects of including a disturbance leading to an uncertainty on the state evolution of roughly the size of the grid. Knowledge regarding stochastic distribution of disturbances could be included with this formulation. 
+
+Here a evenly spaced grid of nodes is used to represent the state space. The discrete state evolution of the system is computed by projecting in the future with a small time step $\Delta t$, using the continuous time EoM of the robotic system:
+%
+\begin{align}
+\boldsymbol{x}(t+1) &= f_d( \boldsymbol{x}(t) , \boldsymbol{u}(t) , \boldsymbol{d}(t) ) \\
+\left[ \begin{array}{c} 
+	\dot{\vec{q}}(t+1) \\ \vec{q}(t+1)
+\end{array} \right] &= 
+\left[ \begin{array}{c} 
+	H_k^{-1} \left[ R_k \vec{\tau}(t) - \vec{c}_k( \dot{\vec{q}}(t) , \vec{q}(t))  + \vec{d}(t)  \right] \Delta t + \dot{\vec{q}}(t)  \\ \dot{\vec{q}}(t)  \Delta t + \vec{q}(t) 
+\end{array} \right]
+\end{align}
+%
+However, the equations of motion of the system can lead the system to a future state that will not be exactly a grid point corresponding to a discrete node, see Fig. \ref{fig:interpolation}. To solve this problem the cost-to-go of the next point is computed by interpolating the cost-to-go of the neighboring grid points, based on geometric interpolation weight:
+%
+\begin{align}
+	J(\boldsymbol{x}(t+1)) \approx \sum{ w_j J(\boldsymbol{x}_j(t+1)) }  \quad \quad \sum{ w_j  } = 1
+	\label{eq:interpol}
+\end{align}
+%
+The interpolation can also be interpreted as computing an expected value with probabilities $w_j$ of arriving on a neighboring node $j$:
+%
+\begin{align}
+	\sum{ w_j J(\boldsymbol{x}_j(t+1)) }   &= E \left[ J(\boldsymbol{x}(t+1)) \right] \\ 
+	\text{if} & \quad
+	p \Big(
+	\boldsymbol{x}(t+1) = \boldsymbol{x}_j 
+	\; \Big| \; 
+	\boldsymbol{x}(t) , \boldsymbol{u}(t) , \boldsymbol{d}(t) 
+	\Big)  = w_j
+	\label{eq:expectation}
+\end{align}
+%
+Thus the value iteration updates have the form:
+%
+\begin{align}
+	J(\boldsymbol{x}_i) \Leftarrow \operatornamewithlimits{min}\limits_{\boldsymbol{u}} 
+	\left[ g(\boldsymbol{x}_i,\boldsymbol{u}) + \sum{ w_j J(\boldsymbol{x}_j(t+1))}  \right]
+		\label{eq:interpol}
+\end{align}
+%
+and the optimal control policy is computed for all nodes as:
+%
+\begin{align}
+\pi(\boldsymbol{x}_i) = \operatornamewithlimits{argmin}\limits_{\boldsymbol{u}} 
+\left[ g(\boldsymbol{x}_i,\boldsymbol{u}) + \sum{ w_j J(\boldsymbol{x}_j(t+1))}  \right]
+\end{align}
+%
+or equivalently with the probabilistic view:
+%
+\begin{align}
+J(\boldsymbol{x}_i) \Leftarrow \operatornamewithlimits{min}\limits_{\boldsymbol{u}} E \Big[ g(\boldsymbol{x}_i,\boldsymbol{u}) + J(\boldsymbol{x}_j(t+1))  \Big] \\
+\pi(\boldsymbol{x}_i) = \operatornamewithlimits{argmin}\limits_{\boldsymbol{u}}  E \Big[ g(\boldsymbol{x}_i,\boldsymbol{u}) + J(\boldsymbol{x}_j(t+1))  \Big]
+\end{align}
+
+
+
+As illustrated at Figure. \ref{fig:Probinterpolation}, this scheme can also be interpreted as aggregating the continuous space state into discrete nodes with the weight factors corresponding to aggregation probabilities. Hence, the problem that is solved correspond to a stochastic shortest path problem. Knowledge regarding stochastic distribution of disturbances could be included easily with this formulation. However here disturbance are fixed to their expected value of zero, the certainty equivalence assumption \cite{bertsekas_dynamic_2000}. Even if the uncertainty of the system is not modeled directly, the interpolation scheme has an effect equivalent to including a disturbance leading to an uncertainty on the state evolution of roughly the size of the grid.
 
 
 %\subsubsection{Termination conditions}
@@ -1601,7 +1646,7 @@ Fig. \ref{fig:rob} shows four additional experiments for demonstrating how distu
 
 Note that the discontinuous torque required to guarantee convergence despite disturbances is bigger for the case when the disturbance bound is increased, and also is greatly reduced when down-shifting to a large gear-ratio at low speeds (since the required discontinuous gain is inversely proportional to the gear-ratio). In a practical implementation, smoothing techniques should be implemented to avoid exciting the unmodeled high-frequency modes with the chattering coming from the discontinuous torque chattering.
 
-TODO include figure of data for experiment with 2-DOF
+TODO include figure of data for the experiment with 2-DOF
 
 
 \section{Summary}
