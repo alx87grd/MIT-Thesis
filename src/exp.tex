@@ -134,7 +134,7 @@ A \textit{Maxon} motor of the serie RE-25, with maximum continuous power of 20 w
 			\hline
 			       & $\frac{w_1}{w_o}$ & $\frac{w_2}{w_o}$ & Watts & Watts & Nm & RPM \\
 			\hline \hline
-			Wrist & 23 & 474  & 100 & 20 & 15 & 220 \\
+			Wrist & 23 & 474  & 100 & 20 & 14 & 220 \\
 			Elbow & 72 & 1225 & 100 & 20 & 37 & 70 \\
 			\hline
 		\end{tabular}
@@ -200,27 +200,30 @@ A 4-bar mechanism is designed to transmit the linear actuator motion to the revo
 	\label{fig:4bar}
 \end{figure}
 
-The geometry of the 4-bar mechanism has been designed to achieve the desired range of angles for the shoulder, and keeping the kinematic relationship, between linear displacement and shoulder angle, as linear as possible. Fig. XXX illustrate the kinematic relationship of the designed mechanism. Note that in the software controlling the arm, this kinematic relationship is computed explicitly for the inverse-kinematic but the forward kinematic is approximated with a numerical interpolation (computing the shoulder position based on encoder measurement of the linear actuator). The shoulder forward kinematic as a unique solution for the range of physically possible value with prototype.
+The geometry of the 4-bar mechanism has been designed to achieve the desired range of angles for the shoulder, and keeping the kinematic relationship, between linear displacement and shoulder angle, as linear as possible. Fig. \ref{fig:shoulder_kinematic} illustrate the kinematic relationship of the designed mechanism. Note that in the software controlling the arm, this kinematic relationship is computed explicitly for the inverse-kinematic but the forward kinematic is approximated with a numerical interpolation (computing the shoulder position based on encoder measurement of the linear actuator). The shoulder forward kinematic as a unique solution for the range of physically possible value with prototype.
 
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=0.65\textwidth]{shoulder_kinematic.pdf}
+	\caption{Shoulder 4-bar mechanism kinematic}
+	\label{fig:shoulder_kinematic}
+\end{figure}
 
-TODO include 4-bar kinematic graph
-
-
-The mechanical advantage between linear motion and shoulder rotation is thus on average about XXX. This correspond to average total reduction ratios $R_1 = ??? $ and $R_2 = ???$. Surprisingly, the shoulder joint mechanism is backdrivable, even during high-force mode. This illustrates the efficiency of ballscrew-based reduction mechanism. During high-speed mode, a human can easily move the first joint of the robot with almost no resistance. During high-force mode, the reflected inertia is incredibly large, but a human can still make the shoulder joint move very slowly by pushing hard (with open circuit for the motor). However, if there is a small damping force at M2 motor shaft (by closing the motor electric circuit for instance), than back-driving the system is almost impossible.   
+The mechanical advantage between linear motion and shoulder rotation is thus on average about 360 deg/m, or a ratio of 50:1 from ballscrew rotation to shoulder rotation. This correspond to average total reduction ratios $R_1 = 200 $ and $R_2 = 3600 $. Surprisingly, the shoulder joint mechanism is backdrivable, even during high-force mode. This illustrates the efficiency of ballscrew-based reduction mechanism. During high-speed mode, a human can easily move the first joint of the robot with almost no resistance. During high-force mode, the reflected inertia is incredibly large, but a human can still make the shoulder joint move very slowly by pushing hard (with open circuit for the motor). However, if there is a small damping force at M2 motor shaft (by closing the motor electric circuit for instance), than back-driving the system is almost impossible.   
 
 \begin{table}[htbp]
 	\centering
 	\caption{DSDM-Arm Joint Specifications}
-		\begin{tabular}{ c c c c c c c c }
+		\begin{tabular}{ c c c c c c c c c c }
 			\hline
-			   & Range  & \multicolumn{2}{c}{Max. Velocity} & \multicolumn{2}{c}{Max. Torque} & \multicolumn{2}{c}{Reflected Rotor Inertia} \\
-			   & deg & \multicolumn{2}{c}{RPM} & \multicolumn{2}{c}{Nm} & \multicolumn{2}{c}{kg $m^2$} \\
+			   & Range  & \multicolumn{2}{c}{Reduction} & \multicolumn{2}{c}{Max. Velocity} & \multicolumn{2}{c}{Max. Torque} & \multicolumn{2}{c}{Inertia} \\
+			   & deg & & &\multicolumn{2}{c}{RPM} & \multicolumn{2}{c}{Nm} & \multicolumn{2}{c}{kg m$^2$} \\
 				\hline 
-			  & & HF & HS & HF & HS & HF & HS \\
+			  & & HF & HS & HF & HS & HF & HS & HF & HS \\
 			\hline
-			 Wrist & $\infty$ & ?? & 220 & 37 & ?? & ?? & ??    \\
-			 Elbow & $\infty$ & ?? & 70  & 15 & ?? & ?? & ??    \\
-			 Shoulder & 120   & ?? & ??  & ?? & ?? & ?? & ??    \\
+			 Wrist & $\infty$ & 474:1  & 23:1  & 10 & 220 & 14  & 2 & 0.22 & 0.004 \\
+			 Elbow & $\infty$ & 1225:1 & 72:1  & 4  & 70  & 37  & 7 & 1.5  & 0.04  \\
+			 Shoulder & 120   & 3600:1 & 200:1 & 1  & 25  & 108 & 6 & 13   & 0.04  \\
 			\hline
 		\end{tabular}
 	\label{tab:robotspec}
