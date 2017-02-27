@@ -501,7 +501,7 @@ The proposed closed-loop controller, shown in Fig. \ref{fig:Rstar_block_big}, is
 Then given the actual position $\vec{q}$, actual speed $\dot{\vec{q}}$ and desired instantaneous acceleration $\ddot{\vec{q}}_r$ compute extrinsic and intrinsic forces for this dynamic state:
 %
 \begin{align}
-	&\vec{\tau}_{E} = H \vec{ \ddot{q}_r } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \quad\quad
+	&\vec{\tau}_{E} = H \vec{ \ddot{q}_r } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \quad
 	&\vec{\tau}_{I} = I \vec{ \ddot{q}_r } + B \vec{ \dot{q} } 
 \end{align}
 %
@@ -549,7 +549,7 @@ First, the following intermediary variables are computed:
 As for the R* Computed Torque, inverse dynamic for intrinsic and extrinsic forces are then computed for this dynamic state:
 %
 \begin{align}
-	&\vec{\tau}_{E} = H \vec{ \ddot{q}_r } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \quad\quad
+	&\vec{\tau}_{E} = H \vec{ \ddot{q}_r } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \quad
 	&\vec{\tau}_{I} = I \vec{ \ddot{q}_r } + B \vec{ \dot{q} } 
 \end{align}
 %
@@ -604,13 +604,14 @@ Rearranging the torque law gives:
 	+ R \tau_{I}(\overbrace{\ddot{q}_r - \eta sgn( s )}^{\ddot{q}_a} ,\dot{q})
 \end{align}
 %
-Minimizing torque computed with this laws over possible $R$ also have a enlightening analytical solution:
+Minimizing torque computed with this sliding mode control law over possible $R$, also have an enlightening analytical solution:
 %
 \begin{align}
 	R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \tau^2 \right] = \sqrt{ \left | \frac{\tau_{E}(\ddot{q}_a,\dot{q},q) + | d |_{max} \, sgn( s ) }{\tau_{I}(\ddot{q}_a,\dot{q})} \right |   } 
 \label{eq:rstar_sliding}
 \end{align}
-Hence, if no disturbance is expected ($| d |_{max}=0$) then the solution is, as before, a compromise between extrinsic and intrinsic forces. However, knowledge of uncertainty in the form of disturbances bound modify the optimal gear-ratio solution. When large disturbances are expected ($| d |_{max}$ is large) the solution is biased toward larger gear-ratios, which is consistent with the sensitivity analysis that concluded that larger gear-ratio attenuate the effect of disturbances. All in all, minimizing torque computed with the sliding mode law, is a way to naturally improve the decision regarding the best gear-ratios, in function of some knowledge of the expected uncertainty.
+
+If no disturbance is expected ($| d |_{max}=0$) then the solution is, as before, a compromise between extrinsic and intrinsic forces. However, knowledge of uncertainty in the form of disturbances bound modify the optimal gear-ratio solution. When large disturbances are expected ($| d |_{max}$ is large) the solution is biased toward larger gear-ratios, which is consistent with the sensitivity analysis that concluded that larger gear-ratio attenuate the effect of disturbances. All in all, minimizing torque computed with the sliding mode law, is a way to naturally improve the decision regarding the best gear-ratios, in function of some knowledge of the expected uncertainty.
 %
 
 \subsection{Adaptation}
@@ -623,9 +624,9 @@ If the uncertainty is structured as unknown model parameters in the extrinsic dy
  \label{eq:adapt}
 \end{align}
 %
-If used in conjunction with the R* Computed Torque controller, decisions regarding the optimal gear-ratio would improve as adaptation converge. Note that correct gear-ratio decision depends of the correct estimation of extrinsic torque, not model parameters explicitly, which are harder to estimate since requiring sufficient excitation. 
+If used in conjunction with the R* Computed Torque controller, decisions regarding the optimal gear-ratio would improve as adaptation converge. Note that correct gear-ratio decision depends on the correct estimation of extrinsic torque, not model parameters explicitly, which are harder to estimate since requiring sufficient excitation. 
 
-If the adaptation is always aware of the selected gear-ratio, then traditional adaption scheme can be implemented. For instance, for 1-DoF robot with the following EoM:
+If the adaptation is always aware of the selected gear-ratio, then traditional adaption scheme can be implemented. For instance, for a 1-DoF robot with the following EoM:
 %
 \begin{align}
 	\left[ H + R^2 I \right] \ddot{q} + \left[ R^2 B \right] \dot{q} + \left[ mg \sin( q ) \right] = R \tau
@@ -774,7 +775,7 @@ If the policy for motor torque $\vec{\tau}_k(\vec{x})$ is substituted in the cos
 r_{ij} ( \vec{x} ) = 0
 \end{align}
 %
-If $r_{ij}>0$ then the decision is $k=i$, while if $r_{ij}<0$ the decision is $k=j$. With the computed torque as policy for motor torque, for a 1-DoF system, the decision boundary between $k=i$ and $k=j$ takes the form
+If $r_{ij}>0$ then the decision is $k=i$, while if $r_{ij}<0$ the decision is $k=j$. When using the R* Computed Torque controller for a 1-DoF system, the decision boundary between $k=i$ and $k=j$ takes the form
 %
 \begin{align}
 0 = r_{ij} ( \vec{x} )  = \left[ \frac{R_i^2-R_j^2}{\frac{1}{R_i^2}-\frac{1}{R_j^2}}\right] - \frac{\tau_E}{\tau_I}
@@ -1648,7 +1649,7 @@ Note that the discontinuous torque required to guarantee convergence despite dis
 
 \subsection{2-DoF Experiments}
 
-Fig. \ref{fig:exp_traj_2dof_x} and Fig. \ref{fig:exp_traj_2dof_u} show an experiment using 2-DoF, the wrist joint and the elbow joint of the DSDM-Arm. The goal is a fixed joint configuration, and the R* Sliding Mode controller including the Rollout gear-selection scheme are used. 
+Fig. \ref{fig:exp_traj_2dof_x} and Fig. \ref{fig:exp_traj_2dof_u} show an experiment using 2-DoF, the wrist joint and the elbow joint of the DSDM-Arm. The goal is a fixed joint configuration, and the R* Sliding Mode controller including the Rollout gear-selection scheme are used. Results shows success in tracking the goal for both DoF.
 
 %
 \begin{figure}[htp]
