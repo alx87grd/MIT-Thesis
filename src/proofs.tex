@@ -559,3 +559,31 @@ Fig. \ref{fig:rollouttrajs} gives a graphical support illutrating the 2D space, 
 \end{figure}
 
 
+
+%
+\begin{align}
+\dot{J}_k(t) = \frac{d}{dt} \int_{t}^{t+h}{  C_k \, d\hat{t} }
+\end{align}
+%
+
+%
+\begin{align}
+\dot{J}_k(t) = C_k( t + h ) -  C_k( t ) +   \int_{t}^{t+h}{ \frac{\partial}{\partial t} C_k \, d\hat{t} }
+\end{align}
+%
+
+%
+\begin{align}
+\dot{J}_k(t) &\leq C_k^{max} -  0   +   \int_{t}^{t+h}{ \dot{C}_k^{max} \, d\hat{t} } \\
+\dot{J}_k(t) &\leq C_k^{max}  +   \dot{C}_k^{max} h
+\end{align}
+%
+
+
+The time derivative of instantaneous cost in the simulation can be expressed as:
+%
+\begin{align}
+\dot{C}_k    = \frac{\partial C_k}{\partial t} = \frac{\partial C_k}{\partial \vec{\tau}} \frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}} \frac{\partial \vec{\hat{x}}}{\partial t} 
+\end{align}
+%
+The term $\frac{\partial C_k}{\partial \vec{\tau}}$ is the sensitivity of the used cost function with respect to computed torques. The term $\frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}}$ is the sensitivity of computed torque with respect to states. The term $\frac{\partial \vec{\hat{x}}}{\partial t}$ represents by how much the states at time $\hat{t}$ (in the simulation) would change if the simulation would have started $dt$ later. 
