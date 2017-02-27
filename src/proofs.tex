@@ -422,22 +422,34 @@ Thus, if the gains are defined based on disturbance bounds and according to eq.\
 This section provides minimum delay guarantees for successive gear-shift when using the Rollout gear-selection scheme. 
 
 \paragraph{Problem setting}
-First, using the Rollout approach the optimal gear-ratio mode $k^*$ selection is done as follow:
+First, using the Rollout approach, the optimal gear-ratio mode $k^*$ selection is done as follow:
 %
 \begin{align}
 k^*(t)   &= \operatornamewithlimits{argmin}\limits_{k} \left[ J_k(t) + Q \, [[ k \neq k_{previous}]] \, \right]
 \label{eq:rolloutsimple}
 \end{align}
 %
-where $J_k(t)$ is the computed cost over the simulated trajectory over the time horizon $h$ using the gear-ration mode $k$. An additional instantaneous cost $Q$ is added when the gear-ratio mode is changed.
+where $J_k(t)$ is the computed cost over the simulated trajectory over the time horizon $h$ using the gear-ratio mode $k$. An additional instantaneous cost $Q$ is added when the gear-ratio mode is changed.
 %
 The integral cost is given by:
 %
 \begin{align}
-J_k(t) = \int_{t}^{t+h}{  C_k \, d\hat{t} }
+J_k(t) = \int_{t}^{t+h}{  C_k( \hat{\vec{x}}_k ) \, d\hat{t} }
 \end{align}
 %
-where $C_k$ is the instantaneous cost and $\hat{t}$ is the virtual time in the simulation. The instantaneous cost is a function of state and time. In this thesis the instantaneous cost is always simply the squared actuator torques:
+where $C_k$ is the instantaneous cost, $\hat{t}$ is the virtual time in the simulation and $\hat{\vec{x}}$ the predicted trajectory. The virtual state trajectory is computed by simulating the system in closed-loop, using the base-policy:
+%
+\begin{align}
+\hat{\vec{x}}_k( \hat{t} , t ) = \int_{t}^{t+h}{  \dot{\hat{\vec{x}}}_k \, d\hat{t} } + \vec{x}(t)
+\end{align}
+%
+If both the real system and simulations are robustly staying on the desired trajectory, then the virtual states in the simulation are independent of actual starting simulation time:
+%
+\begin{align}
+\hat{\vec{x}}_k( \hat{t} , t ) = \vec{x}( \hat{t} ) =  \vec{x}_d( \hat{t} )
+\end{align}
+%
+In this thesis the instantaneous cost is usually taken to be squared actuator torques:
 %
 \begin{align}
 C_k =  \vec{\tau}_k^T \vec{\tau}_k
@@ -451,19 +463,20 @@ It will be assumed that and upper bound can be found for the instantaneous cost,
 C_k^{max} =  \operatornamewithlimits{max}\limits_{\vec{x},t \in D} C_k(\vec{x},t)
 \end{align}
 %
-Such a bound should always exist given reasonable assumptions:                  \\
-- Domain of interest $D$ constraint all states to finite values                 \\
-- Desired trajectory has bounded acceleration, speed and position values        \\
-- Absence of singularity where inertia matrix values can tend toward infinity   \\
+Such a bound should always exist given reasonable assumptions: 
+\begin{itemize}
+	\item Domain of interest $D$ constraint all states to finite values
+	\item Desired trajectory has bounded acceleration, speed and position values 
+	\item Absence of singularity where inertia matrix values can tend toward infinity
+\end{itemize}
 
 For instance, if using computed torque as base policy and a torque-squared criteria, the maximum instantaneous cost value is given by:
 %
 \begin{align}
-C_k^{max} =  |\vec{\tau}_{k}|_{max}^T |\vec{\tau}_{k}|_{max}
+C_k^{max} =  \operatornamewithlimits{max} \vec{\tau}_k^T \vec{\tau}_k \leq \sum \operatornamewithlimits{max} \left[\vec{\tau}_{k}\right]_{i}^2 
 \end{align}
 %
-where $|\vec{\tau}_{k}|_{max}$ is a vector of the highest possible computed joint torques in the domain of interest $D$.
-
+where $\operatornamewithlimits{max} \left[\vec{\tau}_{k}\right]_{i}$ is the maximum value that can be computed for joint $i$ when using the gear-ratio $k$.
 
 \subsection{On a trajectory}
 \label{sec:chat1}
@@ -520,6 +533,7 @@ The cost variation is thus bounded is this range:
 %
 \begin{align}
 -C_k^{max} \Delta t  \leq \Delta J_k \leq C_k^{max} \Delta t
+\label{eq:costvariation}
 \end{align}
 %
 Hence the time evolution of computed cost can be bounded:
@@ -559,31 +573,86 @@ Fig. \ref{fig:rollouttrajs} gives a graphical support illutrating the 2D space, 
 \end{figure}
 
 
-
+The time derivative of the cost $J_k$, representing how much the computed cost change if the simulation is conducted $dt$ later in time, is given by:
 %
 \begin{align}
 \dot{J}_k(t) = \frac{d}{dt} \int_{t}^{t+h}{  C_k \, d\hat{t} }
 \end{align}
 %
-
+Using Leibniz's rule:
 %
 \begin{align}
 \dot{J}_k(t) = C_k( t + h ) -  C_k( t ) +   \int_{t}^{t+h}{ \frac{\partial}{\partial t} C_k \, d\hat{t} }
 \end{align}
 %
-
+for which it is possible to find an upper bound:
 %
 \begin{align}
-\dot{J}_k(t) &\leq C_k^{max} -  0   +   \int_{t}^{t+h}{ \dot{C}_k^{max} \, d\hat{t} } \\
-\dot{J}_k(t) &\leq C_k^{max}  +   \dot{C}_k^{max} h
+\dot{J}_k(t) &\leq C_k^{max} -  0   +   \int_{t}^{t+h}{ \dot{C}_k^{max} \, d\hat{t} }  \leq C_k^{max}  +   \dot{C}_k^{max} h
 \end{align}
 %
-
-
-The time derivative of instantaneous cost in the simulation can be expressed as:
+Note that compared to the last section analysis (fixed trajectory, the is an additional term  $\dot{C}_k^{max} h$ representing sensitivity of states trajectory in simulations. Then, most of the previous analysis is still valid, except that the bounds on cost variation of eq. \label{eq:costvariation}, are now given instead by:
+%
+\begin{align}
+-\left[ C_k^{max}  +   \dot{C}_k^{max} h \right] \Delta t  \leq \Delta J_k \leq \left[ C_k^{max}  +   \dot{C}_k^{max} h \right] \Delta t
+\label{eq:costvariationnew}
+\end{align}
+%
+And the final result is modified to be:
+%
+\begin{align}
+\Delta t \geq \frac{Q}{ C_k^{max}  +   \dot{C}_k^{max} h }
+\end{align}
+%
+Regarding the new term, the time derivative of instantaneous cost in the simulation can be expressed as:
 %
 \begin{align}
 \dot{C}_k    = \frac{\partial C_k}{\partial t} = \frac{\partial C_k}{\partial \vec{\tau}} \frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}} \frac{\partial \vec{\hat{x}}}{\partial t} 
 \end{align}
 %
 The term $\frac{\partial C_k}{\partial \vec{\tau}}$ is the sensitivity of the used cost function with respect to computed torques. The term $\frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}}$ is the sensitivity of computed torque with respect to states. The term $\frac{\partial \vec{\hat{x}}}{\partial t}$ represents by how much the states at time $\hat{t}$ (in the simulation) would change if the simulation would have started $dt$ later. 
+
+
+
+The virtual trajectory can be parametrized as the sum of the desired trajectory and error:
+%
+\begin{align}
+\vec{\hat{x}}( \hat{t} , t ) =  \vec{\hat{x}}_e( \hat{t} , t ) + \vec{\hat{x}}_d( \hat{t} )
+\end{align}
+%
+Because the desired trajectory is independent of starting simulation time $t$:
+%
+\begin{align}
+\frac{\partial \vec{\hat{x}}}{\partial t}  = \frac{\partial \vec{\hat{x}}_e}{\partial t}
+\end{align}
+%
+
+%
+\begin{align}
+\vec{\hat{x}}_e( \hat{t} , t ) = \int_{t}^{t+h}{  \dot{\hat{\vec{x}}}_e \, d\hat{t} } + \vec{x}_e(t)
+\end{align}
+%
+This is useful because, for the closed-loop system, the error dynamic is stable and linear. 
+
+%
+\begin{align}
+\dot{\hat{\vec{x}}}_e = A \hat{\vec{x}}_e  \quad \Rightarrow \quad  \hat{\vec{x}}_e(\hat{t}) = e^{A \hat{t}} \hat{\vec{x}}_e(\hat{t}=0)
+\end{align}
+%
+%
+\begin{align}
+\vec{\hat{x}}_e( \hat{t} , t ) = e^{A \hat{t}} \hat{\vec{x}}_e(t) + \vec{x}_e(t) = \left[ e^{A \hat{t}} + 1 \right] \vec{x}_e(t)
+\end{align}
+%
+
+
+%
+\begin{align}
+\frac{\partial \vec{\hat{x}}}{\partial t}  = \left[ e^{A \hat{t}} + 1 \right] \dot{\vec{x}}_e(t)
+\end{align}
+%
+
+Hence trajectory sensitivity for two 
+
+
+
