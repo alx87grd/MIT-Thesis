@@ -1186,7 +1186,7 @@ In this case, the transition is simple because the system goes from 1 DoF to 2 D
 \subsubsection{Down-shift: $k:2\rightarrow1$}
 In this case, the transition is harder because the system goes from 2 DoF to 1 DoF, and some synchronization work is needed. As described by eq. \eqref{eq:downshiftmap_nonideal}, closing the brake will lead to an undesirable impulsive behavior if M1 velocity is not zero. M1 speed $w_1$ must thus be brought to zero so that the locking brake can be engaged smoothly without any impact. Hence, as illustrated at Fig. \ref{fig:automaticflow}, when a down-shift is commanded, and intermediary synchronization control mode is activated, and the brake is only closed after M1 as reach zero velocity (a small value when implemented in practice). %Two algorithms, a kinematic and a dynamic approach, can be considered. 
 
-\subsubsection{Synchronization controller}
+\subsection{Synchronization controller}
 First, a solution from a kinematic point-of-view is considered, then more flexible dynamic approach is proposed. Assuming the two motor velocities $w_1$ and $w_2$ can be treated as control inputs, then using the nullspace projection vector from eq.\eqref{eq:kinematicnullspace}, the kinematic control law can be written as 
 %
 \begin{align}
@@ -1367,7 +1367,7 @@ w_1^+ =  w_1^- + \Delta w_1 \approx w_{1,d}  + R_1 \frac{ p_{ext} }{I_o + I_1 R_
 \end{align}
 %
 Hence, it would be possible to engaged the brake and switch to high-force mode almost instantaneously. In practice, because of speed saturation it won't always be possible to perfectly track the desired speed $w_{1,d}$ in the nullspace, or to perfectly predict the contact impulse $p_{ext}$. However, by running this control scheme and bringing $w_1^+$ as close as possible to zero, gear-shift will nonetheless be achieved faster because synchronization error will be smaller at the start of the down-shift process.
-
+%
 The preparation controller is illustrated in the form of a block diagram at Fig. \ref{fig:imp_loop}. Note that the expected impulse would need to to be computed by an high-level controller aware of the general system situation. Section \ref{sec:contact} present techniques to estimate impulsive contact forces based on a dynamic model of a robot that could be used by the high-level controller. 
 
 
