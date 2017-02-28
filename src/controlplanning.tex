@@ -572,6 +572,13 @@ R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \vec{\tau}^T\vec{\tau
 \vec{\tau}^* &= (R^*)^{-1} \vec{\tau}_{E} + R^* \vec{\tau}_{I} - (R^*)^{-1} G sgn( \vec{s} ) 
 \end{align} 
 %
+\begin{figure}[t]
+	\centering
+		\includegraphics[width=0.99\textwidth]{sliding_blocks.png}
+	\caption{R* Sliding Mode Controller}
+	\label{fig:sliding_blocks}
+\end{figure}
+%
 To guarantee convergence despite uncertainty, the discontinuous gain are set as a function of bounds on uncertainty:
 %
 \begin{align}
@@ -711,7 +718,23 @@ The result of this optimization is independent from the position of states with 
 
 A better approach to the problem of avoiding fast gear-shifting, is to associate a one-time cost with transitions and optimize over a time-horizon. This way a trade-off between changing gear-ratio quickly to minimize torques and minimizing the number of gear-shifts can be formalized.
 
-The proposed approach to implement this idea in a closed-loop control scheme is to use predictive simulations over a receding time-horizon, analogous to the model predictive control scheme. Predicted trajectories are computed by simulating the robotic system under the control of a base policy that consist in 1) keep the gear-ratios fixed 2) motor torques controlled with the computed torque or sliding mode feedback law. An integral cost $J_k$ for each of those $l$ simulated trajectory with fixed gear-ratios is computed:
+\begin{figure}[tp]
+	\centering
+		\includegraphics[width=0.99\textwidth]{Rollout_block.png}
+	\caption{Rollout with Computed Torque control as base policy}
+	\label{fig:Rollout_block}
+\end{figure}
+
+\begin{figure}[tp]
+	\centering
+		\includegraphics[width=0.99\textwidth]{Rollout_sliding_block.png}
+	\caption{Rollout with Sliding Mode control as base policy}
+	\label{fig:Rollout_sliding_block}
+\end{figure}
+
+The proposed approach to implement this idea in a closed-loop control scheme, is to use predictive simulations over a receding time-horizon, analogous to the model predictive control scheme. Predicted trajectories are computed by simulating the robotic system under the control of a base policy that consist in 1) keep the gear-ratios fixed 2) motor torques controlled with the computed torque or sliding mode feedback law.  The approach is illustrated at Fig. \ref{fig:Rollout_block} and Fig. \ref{fig:Rollout_sliding_block}.
+
+An integral cost $J_k$ for each of those $l$ simulated trajectory with fixed gear-ratios is computed:
 %
 \begin{align}
 J_k &= \int_t^{t+h} \vec{\tau}_k^T \vec{\tau}_k d\hat{t}
@@ -733,7 +756,7 @@ where $Q$ is the cost penalty for gear-shifting. Hence, optimal gear-ratios exec
 	\label{fig:rollout}
 \end{figure}
 %
-This scheme is very related to the Rollout approach \cite{bertsekas_dynamic_2000}. However here the optimization is conducted only over the gear-ratio options, not all possible control action at time $t$ like in the original technique. The two reasons for not implementing a full scale optimization including also many possible torque inputs at time $t$ are: 1) computational limitations and 2) by applying the base policy torques at time $t$ convergence can be guaranteed. 
+This scheme is very related to the Rollout controller \cite{bertsekas_dynamic_2000}, and it will thus be refer to as the Rollout approach.  However here the optimization is conducted only over the gear-ratio options, not all possible control action at time $t$ like in the original technique. The two reasons for not implementing a full scale optimization including also many possible torque inputs at time $t$ are: 1) computational limitations and 2) by applying the base policy torques at time $t$ convergence to the desired trajectory can be guaranteed. 
 
 Advantageous features of the Rollout gear-selection scheme are 1) filtering-out fast un-desirable gear-shifts 2) commanding gear-shift in advance, which can compensate for gear-shift delay with the physical system (situation just entering the horizon at time $t+h$ influence the gear selection at time $t$).
 
@@ -849,7 +872,7 @@ where the variable $h$ is the time horizon and $\dot{C}$ represent the sensitivi
 
 \paragraph{R* Computed Torque} The only parameters with the computed torque controller are matrices $K_D$ and $K_P$. Those can be understood as multi-DoF proportional and derivative gains. Stability is guaranteed for any positive definite matrix.
 
-For simplicity, matrix can be diagonal and parametrized by:
+For simplicity, matrices can be diagonal and parametrized by:
 %
 \begin{align}
 K^D_{ii} = \frac{2}{\tau} \quad   K^P_{ii} = \left(\frac{1}{\tau}\right)^2

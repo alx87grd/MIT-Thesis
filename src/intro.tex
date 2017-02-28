@@ -90,20 +90,20 @@ Changing the gear-ratio has a radical effect on the natural dynamics of a system
 For a multiple DoF mechanism, the speed/force properties are directional. Typically the Jacobian of a mechanism is only a function of the configuration $J=J(\vec{q})$, but a mechanism using $m$ variable gear-ratio actuators with $l$ possible gear-ratio, the Jacobian (from actuator coordinates to task-space coordinates) would also be function of the selected gear-ratios $R$, i.e. dependent on control inputs : $J=J(\vec{q},R)$. Hence, for a given configuration there is $n^l$ manipulability ellipsoid option. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear-ratios would be picked to meet the task requirement.
 
 
-\begin{figure}[H]
+\begin{figure}[hb]
 	\centering
 		\includegraphics[width=0.80\textwidth]{gearselectionlegged.pdf}
 	\caption{Example of advantageous gear selection with a multi-DOF robot}
 	\label{fig:gearselectionlegged}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[hb]
         \centering
 				\subfloat[Fast leg placement]{
-				\includegraphics[width=0.35\textwidth]{legHS.png}
+				\includegraphics[width=0.30\textwidth]{legHS.png}
 				\label{fig:legHS}}
         \subfloat[High load bearing]{
-				\includegraphics[width=0.65\textwidth]{legHF.png}
+				\includegraphics[width=0.55\textwidth]{legHF.png}
 				\label{fig:legHF}}
         \caption{Advantageous gear-ratio selection for locomotion}\label{fig:legsol}
 \end{figure}

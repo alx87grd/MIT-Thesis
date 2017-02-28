@@ -588,7 +588,8 @@ Using Leibniz's rule:
 for which it is possible to find an upper bound:
 %
 \begin{align}
-\dot{J}_k(t) &\leq C_k^{max} -  0   +   \int_{t}^{t+h}{ \dot{C}_k^{max} \, d\hat{t} }  \leq C_k^{max}  +   \dot{C}_k^{max} h
+\dot{J}_k(t) &\leq C_k^{max} -  0   +   \int_{t}^{t+h}{ \dot{C}_k^{max} \, d\hat{t} }  \\
+\dot{J}_k(t) &\leq C_k^{max}  +   \dot{C}_k^{max} h
 \end{align}
 %
 Note that compared to the last section analysis (fixed trajectory, the is an additional term  $\dot{C}_k^{max} h$ representing sensitivity of states trajectory in simulations. Then, most of the previous analysis is still valid, except that the bounds on cost variation of eq. \label{eq:costvariation}, are now given instead by:
@@ -610,7 +611,27 @@ Regarding the new term, the time derivative of instantaneous cost in the simulat
 \dot{C}_k    = \frac{\partial C_k}{\partial t} = \frac{\partial C_k}{\partial \vec{\tau}} \frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}} \frac{\partial \vec{\hat{x}}}{\partial t} 
 \end{align}
 %
-The term $\frac{\partial C_k}{\partial \vec{\tau}}$ is the sensitivity of the used cost function with respect to computed torques. The term $\frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}}$ is the sensitivity of computed torque with respect to states. The term $\frac{\partial \vec{\hat{x}}}{\partial t}$ represents by how much the states at time $\hat{t}$ (in the simulation) would change if the simulation would have started $dt$ later. 
+The term $\frac{\partial C_k}{\partial \vec{\tau}}$ is the sensitivity of the used cost function with respect to computed torques. For quadratic torques cost:
+%
+\begin{align}
+\frac{\partial C_k}{\partial \vec{\tau}_k} = 2\vec{\tau}_k^T
+\end{align}
+%
+The term $\frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}}$ is a Jacobian Matrix representing the sensitivity of computed torque with respect to states. This matrix could be computed analytically with the feedback laws, for the computed torque:
+%
+\begin{align}
+\frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}} = 
+\left[ \begin{array}{c c}
+	H_k^{-1} K_D & 0 \\ 0 & H_k^{-1} K_P
+\end{array} \right] +
+\left[ \begin{array}{c c}
+	H_k^{-1} ( D + C + R_k^T B R_k ) & 0 \\ 0  & H_k^{-1} \frac{\partial \vec{g}}{\partial \vec{q}}
+\end{array} \right] 
+\end{align}
+%
+
+
+The term $\frac{\partial \vec{\hat{x}}}{\partial t}$ represents by how much the states at time $\hat{t}$ (in the simulation) would change if the simulation would have started $dt$ later. 
 
 
 
@@ -626,33 +647,38 @@ Because the desired trajectory is independent of starting simulation time $t$:
 \frac{\partial \vec{\hat{x}}}{\partial t}  = \frac{\partial \vec{\hat{x}}_e}{\partial t}
 \end{align}
 %
-
+%
+%%
+%\begin{align}
+%\vec{\hat{x}}_e( \hat{t} , t ) = \int_{t}^{t+h}{  \dot{\hat{\vec{x}}}_e \, d\hat{t} } + \vec{x}_e(t)
+%\end{align}
+%%
+For the closed-loop system with the Computed Torque controller, the error dynamic is stable and linear, hence:
 %
 \begin{align}
-\vec{\hat{x}}_e( \hat{t} , t ) = \int_{t}^{t+h}{  \dot{\hat{\vec{x}}}_e \, d\hat{t} } + \vec{x}_e(t)
+\dot{\vec{x}}_e = A \vec{x}_e  \quad \Rightarrow \quad  \vec{x}_e( t ) = e^{A t} \vec{x}_e(t=0)
 \end{align}
 %
-This is useful because, for the closed-loop system, the error dynamic is stable and linear. 
-
+Using this matrix exponential solution for error trajectory in the simulations leads to 
 %
 \begin{align}
-\dot{\hat{\vec{x}}}_e = A \hat{\vec{x}}_e  \quad \Rightarrow \quad  \hat{\vec{x}}_e(\hat{t}) = e^{A \hat{t}} \hat{\vec{x}}_e(\hat{t}=0)
+\vec{\hat{x}}_e( \hat{t} , t ) = e^{A (\hat{t} - t )} \vec{x}_e(t)  
 \end{align}
 %
+since initial error in the simulations is the real error at time $t$. It is then possible to compute the sensitivity of virtual time with respect to simulation initialization time:
 %
 \begin{align}
-\vec{\hat{x}}_e( \hat{t} , t ) = e^{A \hat{t}} \hat{\vec{x}}_e(t) + \vec{x}_e(t) = \left[ e^{A \hat{t}} + 1 \right] \vec{x}_e(t)
+\frac{\partial \vec{\hat{x}}}{\partial t}  = -A e^{A (\hat{t} - t )} \vec{x}_e(t) + e^{A (\hat{t} - t )} \dot{\vec{x}}_e(t) \leq \vec{b} \quad \forall \, \hat{t} > t
 \end{align}
 %
+Hence trajectory sensitivity can thus be bounded, because the closed-loop error dynamic is linear and stable in simulations (matrix A only has eigenvalues with negative real parts).  All in all, it is thus possible to conclude that:
+\begin{enumerate}
+	\item Sensitivity $\dot{C}_k$ is bounded
+	\item Sensitivity $\dot{C}_k \rightarrow 0$ far ahead in simulations $\hat{t} \rightarrow \infty$
+	\item Sensitivity $\dot{C}_k = 0$ if there is no tracking error $ \vec{x}_e = \vec{0} \quad \dot{\vec{x}}_e = \vec{0}$
+\end{enumerate}
 
-
-%
-\begin{align}
-\frac{\partial \vec{\hat{x}}}{\partial t}  = \left[ e^{A \hat{t}} + 1 \right] \dot{\vec{x}}_e(t)
-\end{align}
-%
-
-Hence trajectory sensitivity for two 
+Note that the last conclusion is consistent with the previous analysis where it was assumed a situation where all trajectories (real, desired and simulations) were all the same.
 
 
 
