@@ -771,14 +771,12 @@ All in all, depending on the complexity of the controlled robotic system and the
 
 \subsection{Stability}
 
-Here stability properties of the proposed control laws are discussed.
+Here stability properties of the proposed control laws are discussed. The main interesting conclusion is that complex gear-selection schemes, such as Rollout, can be implemented in conjunction with the proposed base feedback laws for torques (computed torque or sliding mode), without affecting the stability results. 
 
-\paragraph{R* Computed Torque} Convergence to the desired trajectory, with the R* Computed Torque controller, is guaranteed assuming the model used by the controller is exact. Interestingly this results is valid for any arbitrary sequence of gear-ratios, see details in sec. \ref{sec:stabrstar1}, as long as the feedback law computing the continuous torques $\vec{\tau}$ is aware of the discrete operating mode $k$ specifying the right gear-ratio matrix $R_k$. Hence, any gear-ratio selection scheme can be used, without compromising the convergence to the desired trajectory. 
+\paragraph{R* Computed Torque} Convergence to the desired trajectory, with the R* Computed Torque controller, is guaranteed assuming the model used by the controller is exact. Interestingly this results is valid for any arbitrary sequence of gear-ratios as long as the feedback law computing the continuous torques $\vec{\tau}$ is aware of the discrete operating mode $k$, see details in sec. \ref{sec:stabrstar1}. Hence, any gear-ratio selection scheme can be used, without compromising the convergence to the desired trajectory, including hysteresis, Rollout optimization, etc.
 
 \paragraph{R* Sliding Mode} Guaranteed convergence to the desired trajectory, with the R* Sliding Mode controller, can be extended to situation where the uncertainty can be bounded, assuming gains $G$ are chosen accordingly, see details in sec. \ref{sec:stabrstar2}. Stability is also guaranteed for any sequence of discrete gear-ratio $k$ and thus would not be affected by the closed-loop gear-ratio selection scheme.
 
-%\paragraph{Arbitrary gear-selection} 
-The main interesting conclusion is that complex gear-selection schemes, such as Rollout, can be implemented in conjunction with the proposed base feedback policy for torques (computed torque or sliding mode), without affecting the stability results. 
 
 \subsection{Chattering and high-frequency switching}
 

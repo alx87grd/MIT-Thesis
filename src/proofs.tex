@@ -366,17 +366,17 @@ V = \vec{s}^T \vec{s} \rightarrow 0 \quad\Rightarrow\quad  \vec{s} \rightarrow \
 Note that here the Lyapunov-like function must be continuous and the same for all discrete mode, and its derivative negative definite for all discrete gear-ratio mode $k$ for the argument to hold for arbitrary sequence of gear-ratio $k$ \cite{liberzon_switching_2003}:
 %
 \begin{align}
-\dot{V}_k < -\Phi( V ) < 0 \quad \forall k \quad \quad\Rightarrow\quad V \rightarrow 0
+\dot{V}_k < 0 \quad \forall k \quad \quad\Rightarrow\quad V \rightarrow 0
 \end{align}
 %
-where $\eta$ is a small positive constant. One way to guarantee the sliding condition is individually for each DoF $i$ and each possible mode $k$:
+One way to guarantee the sliding condition is individually for each DoF $i$ and each possible mode $k$:
 %
 \begin{align}
 \frac{d( s_i^2 )}{dt} < -\eta |s_i| \; \quad \forall i \; \forall k
 \label{eq:slidingcondition}
 \end{align}
 %
-From eq.\eqref{eq:slidinglawcl}, sliding variable derivative is given by:
+where $\eta$ is a small positive constant. From eq.\eqref{eq:slidinglawcl}, sliding variable derivative is given by:
 %
 \begin{align}
 \dot{\vec{s}} = H_k^{-1}(\vec{d} - G_k sgn( \vec{s} ))
