@@ -1459,6 +1459,15 @@ Fig. \ref{fig:dsdm_cstspd_shifts_withprep} illustrates how the idea of preparati
 	\caption[DSDM actuator tracking constant output velocity: preparation]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode (with preparation) }
 	\label{fig:dsdm_cstspd_shifts_withprep}
 \end{figure}
+%
+Note that the undesirable jump in velocity at Fig. \ref{fig:dsdm_cstspd_shifts} and Fig. \ref{fig:dsdm_cstspd_shifts_withprep}, actually happens at up-shifts (no impacts) and are caused by the transient response of the high-speed PID controller. This undesirable transient response was limited by implementation issue of the experimental set-up. Fig. \ref{fig:shifts} shows the same experiments when the DSDM controller is implemented on a FPGA at much higher sampling rate, which shows a much smoother output speed throughout the gear-shifting processes. 
+%
+\begin{figure}[htp]
+	\centering
+		\includegraphics[width=0.75\textwidth]{shift.pdf}
+	\caption{Smoother shift behavior with a DSDM controller implemented at higher rate on a FPGA}
+	\label{fig:shifts}
+\end{figure}
 
 %Fig. \ref{fig:dsdm_cstspd_shifts_withprep_zoom} shows a zoom in on a fast down-shift with preparation. 
 
