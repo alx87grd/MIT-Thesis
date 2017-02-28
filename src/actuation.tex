@@ -19,7 +19,10 @@ This technology allows for improved power transmission over a wide range of outp
 \section{Motivation}
 \label{sec:mot}
 
-In many robotic systems, actuators are often required to operate in distinctively different torque-speed load conditions. A legged robot, for example, has to move its leg forward quickly through the air and, once touching the ground, it has to bear a large load \cite{hirose_study_1984}. These two operating conditions, high speed at low torque vs. high torque at low speed, are often an order of magnitude different, while the required output power is similarly low. When the torque-speed load conditions do not vary significantly, a single gear ratio can be picked so that the actuator always operate under nearly optimal conditions. For distinctively different torque-speed conditions, the actuator will be far for its optimal operating conditions with a gear ratio picked from the middle ground. As illustrated on Fig. \ref{fig:speedissue} for a typical electromagnetic (EM) actuator, extremum torque-speed conditions are not optimal in term of efficiency and power output. This often leads to the use of oversized and inefficient actuators, which is inhibitory particularly for mobile robots.
+In many robotic systems, actuators are often required to operate in distinctively different torque-speed load conditions. 
+%A legged robot, for example, has to move its leg forward quickly through the air and, once touching the ground, it has to bear a large load \cite{hirose_study_1984}. These two operating conditions, high speed at low torque vs. high torque at low speed, are often an order of magnitude different, while the required output power is similarly low. When the torque-speed load conditions do not vary significantly, a single gear ratio can be picked so that the actuator always operate under nearly optimal conditions. For distinctively different torque-speed conditions, the actuator will be far for its optimal operating conditions with a gear ratio picked from the middle ground. 
+%
+As illustrated on Fig. \ref{fig:speedissue} for a typical electromagnetic (EM) actuator, extremum torque-speed conditions are not optimal in term of efficiency and power output. This often leads to the use of oversized and inefficient actuators, which is inhibitory particularly for mobile robots.
 
 \begin{figure}[htp]
 	\centering
@@ -32,7 +35,7 @@ In many robotic systems, actuators are often required to operate in distinctivel
 
 Automobiles with internal combustion (IC) engines use transmissions with multiple gear-ratios to match torque-speed conditions. IC engines have a very narrow speed range in which they can effectively deliver power; a transmission with multiple gear ratios is a necessity for the engine to work effectively for a wide range of output speed. EM motors are more flexible than IC engines, but still far from ideal sources. EM motors cannot output high power at low speed because of thermal dissipation and magnetic flux limits related to material properties; are limited in speed by the supply tension and others; and are very inefficient when producing large forces at low speed \cite{hollerbach_comparative_1992}. In robotic, since it is often the extremums, i.e. maximum torque and speed, that determine the actuator design instead of the power requirement, much can be gained with multiple gear ratios.
 
-It will be a significant breakthrough if a type of multiple speed transmission can be used effectively in robotics. Even a small, lightweight actuator can generate large torques and move at high speed if equipped with both large and small gear ratio. Moreover, a multiple gear-ratio transmission can allow an actuator to work closer to its optimal operating conditions, improving overall efficiency significantly. Furthermore, gear shifting significantly changes the intrinsic impedance of an actuator, since the impedance is proportional to the square of the gear-ratio. The actuator may be made back-drivable while using its small reduction ratio, an important property in many applications where the robot physically interacts with the environment \cite{hogan_impedance_2004}. Also the same actuator may be made non-back-drivable while using its large reduction ratio, allowing the actuator to support loads without consuming energy and enabling high-stiffness position control.
+It will be a significant breakthrough if a type of multiple speed transmission can be used effectively in robotics. Even a small, lightweight actuator can generate large torques and move at high speed if equipped with both a large and a small gear-ratio. Moreover, a multiple gear-ratio transmission can allow an actuator to work closer to its optimal operating conditions, improving overall efficiency significantly. Furthermore, gear shifting significantly changes the intrinsic impedance of an actuator, since the impedance is proportional to the square of the gear-ratio. The actuator may be made back-drivable while using its small reduction ratio, an important property in many applications where the robot physically interacts with the environment \cite{hogan_impedance_2004}. Also the same actuator may be made non-back-drivable while using its large reduction ratio, allowing the actuator to support loads without consuming energy and enabling high-stiffness position control.
 
 
 
@@ -41,7 +44,7 @@ It will be a significant breakthrough if a type of multiple speed transmission c
 
 \paragraph{Classical Actuators} Traditional robots generally use actuators that behave as displacement-sources because of their high intrinsic impedance. These include geared EM motors and hydraulics cylinders. Using a force sensor, it is possible to control the output force with this type of actuators, but the bandwidth is rather limited. To guarantee the stability of the force-feedback scheme only half the intrinsic inertia can be canceled \cite{hogan_impedance_2004}. Since 70's, roboticists have been attempting to build actuators that can behave naturally as a force-source such as series-elastic actuators, pneumatic cylinder and air-muscles \cite{hanafusa_stable_1977}\cite{pratt_series_1995}. However, because of the physical limitation of compliant transmission materials, the achievable bandwidth is limited and precise position control is hardly achievable. Direct drive EM actuators are the best force-source actuators with high fidelity, high bandwidth, and have been used for high-speed robots \cite{asada_direct-drive_1987} and more recently small legged robots \cite{kenneally_design_2016}. However, the very low force density \cite{hollerbach_comparative_1992} and low efficiency at low speeds make them impractical for most mobile robot applications, just holding a payload with static torques require continuous currents in the motors leading to a large energy consumption even though no mechanical work is done. 
 
-Regarding power-throughput, as briefly discussed before and illustrated at Fig. \ref{fig:emcurve}, electromagnetic actuators are typically characterized by a flat force curve for most of their range of speed, leading to maximum power been only available at high velocity \cite{girard_two-speed_2015}. Fluidic actuator are typically characterized by a force curves droping quadratically with velocity (related to pressure losses in valves orifices), as illustrated at Fig. \ref{fig:fluidcurve}. All in all, EM and fluidic actuators are not perfect power sources and could benefit from using variable transmissions to have their maximum power available on a much wider range of speed.
+Regarding power-throughput, as briefly discussed before and illustrated at Fig. \ref{fig:emcurve}, electromagnetic actuators are typically characterized by a flat force curve for most of their range of speed, leading to maximum power been only available at high velocity \cite{girard_two-speed_2015}. Fluidic actuators are typically characterized by a force curves droping quadratically with velocity (related to pressure losses in valves orifices), as illustrated at Fig. \ref{fig:fluidcurve}. All in all, EM and fluidic actuators are not perfect power sources and could benefit from using variable transmissions to have their maximum power available on a much wider range of speed.
 
 \begin{figure}[htb]
         \centering
@@ -58,14 +61,14 @@ Regarding power-throughput, as briefly discussed before and illustrated at Fig. 
 
 Some advance electric motor systems can extend their operation at high-speed by weakening the magnetic flux. Such motors can thus transmit their maximum power over a wider range of speed than basic DC motors, see Fig. \ref{fig:EM_fluxweakening}. However, this clever electromagnetic scheme cannot go around the fundamental force saturation at low-speed, which is limited by material properties \cite{hollerbach_comparative_1992}. Hence, there is still a big advantage of using multiple gear-ratio even for motor using advance flux control schemes, see Fig. \ref{fig:EM_two}. 
 
-\begin{figure}[htp]
+\begin{figure}[ht]
 	\centering
 		\includegraphics[width=0.5\textwidth]{EM_fluxweakening.png}
 	\caption{Force-speed curve of electric motor using flux weakening }
 	\label{fig:EM_fluxweakening}
 \end{figure}
 
-\begin{figure}[htp]
+\begin{figure}[ht]
 	\centering
 		\includegraphics[width=0.5\textwidth]{EM_two.png}
 	\caption{Force-speed curve of an electric motor using flux weakening with two different reduction ratio}
@@ -73,20 +76,20 @@ Some advance electric motor systems can extend their operation at high-speed by 
 \end{figure}
 
 
-\paragraph{Variable Impedance Actuators} Force-source type of actuator are desirable for interaction tasks, for instance grasping, manipulation and locomotion, since the interaction force can be controlled. On the other hand, actuators with non-back-drivable mechanisms have the advantage for pure position controlled tasks, disturbance rejection and statically bearing large load without any power consumption. Since both small and large intrinsic impedances are advantageous in different scenario, several group have developed variable intrinsic impedance actuators, such as based on variable stiffness spring \cite{tonietti_design_2005}, antagonist non-linear devices \cite{koganezawa_antagonistic_2006}, a series-compliance that can be locked with a brake \cite{leach_linear_2012} and dual-motors in serial configuration \cite{kim_serial-type_2010}. Furthermore, so-called macro-micro actuators, can improve the bandwidth of force-source type of actuators by exploiting the high-bandwidth of a small actuator in parallel, allowing for wider-range impedance control and improved position control \cite{morrell_parallel-coupled_1998}. Regarding power throughput however, all these technologies are still limited by force-speed characteristic of their main transducer (generally a geared electric motor). Hence, those designs do not solve the problem of efficient power transmission over a wide range of speed.
+\paragraph{Variable Impedance Actuators} Force-source type of actuators are desirable for interaction tasks, for instance grasping, manipulation and locomotion, since the interaction force can be controlled. On the other hand, actuators with non-back-drivable mechanisms have the advantage for pure position controlled tasks, disturbance rejection and statically bearing large load without any power consumption. Since both small and large intrinsic impedances are advantageous in different scenario, several group have developed variable intrinsic impedance actuators, such as based on variable stiffness spring \cite{tonietti_design_2005}, antagonist non-linear devices \cite{koganezawa_antagonistic_2006}, a series-compliance that can be locked with a brake \cite{leach_linear_2012} and dual-motors in serial configuration \cite{kim_serial-type_2010}. Furthermore, so-called macro-micro actuators, can improve the bandwidth of force-source type of actuators by exploiting the high-bandwidth of a small actuator in parallel, allowing for wider-range impedance control and improved position control \cite{morrell_parallel-coupled_1998}. Regarding power throughput however, all these technologies are still limited by force-speed characteristic of their main transducer (generally a geared electric motor). Hence, those designs do not solve the problem of efficient power transmission over a wide range of speed.
 
 \paragraph{Vehicle Powertrains} While the actuator work in robotics have been focused on impedance and bandwidth issues, in the powertrain field the torque-speed matching issue is predominant, since power density and efficiency are critical for mobile systems. The idea of using multiple gear ratios with electric motors has been explored occasionally, to improve efficiency and power density \cite{mckeegan_antonovs_2011}. A twin motor configuration has been proposed for smooth gear shifting, where each motor shifts at a different timing \cite{bologna_electric_2014}. Also, a dual motor configuration using a planetary coupling and non-back-drivable worm-gears was proposed for a mobile robot powertrain \cite{lee_new_2012}. Multiple gear-ratio powertrains provide effective solutions for torque-speed matching, but are not adapted to the robotic context. First because powertrain shift mecanism are not adapted to make gear shifts while interacting with dynamic environments, and second because they are designed to make shift between ratio much closer to one another than what is investigated in this thesis.
 
 Fig. \ref{fig:forcefidelity} shows typical transmitted force profile during gear-shifts with powertrain shifting mechanisms. The simplest manual transmissions using dog clutch do not transmit torque at all during a shift, while more advance systems such as dual-clutch transmission can supply torque during the transition, the fidelity is low compared to what is typically expected from an actuator in a robotic context. For instance, with a state-of-the-art two-speed dual-clutch transmission for an electric car \cite{walker_powertrain_2017}, experimental results shows output torque oscillations with amplitudes of about 100\% the nominal value during a period of 500 ms. However, this torque deviation only lead to an undesirable car acceleration of about 0.05 g, and the effect is barely noticeable on the output velocity curve. As illustrated at Fig. \ref{fig:typeloads}, force fidelity requirement for vehicle powertrain are not very severe since the load is always a very large vehicle inertia which will act as a very strong low-pass filter. However, robotic system can be interacting with all kind of load without filtering characteristics. For instance, for a robot fighting a gravitational load or compressing a spring, it would be catastrophic if the force drop during a gear-shift. The output needs to be always fully under control in those situations. 
 
-\begin{figure}[htp]
+\begin{figure}[htb]
 	\centering
 		\includegraphics[width=0.90\textwidth]{forcefidelity.png}
 	\caption{Force profile during a gear-shift with powertrain gear-shifting mecanisms}
 	\label{fig:forcefidelity}
 \end{figure}
 
-\begin{figure}[htp]
+\begin{figure}[htb]
 	\centering
 		\includegraphics[width=0.90\textwidth]{typeloads.png}
 	\caption{Type of loads encountered by vehicle powertrain vs. robot actuators}
@@ -103,11 +106,11 @@ While variable gear-ratio actuators (VGA) have been studied extensively for auto
 
 \paragraph{Continuously variable transmissions (CVT)} 
 
-Continuously variable transmission have been used sporadically for car power-trains. Most common design are based on belts with variable-diameter pulley or toroidal disk. Drawbacks compared to regular transmission include higher transmission losses and complex dynamics \cite{srivastava_review_2009}. Moreover, typical CVT have limited total ratio variation range (for instance 0.5:1 to 2:1), which makes them unadapted for very large ratio variation. Some designs have been proposed for infinite range variation, often called IVT. For instance the company Torotrack claim to have a CVT that can reach an effective gear-ratio of zero \cite{schoolcraft_gear_2011}. However, since those designs rely on friction, maximum transmitted torque is limited and the transmission systems are complex and very large, which inhibit the potential use in robotic applications. % [TODO find a good CVT review article]
+Continuously variable transmission have been used sporadically for car power-trains. Most common design are based on belts with variable-diameter pulley or toroidal disk. Drawbacks compared to regular transmission include higher transmission losses and complex dynamics \cite{srivastava_review_2009}. Moreover, typical CVT have limited total ratio variation range (for instance 0.5:1 to 2:1), which makes them unadapted for very large ratio variation. Some designs have been proposed for infinite range variation, often called IVT. For instance the company \textit{Torotrack} claim to have a CVT that can reach an effective gear-ratio of zero \cite{schoolcraft_gear_2011}. However, since those designs rely on friction, maximum transmitted torque is limited which limits the large reduction range. Moreover, such transmission systems are highly complex and very large (required hydraulics system to control the pre-load force for instance), which inhibit the potential use for smaller scale actuators in robotic applications. % [TODO find a good CVT review article]
 
 In the actuator field, lever mechanisms with variable attachment points that leads to a very wide range of effective transmission ratio \cite{tahara_high-backdrivable_2011}, even infinite range when using a singular configurations \cite{jafari_new_2014}, have been proposed. However, this type of CVT implementation limits drastically the motion range, thus cannot be used for general purpose actuator transmission. In the literature, those mechanisms are used in VSA between the spring and the output, where their limited motion range is not an issue. 
 
-Many clever mechanisms have proposed to be used as CVT. However, all design have some major drawback regarding either: total variation range, constraints on output motion, ratio-variation speed, allowable shift conditions, efficiency, etc. The best indication of this is the automotive industry. Theoretically, there is a huge incentive to use CVT for internal combustion engine because of their narrow peak of power and efficiency. However, despite a century of development in one of the largest industry, transmissions using many discrete gear-ratio are still the most widely adopted solution. Even with the recent effort to improve fuel economy, the trend in the industry is to use automatic transmissions with a large number of discrete gear \cite{phillips_10-speed_2010}\cite{goleski_multi-speed_2015}. Furthermore, compared to the automotive field, the incentive of using CVT in robotics is diminished because of more flexible torque curves of electric motor and the challenges are greater because of the wider desired range of ratios. Hence, all the limitations of CVT make this technology unadapted for general purpose robotic actuators. However, a breakthrough in term of IVT technology would be very interesting for the field of robotics.
+Many clever mechanisms have proposed to be used as CVT. However, all design have some major drawback regarding either: total variation range, constraints on output motion, ratio-variation speed, allowable shift conditions, efficiency, etc. The best indication of this is the automotive industry. Theoretically, there is a huge incentive to use CVT for internal combustion engine because of their narrow peak of power and efficiency. However, despite a century of development in one of the largest industry, transmissions using many discrete gear-ratio are still the most widely adopted solution. Even with the recent effort to improve fuel economy, the trend in the industry is to use automatic transmissions with a large number of discrete gear-ratios \cite{phillips_10-speed_2010}\cite{goleski_multi-speed_2015}. Furthermore, compared to the automotive field, the incentive of using CVT in robotics is diminished because of more flexible torque curves of electric motor and the challenges are greater because of the wider desired range of ratios. Hence, all the limitations of CVT make this technology unadapted for general purpose robotic actuators. However, a breakthrough in term of IVT technology would be very interesting for the field of robotics.
 
 \subsection{Novel Contribution}
 %\paragraph{Novel Contribution} 
@@ -174,7 +177,7 @@ The envisioned implementation of the DSDM concept is to embed all the components
 	\label{fig:embedded}
 \end{figure}
 
-Fig. \ref{fig:embedded} shows a prototype of a DSDM actuator with a revolute output, using discrete off-the-shelf motors for modularity and ease of implementation.
+%Fig. \ref{fig:embedded} shows a prototype of a DSDM actuator with a revolute output, using discrete off-the-shelf motors for modularity and ease of implementation.
 
 
 \subsection{Principle}
@@ -209,7 +212,7 @@ Fig. \ref{fig:torquespeed} illustrates the operating range of the DSDM actuator 
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.65\textwidth]{torquespeed.pdf}
-	\caption[DSDM actuator operation region]{DSDM actuator operation region, with a difference between M1 and M2 gearing ratio of only 4 for illustration purposes }
+	\caption[DSDM actuator operation region]{DSDM actuator operation regions}
 	\label{fig:torquespeed}
 \end{figure}
 
@@ -242,7 +245,7 @@ Note that a two-speed actuator using a single motor and a variable transmission 
 \subsection{Efficiency advantage}
 \label{sec:EffAdvantage}
 
-VGA actuators, including DSDM actuators, can transmit power more efficiently given various operating conditions. Electric motor efficiency is a function of velocity and applied torque. The efficiency map depends on the electric motor type (DC brushed, AC induction, DC brushless, etc). As a general rule, motors are typically more efficient in the upper-end of their velocity range. Hence, by using multiple gear-ratios, not only motors can be down-sized, but power transmission can be made more efficient. For instance, switching to a large gear-ratio to use a motor at its most efficient operating conditions with high rotor speeds. This efficiency advantage has been studied for electric cars equipped with multiple speed transmissions \cite{ren_effect_2009} \cite{holdstock_energy_2012} \cite{zhang_three-speed_2013} \cite{mckeegan_antonovs_2011}. This advantage is also of high interest for any mobile robot where on-board energy is limited. Any quantitative analysis of this benefit depends heavily on the specific of the type of motor used, the controller, the robotic system and the task executed by the robotic system. Section \ref{sec:shift_sim} will offer some quantivative simulation results regarding reduced energy consumption of robotic manipulator achieved using VGA actuators.
+VGA actuators, including DSDM actuators, can transmit power more efficiently given various operating conditions. Electric motor efficiency is a function of velocity and applied torque. The efficiency map depends on the electric motor type (DC brushed, AC induction, DC brushless, etc). As a general rule, motors are typically more efficient in the upper-end of their velocity range. Hence, by using multiple gear-ratios, not only motors can be down-sized, but power transmission can be made more efficient. For instance, switching to a large gear-ratio to use a motor at its most efficient operating conditions with high rotor speeds. This efficiency advantage has been studied for electric cars equipped with multiple speed transmissions \cite{ren_effect_2009} \cite{holdstock_energy_2012} \cite{zhang_three-speed_2013} \cite{mckeegan_antonovs_2011}. This advantage is also of high interest for any mobile robots where on-board energy is limited. Any quantitative analysis of this benefit depends heavily on the specific of the type of motor used, the controller, the robotic system and the task executed by the robotic system. Section \ref{sec:shift_sim} will offer some quantivative simulation results regarding reduced energy consumption of robotic manipulator achieved using VGA actuators.
 
 Another significant efficiency advantage of DSDM actuators over single-gear motors, is that high-speed mode can be backdrivable for interaction tasks while the high-force mode can be made non-backdrivable (using a irreversible large reduction for M2) in order to be able to hold an object against gravity without having to consume any electrical energy. A backdrivable single-gear motor will always have to supply electrical power just to sustain gravity forces, leading to zero efficiency for holding tasks. Hence, for a robot requiring backdrivability in some task and often holding objects against gravity, the efficiency gain could be huge. Note that some industrial robot arms use brake mounted on actuator outputs to address this type of energy consumption issue \cite{meike_energy_2011}.
 
@@ -353,7 +356,7 @@ Applying Newton's law on each ports yields the following equations of motions:
 \tau_{2}    - e_2 &= Z_2(s) w_2
 \end{align}
 %
-where $Z_i(s) = I_i s + b_i$ represents the mechanical impedance of the i-th ports. Note that the system is coupled due to the constraint given by eq. \eqref{eq:kinematic} and \eqref{eq:torque}, and that there is only two degrees of freedom among the three ports. Fig. \ref{fig:dynamics_block}, illustrate the coupled equations motion in block diagram form.
+where $Z_i(s) = I_i s + b_i$ represents the mechanical impedance of the i-th ports in the Laplace domain. Note that the system is coupled due to the constraint given by eq. \eqref{eq:kinematic} and \eqref{eq:torque}, and that there is only two degrees of freedom among the three ports. Fig. \ref{fig:dynamics_block}, illustrate the coupled equations motion in block diagram form.
 %
 \begin{figure}[htp]
 	\centering
@@ -423,7 +426,8 @@ w_2     \\
 %\right]
 %\end{align}
 %
-The equation of motion can then be rearranged in the standard manipulator equation form, using
+The equation of motion can then be rearranged in the standard manipulator equation form, using as generalized coordinates for more convenience the following:
+%
 \begin{align}
 \left[
 \begin{array}{c}
@@ -431,7 +435,8 @@ w_o \\ w_1
 \end{array}
 \right] = \vec{w} = \vec{\dot{q}} 
 \end{align}
-as generalized coordinates for more convenience. Note that since there is not conservative forces in the actuator, all displacement coordinates are ignorable and the dynamic equation is independent of rotor and output angles.
+%
+Note that since there is no conservative forces in the actuator, all displacement coordinates are ignorable and the dynamic equation is independent of rotor and output angles.
 %
 \begin{align}
 \underbrace{ 
@@ -553,7 +558,7 @@ G &=
 \subsection{Inputs/Outputs equations}
 \label{sec:out}
 
-The variable of interest is the output $w_o$, and its dynamic can be expressed, going back to the Laplace domain by:
+The variable of interest is the output $w_o$, and its dynamics can be expressed, going back to the Laplace domain by:
 %
 \begin{align}
 \left[
@@ -630,12 +635,21 @@ During high-speed mode the behavior of the output is also dominated by a first-o
 \label{eq:dsdm_output_HFw0}
 \end{align}
 %
-Note that, if when DSDM connected to a robotic system, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would have terms reflecting other load-side forces: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected. Also, although neglected in \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0}, motor damping could be reintroduce easily by substituting motor torque $\tau_i$ with the effective torque $\tau_i - b_i w_i$ since those forces are collocated. 
+Note that, when a DSDM is connected to a robotic system, the left-hand side of equations \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0} would have terms reflecting other extrinsic load-side forces: including coupled inertial effects, gravitation forces and others. However, the right-hand side of the equation would stay the same: the motor torques transmission gains would not be affected: 
+%
+\begin{align}
+\left[ I_o + R_1^2 I_1 \right] \dot{w}_o +  \left[ b_o \right] w_o - \underbrace{\tau_{ext}}_{Extrinsic forces}  &= \left[ R_1 \right] \tau_1 + \left[ R_1 \frac{R_1 I_1}{R_2 I_2} \right] \tau_2 
+\label{eq:dsdm_output_HSw02} \\
+\left[ I_o + R_2^2 I_2 \right] \dot{w}_o +  \left[ b_o \right] w_o - \underbrace{\tau_{ext}}_{Extrinsic forces} &= \left[ R_2 \right] \tau_2 
+\label{eq:dsdm_output_HFw02}
+\end{align}
+%
+Also, although neglected in \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0}, motor damping could be reintroduce easily by substituting motor torque $\tau_i$ with the effective torque $\tau_i - b_i w_i$ since those forces are collocaed. 
 
 \newpage
 \subsection{Hybrid Behavior}
 
-Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of the system and possible transitions. Table \ref{tab:hybrid} gives references to the equations modeling each the discrete behaviors and transitions.
+Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of the system and possible transitions. Table \ref{tab:hybrid} gives references to the equations modeling each of the discrete behaviors and transitions.
 %
 \begin{figure}[H]
 	\centering
@@ -653,8 +667,8 @@ Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of th
 				\hline \hline
 				\multicolumn{4}{c}{ Continuous differential equations }\\
         \hline
-			   High-Force Mode    & $k=1$             & $\dot{\vec{w}} = f_1(\vec{w},\tau)$  & given by eq. \eqref{eq:dsdm_output_HF} \\
-				 High-Speed Mode    & $k=2$             & $\dot{\vec{w}} = f_2(\vec{w},\tau)$  & given by eq. \eqref{eq:ss_full}             \\
+			   High-Force Mode    & $k=1$             & $\dot{\vec{w}} = f_1(\vec{w},\vec{\tau})$  & given by eq. \eqref{eq:dsdm_output_HF} \\
+				 High-Speed Mode    & $k=2$             & $\dot{\vec{w}} = f_2(\vec{w},\vec{\tau})$  & given by eq. \eqref{eq:ss_full}             \\
 				\hline
 				\multicolumn{4}{c}{ Discrete gear-shift jump maps }\\
 				\hline
@@ -670,7 +684,7 @@ Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of th
 	\label{tab:hybrid}
 \end{table}
 %
-During high-force mode (labeled $k=1$), when the brake is engaged, and high-speed mode (labeled $k=2$), when the brake is open, the behavior of the system can be described by discrete sets of continuous differential equations $\vec{\dot{w}}=f_k( \vec{w} )$. It is also possible that during operation the actuator output hit an object leading to an impulsive behavior. This behavior is modeled by the appropriate reset map $\vec{w}^+=h_k( \vec{w}^- )$, depending on the active mode. Also, at the moment the brake is opened or closed, the discrete mode and the states also instantaneously change, according to some mapping (up-shift $\vec{w}^+=h_u( \vec{w}^- )$ and down-shift $\vec{w}^+=h_d( \vec{w}^- )$).
+During high-force mode (labeled $k=1$), when the brake is engaged, and high-speed mode (labeled $k=2$), when the brake is open, the behavior of the system can be described by discrete sets of continuous differential equations $\vec{\dot{w}}=f_k( \vec{w},\vec{\tau} )$. It is also possible that during operation the actuator output hits an object leading to an impulsive behavior. This behavior is modeled by the appropriate reset map $\vec{w}^+=h_k( \vec{w}^- )$, depending on the active mode. Also, at the moment the brake is opened or closed, the discrete mode and the states also instantaneously change, according to some mapping (up-shift $\vec{w}^+=h_u( \vec{w}^- )$ and down-shift $\vec{w}^+=h_d( \vec{w}^- )$).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -976,7 +990,7 @@ w_2 \\
 -R_2/R_1 \\
 \end{array}
 \right]}_{\text{Nullspace Projection}}
-u  \; \rightarrow \;
+u  \quad \Rightarrow \quad
 w_0 = 0 \quad \forall u \in \Re
 \label{eq:kinematicnullspace}
 \end{align}
@@ -1011,7 +1025,7 @@ Hence, there is a one degree of freedom space of inputs $\tau_1$ and $\tau_2$ th
 I_1 \\
 -\frac{R_2 }{R_1 }  I_2
 \end{array} \right]}_{\text{Nullspace Projection}} u
-\; \rightarrow \;
+\quad \Rightarrow \quad
 I_T \dot{w}_o +
 b_T  w_o = 0 \quad \forall u \in \Re
 \label{eq:dyn_null_proj}
@@ -1075,7 +1089,7 @@ Hence, if both motor are identical ($I_1=I_2$), then the only parameter changing
 
 \subsection{Architecture}
 
-Fig. \ref{fig:dsdm_control_architecture} shows the proposed hierarchical control architecture for a DSDM actuator. As discussed in section \ref{sec:mod}, it is assumed that high-bandwidth current controllers are implemented for each motors. Moreover, it is also assumed that quality motor velocities $w_1$ and $w_2$ measurement are available to the DSDM controller. The actuator-level DSDM controller has the role of coordinating motors M1 and M2 to make the actuator gear-shift seamlessly between the two operating modes. The idea is to encapsulate DSDM actuators with simple control inputs: a desired torque $\tau_d$ and a desired gear-ratio $k_d$, like a semi-automatic transmission in a car. The high-level controller, analogous to the driver using again the car analogy, then only have to specify those two desired values and is released of the low-level management of the gear-shift process. With this architecture, a multi-DoF robotic system using multiple DSDM actuators could have a single centralized high-level controller and independent actuator-level controller for each actuators. 
+Fig. \ref{fig:dsdm_control_architecture} shows the proposed hierarchical control architecture for a DSDM actuator. As discussed in section \ref{sec:mod}, it is assumed that high-bandwidth current controllers are implemented for each motors. Moreover, it is also assumed that motor velocities $w_1$ and $w_2$ measurement are available to the DSDM controller. The actuator-level DSDM controller has the role of coordinating motors M1 and M2 to make the actuator gear-shift seamlessly between the two operating modes. The idea is to encapsulate DSDM actuators with simple control inputs: a desired motor torque $\tau_d$ and a desired gear-ratio $k_d$, like a semi-automatic transmission in a car. The high-level controller, analogous to the driver using again the car analogy, then only have to specify those two desired values and is released of the low-level management of the gear-shift process. With this architecture, a multi-DoF robotic system using multiple DSDM actuators could have a single centralized high-level controller and independent actuator-level controller for each actuators. 
 
 \begin{figure}[H]
 	\centering
@@ -1084,7 +1098,7 @@ Fig. \ref{fig:dsdm_control_architecture} shows the proposed hierarchical control
 	\label{fig:dsdm_control_architecture}
 \end{figure}
 
-This section discuss the design of the actuator-level controller, focusing on gear-shift transitions. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} will discuss extensively the design of centralized high-level controllers, and one implementation of the necessary low-level hardware controllers is presented in chapter \ref{sec:ExperimentalValidation}.
+This section discuss the design of the actuator-level controller, focusing on gear-shift transitions. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} will discuss extensively the design of centralized high-level controllers, and one implementation of the whole control system is presented in chapter \ref{sec:ExperimentalValidation}.
 
 
 \subsection{State-machine}
@@ -1120,8 +1134,8 @@ During high-force mode, the role of the DSDM controller is simple: keeping M1 lo
 
 %During high-speed mode, with a small reduction ratio $R_1$ (high transparency transmission), the DSDM actuator can be controlled like a direct drive motor: controlling M1 current lead to almost direct control of the output torque. 
 
-During high-speed mode, the role of the DSDM controller is to: keep the brake open, transmit the desired torque $\tau_d$ to M1 and optionally track a secondary objective, see Fig. \ref{fig:HS_loop}. Exploiting the nullspace (eq. \eqref{eq:dyn_null_proj}), a secondary objective can be achieved without influencing the output behavior. Note that the nullspace projection vector, see eq.\eqref{eq:dyn_null_proj}, depends only on parameters associated with the motors. Therefore, it is possible to project the secondary controller inputs on the output nullspace even if the output dynamic parameters that include the load inertia and damping are unknowns. 
-
+During high-speed mode, the role of the DSDM controller is to: keep the brake open, transmit the desired torque $\tau_d$ to M1 and optionally track a secondary objective, see Fig. \ref{fig:HS_loop}. Exploiting the nullspace of eq. \eqref{eq:dyn_null_proj}, a secondary objective can be achieved without influencing the output behavior. Note that the nullspace projection vector, see eq.\eqref{eq:dyn_null_proj}, depends only on parameters associated with the motors. Therefore, it is possible to project the secondary controller inputs on the output nullspace even if the output dynamic parameters that include the load inertia and damping are unknowns. 
+%
 The nullspace can be used for many possible objectives. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary objective could also used for maximizing efficiency, avoiding speed saturation of M1, etc. This chapter focus is on using the secondary objective to achieve fast and seamless gear-shifts.
 
 %Fig. \ref{fig:HS_loop} and Fig. \ref{fig:HF_loop} show DSDM control algorithms implemented as intermediary control loops between hardware and high-level commands. The high-speed controller tracks a received desired torque by controlling the current in M1, and can also optionally track a secondary objective without affecting the main-loop, by projecting the secondary input into the nullspace of the main-loop. The high-force controller directly convert a received desired torque to a current set-point for M2.
@@ -1204,9 +1218,9 @@ leading to
 w_o = u_0 \quad \text{with} \quad w_1 = u_1
 \end{align}
 %
-Therefore during transitions, using $u_1$ velocity $w_1$ can be driven to zero, while fully controlling the output velocity using $u_0$. The kinematic control law is valid only when high fidelity velocity controls are available and is only compatible with a situation where the high-level controller would specify speed target instead of torque. 
+Therefore during transitions, using $u_1$ velocity $w_1$ can be driven to zero, while fully controlling the output velocity using $u_0$. The kinematic control law is valid only when high fidelity velocity controls are available and is only compatible with a situation where the high-level controller would specify a speed target instead of a torque target. 
 
-Alternatively a dynamic approach is more flexible. As illustrated in Fig. \ref{fig:down_loop}, while running the general high-speed controller, a braking law for $w_1$ can be used in parallel as the secondary objective projected on the output nullspace:
+Alternatively a dynamic approach is more flexible. As illustrated at Fig. \ref{fig:down_loop}, while running the general high-speed controller, a braking law for $w_1$ can be used in parallel as the secondary objective projected on the output nullspace:
 \begin{align}
 \left[ \begin{array}{c}
 \tau_1 \\
@@ -1235,9 +1249,9 @@ and a $w_1$ closed-loop dynamic converging exponentially to zero if the synchron
  \dot{w}_1 = -C w_1 + \underbrace{\left[\frac{R_1^2}{I_T} + \frac{R_1^2 I_o}{R_2^2 I_2 I_T} \right] \tau_d - \left[\frac{R_1 b_o}{I_T}\right] w_o }_{\text{Undesirable coupling from main loop}}
 \end{align}
 
-Hence, the output is not influenced by the braking law due to orthogonality, and is only controlled by the desired torque $\tau_d$. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturation. The other advantage of this approach over fully uncoupling the equations, is that the nullspace projection only required motor-side parameters and is valid even when load-side dynamic is unknown. 
+Hence, the output is not influenced by the braking law due to orthogonality, and is only controlled by the desired torque $\tau_d$. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturation. The other advantage of this approach over fully uncoupling the equations, is that the nullspace projection only require motor-side parameters and is valid even when load-side dynamic is unknown. 
 
-Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and high-fidelity output torque control. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If the main loop behavior is conflicting with the synchronization, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes so large that both motor torques saturate then synchronization is guaranteed: %In the worst-case scenario, $w_1$ is kept at a positive value for a long time because of a conflicting large $\tau_d$ command, which would eventually lead to saturation of torques with a large PI gain:
+Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and fidelity to desired motor torque. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If the main loop behavior is conflicting with the synchronization, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes so large that both motor torques saturate then synchronization is guaranteed: %In the worst-case scenario, $w_1$ is kept at a positive value for a long time because of a conflicting large $\tau_d$ command, which would eventually lead to saturation of torques with a large PI gain:
 %
 \begin{align}
 C \rightarrow \infty \quad\Rightarrow\quad 
@@ -1256,7 +1270,7 @@ I_T \dot{w}_1 = - \left( R_1 b_o \right) w_o  - \left( R_1^2 + \frac{R_1^2 I_o }
 \end{align}
 %
 If $w_1$ is a positive value, then $w_o$ is usually positive too and at worst a small negative value (due to kinematic constraints and motor speed saturations). Hence, the damping term is either negative or negligibly small. Hence $w_1$ is guaranteed to continuously decrease and to eventually cross zero where the brake can be engaged. 
-
+%
 Note that if the high-level controller is planning only feasible gear-shifts, than no down-shift in impossible situations should be commanded. Hence, in normal operation the down-shift controller should never reach this drastic synchronization mode. This mode is however useful when the DSDM controller receive commands directly from a human operator.
 
 \subsection{Preparation in the nullspace for faster down-shifts}
@@ -1271,16 +1285,16 @@ w_1 = 0 \quad \Leftrightarrow \quad w_2 = R_2 w_o
 \label{eq:shiftcond}
 \end{align}
 %
-Hence the ideal situation to be prepare for a down-shift, is having M2 alone providing the output velocity. This is however only possible for low output velocity, due to motor velocity constraints. When possible to use this approach, the synchronization is done in advance and the down-shift operation is faster, since only limited by the time the brake takes to close. More generally, matching eq.\eqref{eq:shiftcond} as close as possible will improve gear-shift time since synchronization error will be smaller to start with.
+Hence the ideal situation, to be prepared for a down-shift, is having M2 alone providing the output velocity. This is however only possible for low output velocity, due to motor velocity constraints. When possible to use this approach, the synchronization is done in advance and the down-shift operation is faster, since only limited by the time the brake takes to close. More generally, matching eq.\eqref{eq:shiftcond} as close as possible will improve gear-shift time since synchronization error will be smaller to start with.
 
-This idea can be also extended to a more complex impulsive behavior situation. As illustrated by Fig. \ref{fig:app}, down-shifting can be particularly useful in contact situation happens in the context of manipulation or locomotion, where large forces must be bear rapidly after contact. For instance a robotic leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot. For this situation, where motor velocity will suddenly change right before the desired down-shift, the preparation condition takes this form:
+This idea can be also extended to a more complex impulsive behavior situations. As illustrated by Fig. \ref{fig:app}, down-shifting can be particularly useful in contact situation happening in the context of manipulation or locomotion, where large forces must be bear rapidly after contact. For instance a robotic leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot. For this situation, where motor velocity will suddenly change right before the desired down-shift, the preparation condition takes this form:
 %
 \begin{align}
 w_1^+ = w_1^- + \Delta w_1 = 0 \quad \Leftrightarrow \quad w_2^+ = R_2 w_o^+ = w_2^- 
 \end{align}
 %
 %Note that $\Delta w_2 = 0$, see sec. \ref{sec:model_impact} analysis. 
-Hence, if the impulsive behavior is expected and can be estimated, then the preparation scheme can also be used to improve gear-shift time during a contact. Two control schemes implementing this preparation are presented, first a kinematic approach and then a more flexible dynamic approach. Equation are derived for the case where an impact is expected, but the simpler non-impulsive situation can be extracted simply by setting the expected impulse to zero.
+Hence, if the impulsive behavior is expected and can be estimated, then the preparation scheme can also be used to improve gear-shift time during a contact. Two control schemes implementing this preparation are presented, first a kinematic approach and then a more flexible dynamic approach. Equation are derived for the case where an impact is expected, but the simpler control laws for non-impulsive situation can be extracted simply by setting the expected impulse to zero.
 
 %\paragraph{Kinematic algo}
 Rearranging the results of section \ref{sec:model_impact} to express the two variables of interest (approaching speed $w_0^-$ and M1 velocity post-impact $w_1^+$), as a function of controllable inputs (from a kinematic point of view), lead to:
@@ -1308,7 +1322,7 @@ Therefore, if an impact is expected and the upcoming impulsive impact reaction $
 
 %\paragraph{Dynamic algo}
 %
-Alternatively, as for the braking law used for synchronization during the down-shift process, this problem can be approached from a dynamic point of view. A desired velocity for M1 is defined has a function of the expected impulsive contact reaction:
+Alternatively, as for the braking law used for synchronization during the down-shift process, this problem can be approached from a dynamic point of view. A desired velocity for M1 is defined as a function of the expected impulsive contact reaction:
 %
 \begin{align}
 w_{1,d}  = - R_1 \frac{ p_{ext} }{I_o + I_1 R_1^2}
@@ -1365,7 +1379,7 @@ The preparation controller is illustrated in the form of a block diagram at Fig.
 \section{Experimental Results}
 \label{sec:dsdm_exp}
 
-This section presents experimental results with the DSDM prototype illustrated at Fig. \ref{fig:dsdm_proto}. Information regarding the mecanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, than the high-level control loop (recall Fig. \ref{fig:dsdm_control_architecture}) is a simple PID controller. 
+This section presents experimental results with the DSDM prototype illustrated at Fig. \ref{fig:dsdm_proto}. Information regarding the mecanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, the high-level control loop is a simple PID controller(recall Fig. \ref{fig:dsdm_control_architecture}). 
 
 \subsection{DSDM Dynamic Behavior}
 
@@ -1381,9 +1395,7 @@ This section presents experimental results with the DSDM prototype illustrated a
 		%\includegraphics[width=0.95\textwidth]{dsdm_manual_motors.pdf}
 	%\caption[DSDM actuator torque control]{DSDM actuator with torque and mode commands set from a joystick: Motors velocity }
 	%\label{fig:dsdm_manual_motors}
-%\end{figure}
-
-Fig. \ref{fig:dsdm_manual_shift} gives an overview of how a DSDM actuator works. 
+%\end{figure} 
 %
 \begin{figure}[H]
 	\centering
@@ -1392,9 +1404,10 @@ Fig. \ref{fig:dsdm_manual_shift} gives an overview of how a DSDM actuator works.
 	\label{fig:dsdm_manual_shift}
 \end{figure}
 %
-Before $t=2.5$, the brake is engaged and only M2 is used to drive the output. When is brake is engaged, the DSDM is in high-force mode and the effective gear-ratio is 474. At $t=2.5$, the brake is released and M1 start contributing to the motion. Releasing the brake will be referred to as an up-shift. Between $t=2.5$ and $t=6.5$, the brake is open, both motor contribute to the output speed; the DSDM is in high-speed mode and the effective gear-ratio is 23. At between $t=6.5$, a down-shift is manually commanded. Between $t=6.5$ and $t=7$, the synchronization controller then apply torques to brake M1 to zero speed and the brake is engaged at $t=7$ when M1 speed is detected to be null. This process of braking M1 and then engaging the brake will be referred as a down-shift.
-%
-Fig. \ref{fig:dsdm_position_tracking} shows the DSDM tracking postion set-points with PD controllers. This experiment illustrates that the high-force mode is slow and with a highly damped behavior, while the high-speed mode is fast and with a under-damped second order behavior. 
+Fig. \ref{fig:dsdm_manual_shift} gives an overview of how a DSDM actuator works. Before $t=2.5$, the brake is engaged and only M2 is used to drive the output. When is brake is engaged, the DSDM is in high-force mode and the effective gear-ratio is 474. At $t=2.5$, the brake is released and M1 start contributing to the motion. Releasing the brake will be referred to as an up-shift. Between $t=2.5$ and $t=6.5$, the brake is open, both motor contribute to the output speed; the DSDM is in high-speed mode and the effective gear-ratio is 23. At between $t=6.5$, a down-shift is manually commanded. Between $t=6.5$ and $t=7$, the synchronization controller then apply torques to brake M1 to zero speed and the brake is engaged at $t=7$ when M1 speed is detected to be null. Note that here the down-shift was commanded at a infeasible high-velocity by the user driving the system, and the output speed first had to be slowed down to a speed reachable by high-force mode. This process of braking M1 and then engaging the brake will be referred as a down-shift.
+
+
+Fig. \ref{fig:dsdm_position_tracking} shows the DSDM tracking position set-points. This experiment illustrates that the high-force mode is slow and with a highly damped behavior, while the high-speed mode is fast and with a under-damped second order behavior. 
 %
 \begin{figure}[H]
 	\centering
@@ -1403,7 +1416,7 @@ Fig. \ref{fig:dsdm_position_tracking} shows the DSDM tracking postion set-points
 	\label{fig:dsdm_position_tracking}
 \end{figure}
 %
-Fig. \ref{fig:dsdm_speed_tracking} shows the DSDM tracking speed set-points with PI controllers. Note that the noisy behavior during high-speed mode is only due to an implementation limitation: at low speed there is a quantization problem as their is a small amounts of encoder ticks per control loop interval. 
+Fig. \ref{fig:dsdm_speed_tracking} shows the DSDM tracking speed set-points. Note that the noisy behavior during high-speed mode is only due to an implementation limitation. At low speed there is a quantization problem: there is a too small amounts of encoder ticks per control loop interval. 
 %
 \begin{figure}[H]
 	\centering
