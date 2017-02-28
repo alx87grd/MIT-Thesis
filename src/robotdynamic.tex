@@ -1,28 +1,42 @@
 \chapter{Robot Dynamic Framework}
 \label{sec:robotdynamic}
 
-In this appendix, the nomenclature and equations used in this thesis are presented.
+In this appendix, the nomenclature and the mathematical equations used to represent the behavior of robotic system in thesis are presented. Table \ref{tab:nom} define all the variables.
 
 \begin{table}[htbp]
 	\centering
 	\caption{Nomenclature}	% Table caption must be placed on top of the table %
 		\begin{tabular}{ c c l r }
         \hline \hline
+				\multicolumn{4}{c}{Scalars} \\
+				\hline \hline
 			$n$             &  :  & number of DoF                                              & \\
 			$m$             &  :  & number of actuator                                         & \\
-			$l$             &  :  & number of contact constraints                              & \\
-			$o$             &  :  & number of end-effector coordinates                         & \\ \hline \hline
+			$c$             &  :  & number of contact constraints                              & \\
+			$o$             &  :  & number of end-effector coordinates                         & \\ 
+			$l$             &  :  & number of discrete operating modes                         & \\ 
+			$i$             &  :  & index for DoF                                              & \\
+			$k$             &  :  & index for the operating mode                               & \\ 
+			\hline \hline
+			\multicolumn{4}{c}{Vectors} \\
+			\hline \hline
 			$\vec{g}$       &  :  & Gravitational forces vector                                & $n$  \\
-			$\vec{f}_c$     &  :  & Contact forces vector                                      & $l$  \\
+			$\vec{f}_c$     &  :  & Contact forces vector                                      & $c$  \\
 			$\vec{f}_e$     &  :  & End-effector forces vector                                 & $o$  \\
 			$\vec{c}$       &  :  & Sum of state-dependent generalized forces                  & $n$  \\
+			$\vec{d}$       &  :  & Unknown disturbance forces                                 & $n$  \\
 			$\vec{\tau}$    &  :  & Electromagnetic motor torques                              & $m$  \\
+			$\vec{\tau}_I$  &  :  & Sum of intrinsic actuator forces                           & $m$  \\
+			$\vec{\tau}_E$  &  :  & Sum of extrinsic forces                                    & $n$  \\
 			$\vec{q}$       &  :  & Joint coordinates position vector                          & $n$  \\
 			$\vec{p}$       &  :  & End-effector position vector                               & $o$  \\
 			$\vec{a}$       &  :  & Actuator coordinates position vector                       & $m$  \\
 			$\vec{w}$       &  :  & Motor coordinates velocity vector                          & $m$  \\ 
-			$\vec{\phi}$    &  :  & Constraint vector                                          & $l$  \\
-			$\vec{\lambda}$ &  :  & Coordinates of velocity subspace respecting constraints    & $n-l$  \\\hline \hline
+			$\vec{\phi}$    &  :  & Constraint vector                                          & $c$  \\
+			%$\vec{\lambda}$ &  :  & Coordinates of velocity subspace respecting constraints    & $n-c$  \\
+			\hline \hline
+			\multicolumn{4}{c}{Matrices} \\
+			\hline \hline
 			$H$             &  :  & Inertia matrix                                             & $n$ x $n$ \\
 			$D$             &  :  & Damping matrix                                             & $n$ x $n$ \\
 			$C$             &  :  & Coriolis/Centrifugal forces matrix                         & $n$ x $n$ \\
@@ -32,8 +46,8 @@ In this appendix, the nomenclature and equations used in this thesis are present
 			$B$             &  :  & Intrinsic actuator damping matrix (diagonal)               & $m$ x $m$ \\
 			$J_a$           &  :  & actuator coordinates / joint coordinates Jacobian matrix   & $m$ x $n$ \\
 			$J_e$           &  :  & task-space coordinates / joint coordinates Jacobian matrix & $o$ x $n$ \\
-			$J_c$           &  :  & Contact constraints Jacobian matrix                        & $l$ x $n$ \\ 
-			$V$             &  :  & Vector base of the velocity subspace matrix                & $n$ x $(n-l)$ \\ 
+			$J_c$           &  :  & Contact constraints Jacobian matrix                        & $c$ x $n$ \\ 
+			%$V$             &  :  & Vector base of the velocity subspace matrix                & $n$ x $(n-c)$ \\ 
 		\hline \hline
         \end{tabular}		
 	\label{tab:nom}
@@ -50,21 +64,21 @@ H(\vec{q}) \vec{\ddot{q}} + C(\vec{q},\vec{\dot{q}}) \vec{\dot{q}} + D \vec{\dot
 \end{align}
 %
 where $\vec{q}$ is the generalized coordinates vector, $H$ is the inertia matrix, $C$ is the Coriolis/centrifugal force matrix, $D$ is a damping matrix, $\vec{g}$ is the gravitational forces vector and $B$ is a matrix mapping motor torques $\vec{\tau}$ into generalized forces.
-%
-Kinetic energy is given by:
-%
-\begin{align}
-\frac{1}{2} \vec{\dot{q}}^T H(\vec{q}) \vec{\dot{q}} 
-\label{eq:kinetic}
-\end{align}
-%
-Conservation of energy also give the following relation:
-%
-\begin{align}
-\dot{H} = C + C^T
-\label{eq:cener}
-\end{align}
-%
+%%
+%Kinetic energy is given by:
+%%
+%\begin{align}
+%\frac{1}{2} \vec{\dot{q}}^T H(\vec{q}) \vec{\dot{q}} 
+%\label{eq:kinetic}
+%\end{align}
+%%
+%Conservation of energy also give the following relation:
+%%
+%\begin{align}
+%\dot{H} = C + C^T
+%\label{eq:cener}
+%\end{align}
+%%
 On occasion, dependence notation is dropped and $\vec{c}$ is used to represent all state dependent forces, leading to the short form:
 %
 \begin{align}
@@ -75,6 +89,7 @@ H \vec{\ddot{q}} + \vec{c} = B \vec{\tau}
 \section{Coordinate systems}
 \label{sec:coord}
 
+Fig. \ref{fig:coord} shows all the used coordinates systems. Note that the distinction between actuator output coordinates and joint coordinates, is only useful for the DSDM-Arm shoulder mechanism, and this distinction is omitted for brevity in Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}. Moreover, 
 
 \begin{figure}[H]
 	\centering
@@ -83,6 +98,24 @@ H \vec{\ddot{q}} + \vec{c} = B \vec{\tau}
 	\label{fig:coord}
 \end{figure}
 
+The following equation represent the most general case:
+%
+\begin{align}
+H_k \vec{\ddot{q}} + C_k \vec{\dot{q}} + D_k \vec{\dot{q}} + \vec{g} =  \underbrace{ J_a^T(\vec{q}) R^T }_B  \vec{\tau} + J_e^T(\vec{q}) \vec{f}_e + J_c^T(\vec{q}) \vec{f}_c
+\label{eq:manipulator}
+\end{align}
+%
+Where matrices with subscript $k$ means the rotor dynamics contribution, when the gear-ratio configuration $R_k$ is used, are included:
+%
+\begin{align}
+H_k   &= H + J_a^T R_k^T I_a R_k J_a        \\
+C_k   &= C + J_a^T R_k^T I_a R_k \dot{J}_a \quad \text{if $R$ and $J_a$ are diagonal} \\
+D_k   &= D + J_a^T R_k^T B_a R_k J_a 
+\label{eq:coord_transform}
+\end{align}
+%
+Coordinates transform are defined by:
+%
 \begin{align}
 \vec{\dot{p}}   &= J_e( \vec{q} ) \vec{\dot{q} }  \quad \text{ from joint-space to end-effector   } \\
 \vec{\dot{a}}   &= J_a( \vec{q} ) \vec{\dot{q} }  \quad \text{ from joint-space to actuator-space } \\
@@ -90,18 +123,6 @@ H \vec{\ddot{q}} + \vec{c} = B \vec{\tau}
 \label{eq:coord_transform}
 \end{align}
 
-
-\begin{align}
-H \vec{\ddot{q}} + C \vec{\dot{q}} + D \vec{\dot{q}} + \vec{g} =  \underbrace{ J_a^T(\vec{q}) R^T }_B  \vec{\tau} + J_e^T(\vec{q}) \vec{f}_e + J_c^T(\vec{q}) \vec{f}_c
-\label{eq:manipulator}
-\end{align}
-
-\begin{align}
-H   &= H_m + J_a^T R^T I_a R J_a        \\
-C   &= C_m + J_a^T R^T I_a R \dot{J}_a \quad \text{if $R$ and $J_a$ are diagonal} \\
-D   &= D_m + J_a^T R^T B_a R J_a 
-\label{eq:coord_transform}
-\end{align}
 
 
 \section{Contact}
@@ -195,7 +216,7 @@ Or change in velocity:
 \end{align}
 %
 
-Alternatively, it possible to solve for velocity $\vec{\dot{q}}^+$ and impulsive forces $\int{ \vec{f}_c dt }$ simultaneously by solving the following system of $n+l$ equations:
+Alternatively, it possible to solve for velocity $\vec{\dot{q}}^+$ and impulsive forces $\int{ \vec{f}_c dt }$ simultaneously by solving the following system of $n+c$ equations:
 %
 \begin{align}
 \left[ \begin{array}{c c } 	H & -J_c^T  \\ J_c 	& 0  	\end{array} \right] \left[ \begin{array}{c} \vec{\dot{q}}^+  \\ \int{ \vec{f}_c dt }\end{array} \right] = \left[ \begin{array}{c}  	H \vec{\dot{q}}^-   \\ 0  \end{array} \right]
