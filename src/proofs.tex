@@ -5,29 +5,27 @@
 \section{Simplified equations of motion for diagonal $R$}
 \label{sec:Rdiagndof}
 
-Here the derivation of the simplified form of equations of motion, where intrinsic and extrinsic forces are two separate terms, is derived for arbitrary $n$-DoF fully actuated robots.
+Here the derivation of the simplified form of equations of motion, where intrinsic and extrinsic forces are two separate terms, is derived for a class of $n$-DoF fully actuated robots.
 
 \paragraph{Assumptions} 
 
-Two assumptions are necessary for this form. First, that a coordinates system can be selected so that the gear-ratio matrix $R$ is diagonal for any selected operating mode:
+Two assumptions are necessary for this form. First, that a coordinates system can be selected so that the gear-ratio matrix $R$ is diagonal for possible gear-ratio configurations:
 %
 \begin{align}
 R_{i,j} = 0 \quad \forall \; i \neq j
 \end{align}
 %
-
-Second, that dynamic forces related to viscous damping and inertial forces from the rotor side are linear with respect to rotor velocity:
+Second, that dynamic forces related to viscous damping and inertial forces in motor rotor are linear with respect to rotor velocity:
 %
 \begin{align}
 \vec{\tau}_{rotor-inertia} = I \dot{\vec{w}}  \quad  \vec{\tau}_{rotor-damping} = B \vec{w}
 \end{align}
 %
-
-Note that additionally, in all cases, matrix $I$ and $D$ are diagonal since motor rotors are not coupled directly. 
+Note that additionally, in all cases, matrix $I$ and $D$ are diagonal matrices since motor rotors are not coupled directly. 
 
 \paragraph{Derivation}
 
-Starting from the general, eq. XX, the EoM are:
+Starting from the general eq.\eqref{eq:eom_ndof} the EoM are:
 %
 \begin{align}
 H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g }
@@ -36,7 +34,7 @@ H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g }
 		\right]
 \end{align}
 %
-Then substituting motor velocity to joint coordinates using the kinematic relation, eq. XX,
+Then substituting motor velocity with joint coordinates using the kinematic relation of eq. \eqref{eq:coortransform}:
 %
 \begin{align}
 H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g }
@@ -82,13 +80,13 @@ and thus obtain the desired final form:
 \section{Optimal gear-ratio along a known trajectory}
 \label{sec:optgearproof}
 
-Starting from the EoM, eq. XXX, assuming that the robot is fully actuated and viscous forces linear in speed, it is possible to derive closed form expression for the optimal gear-ratio.
+Assuming that the robot is fully actuated and viscous forces linear in speed, it is possible to derive closed form expression for the optimal gear-ratios on a known trajectory.
 
 
 \subsection{Single DoF}
 \label{sec:optgearproof1}
 
-Starting with the EoM in inverse dynamic form (from eq. XXX):
+Starting with the EoM in inverse dynamic form (from eq. \eqref{eq:1dofEoM}):
 %
 \begin{align}
 \tau  &=  \frac{\tau_E}{R} + R \tau_I
@@ -98,6 +96,7 @@ Using a quadratic cost function to minimize:
 %
 \begin{align}
 J &=  \tau^2 = \frac{\tau_E^2}{R^2} + 2 \tau_E \tau_I + R^2 \tau_I^2
+\label{eq:Jonedof}
 \end{align}
 %
 
@@ -108,7 +107,7 @@ R^* &=  \operatornamewithlimits{argmin}\limits_{R} J \\
    &   \text{s.t.} \quad R \in \Re  \quad \& \quad R > 0
 \end{align}
 %
-A non-real value would have no physical sense. A negative $R$ value would be physically possible, for instance the reverse gear in a car. However, for symmetric electric motors, in the sense that they behave the same way for any sign of torque and speed, there should be no gain obtained by changing the direction of the motor velocity. This can be seen as the cost function is symetric with respect to $R$:
+A non-real value would have no physical sense. A negative $R$ value would be physically possible, for instance the reverse gear in a car. However, for symmetric electric motors, in the sense that they behave the same way for any sign of torque and speed, there should be no gain obtained by changing the direction of the motor velocity. This is consistent with cost function which is symmetric with respect to $R$:
 %
 \begin{align}
 J(R) = J( -R )
@@ -133,17 +132,17 @@ Then the second derivative:
 Hence, on the domain of interest, the second derivative is always positive:
 %
 \begin{align}
-\frac{ \partial^2 J }{ \partial R^2  } >= 0  \quad \forall \quad R \in (0,+\infty)
+\frac{ \partial^2 J }{ \partial R^2  } \geq 0  \quad \forall \quad R \in (0,+\infty)
 \end{align}
 %
-Thus the cost function $J$ is convex in the desired interval of possible $R$ values. The minimum of the function can thus be found by solving for the point where the first derivative is equal to zero:
+Thus the cost function $J$ is convex on the desired interval of possible $R$ values. The minimum of the function can thus be found by solving for the point where the first derivative is equal to zero:
 %
 \begin{align}
 0 &= \frac{ \partial J }{ \partial R  } = 2 \left( R \tau_I^2 - \frac{\tau_E^2}{R^3} \right) \\
 R \tau_I^2 &= \frac{\tau_E^2}{R^3} 
 \end{align}
 %
-Since $R>0$, it is possible to multiply both side by $R$, leading to
+Since $R>0$, it is possible to multiply both side by $R^3$, leading to
 %
 \begin{align}
 R^4 \tau_I^2 &= \tau_E^2
@@ -169,7 +168,7 @@ R    &= \sqrt{ \left| \frac{\tau_E}{\tau_I} \right|}
 The minimal cost value is thus obtain with the optimal gear-ratio value:
 %
 \begin{align}
-R^*    &= \sqrt{ \left| \frac{\tau_E}{\tau_I} \right|} 
+R^*    &=  \operatornamewithlimits{argmin}\limits_{ R > 0 } J = \sqrt{ \left| \frac{\tau_E}{\tau_I} \right|} 
 \end{align}
 %
 Which lead to the minimum cost:
@@ -181,6 +180,8 @@ J^*    &=  2 \tau_E \tau_I  + 2 \left| \tau_E \tau_I \right|
 Note that the the minimized cost is zero when extrinsic and intrinsic forces have opposite signs.
 
 \paragraph{Degenerative cases}
+Here degenerative situations when the intrinsic forces or extrinsic forces are equal to zero are investigated, based on \eqref{eq:Jonedof}.
+%
 If the intrinsic forces are equal to zero, then the cost tends towards zero as the gear-ratio $R$ tends toward $\infty$:
 %
 \begin{align}
@@ -200,11 +201,12 @@ If both the extrinsic forces and intrinsic forces are equal to zero, then the co
 \end{align}
 %
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Multiple DoF}
 \label{sec:optgearproofn}
 
-Starting with the EoM in inverse dynamic form (from eq. XXX):
+Starting with the EoM in inverse dynamic form (from eq. \eqref{eq:eom_ndof2}):
 %
 \begin{align}
 \vec{ \tau } &=  R^{-1} \vec{\tau}_E + R \vec{\tau}_I
@@ -220,9 +222,11 @@ Finding the gear-ratios matrix $R$ that minimize this cost can be formulated as
 %
 \begin{align}
 R^* &=  \operatornamewithlimits{argmin}\limits_{R} J \\
-    &   \text{s.t.} \quad R_{i,j} \in \Re  \quad \& \quad R_{i,j} > 0  \quad \& \quad 
+    &   \text{s.t.} \quad R_{i,j} \in \Re  \quad \& \quad R_{i,j} > 0  
 \end{align}
 %
+
+An analytic solution is available if the gear-ratios matrix $R$ is diagonal.
 
 \paragraph{Derivation}
 
@@ -323,6 +327,10 @@ Hence, convergence of error to zero is guaranteed if both gain matrix $K_D$ and 
 \end{align}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
 \subsection{R* Sliding Mode Controller}
 \label{sec:stabrstar2}
 
@@ -335,7 +343,7 @@ H_k \ddot{\vec{q}} + \vec{c}_k = R_k \vec{\tau} + \vec{d} \quad \forall k \in \{
 \end{align}
 where $\vec{d}$ is an unknown generalized force vector that can represent disturbance or modeling errors.
 
-The proposed control law for motor torques takes the form
+The proposed control law for motor torques takes the form:
 %
 \begin{align}
 \vec{\tau} = R_k^{-1} \left( H_k \ddot{\vec{q}}_r + \vec{c}_k - G_k sgn( \vec{s} ) \right) 
@@ -349,7 +357,10 @@ H_k ( \ddot{\vec{q}} - \ddot{\vec{q}}_r ) = \vec{d} - G_k sgn( \vec{s} ) \quad \
 \label{eq:slidinglawcl}
 \end{align}
 %
+which has two types of discontinuities: 1) discontinuous torque term introduced by the sliding mode controller and 2) arbitrary selected gear-ratio $k$.
+%
 The following variables are then introduced:
+%
 \begin{align}
 \vec{q}_e       &= \vec{q}_d       - \vec{q} \\
 \dot{\vec{q}}_r &= \dot{\vec{q}}_d - \lambda  \vec{q}_e \\
@@ -385,7 +396,7 @@ where $\eta$ is a small positive constant. From eq.\eqref{eq:slidinglawcl}, slid
 Substituting in the sliding condition equation leads to:
 %
 \begin{align}
-s_i \dot{s}_i  = s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - \left[ H_k^{-1} G sgn(\vec{s}) \right]_i \right) < -\eta |s_i|
+s_i \dot{s}_i  = s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - \left[ H_k^{-1} G_k sgn(\vec{s}) \right]_i \right) < -\eta |s_i|
 \end{align}
 %
 If the matrix gain is parametrized in the following way:
@@ -394,7 +405,7 @@ If the matrix gain is parametrized in the following way:
 G_k = H_k K_k
 \end{align}
 %
-where $K_k$ is a diagonal matrix. The the discontinuous gain term is uncoupled in the sliding condition equation:
+where $K_k$ is a diagonal matrix. Then the discontinuous gain term is uncoupled in the sliding condition equation:
 %
 \begin{align}
 s_i \left( \left[ H_k^{-1} \vec{d} \right]_i - K_{ii} sgn( s_i ) \right) &< -\eta |s_i| \\
@@ -415,11 +426,12 @@ Thus, if the gains are defined based on disturbance bounds and according to eq.\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 
 
+\newpage
 
 \section{Chattering Bounds with Rollout Gear-selection}
 \label{sec:chat}
 
-This section provides minimum delay guarantees for successive gear-shift when using the Rollout gear-selection scheme. 
+This section computes lower bounds for the time interval between successive gear-shifts when using the Rollout gear-selection scheme. 
 
 \paragraph{Problem setting}
 First, using the Rollout approach, the optimal gear-ratio mode $k^*$ selection is done as follow:
@@ -437,10 +449,10 @@ The integral cost is given by:
 J_k(t) = \int_{t}^{t+h}{  C_k( \hat{\vec{x}}_k ) \, d\hat{t} }
 \end{align}
 %
-where $C_k$ is the instantaneous cost, $\hat{t}$ is the virtual time in the simulation and $\hat{\vec{x}}$ the predicted trajectory. The virtual state trajectory is computed by simulating the system in closed-loop, using the base-policy:
+where $C_k$ is the instantaneous cost, $\hat{t}$ is the virtual time in the simulations and $\hat{\vec{x}}$ the predicted trajectory. The virtual state trajectory is computed by simulating the system in closed-loop, using the base-policy, and integrating forward starting from the actual state at time $t$:
 %
 \begin{align}
-\hat{\vec{x}}_k( \hat{t} , t ) = \int_{t}^{t+h}{  \dot{\hat{\vec{x}}}_k \, d\hat{t} } + \vec{x}(t)
+\hat{\vec{x}}_k( \hat{t} , t ) = \int_{t}^{\hat{t}}{  \dot{\hat{\vec{x}}}_k \, d\tilde{t} } + \vec{x}(t)
 \end{align}
 %
 If both the real system and simulations are robustly staying on the desired trajectory, then the virtual states in the simulation are independent of actual starting simulation time:
@@ -457,7 +469,7 @@ C_k =  \vec{\tau}_k^T \vec{\tau}_k
 %
 where $\vec{\tau}_k$ is the computed torque in predictive simulation with the base policy when using the gear-ratio mode $k$.
 %
-It will be assumed that and upper bound can be found for the instantaneous cost, in a domain of interest $D$, given the desired trajectory and the feedback policy:
+It will be assumed that an upper bound can be found for the instantaneous cost, at least in a domain of interest $D$, given the desired trajectory and the feedback policy:
 %
 \begin{align}
 C_k^{max} =  \operatornamewithlimits{max}\limits_{\vec{x},t \in D} C_k(\vec{x},t)
@@ -490,7 +502,7 @@ Here a minimum time delay between a back-and-forth gear-shift sequence is derive
 	\label{fig:costontrajrollout}
 \end{figure}
 
-It can be shown that there is a minimum delay $\Delta t$ between a back-and-forth gear-shift sequence. Hence, no arbitrary fast chattering between gear-ratio (zeno behavior \cite{liberzon_switching_2003}) is possible. 
+%It can be shown that there is a minimum delay $\Delta t$ between a back-and-forth gear-shift sequence. Hence, no arbitrary fast chattering between gear-ratio (zeno behavior \cite{liberzon_switching_2003}) is possible. 
 
 \paragraph{Proof} 
 
@@ -592,7 +604,7 @@ for which it is possible to find an upper bound:
 \dot{J}_k(t) &\leq C_k^{max}  +   \dot{C}_k^{max} h
 \end{align}
 %
-Note that compared to the last section analysis (fixed trajectory, the is an additional term  $\dot{C}_k^{max} h$ representing sensitivity of states trajectory in simulations. Then, most of the previous analysis is still valid, except that the bounds on cost variation of eq. \label{eq:costvariation}, are now given instead by:
+Note that compared to the last section analysis (fixed trajectory), there is an additional term  $\dot{C}_k^{max} h$ representing sensitivity of states trajectory in simulations. Then, most of the previous analysis is still valid, except that the bounds on cost variation of eq. \eqref{eq:costvariation}, are now given instead by:
 %
 \begin{align}
 -\left[ C_k^{max}  +   \dot{C}_k^{max} h \right] \Delta t  \leq \Delta J_k \leq \left[ C_k^{max}  +   \dot{C}_k^{max} h \right] \Delta t
@@ -605,6 +617,9 @@ And the final result is modified to be:
 \Delta t \geq \frac{Q}{ C_k^{max}  +   \dot{C}_k^{max} h }
 \end{align}
 %
+
+\subsubsection{Sensitivity of simulated trajectories}
+
 Regarding the new term, the time derivative of instantaneous cost in the simulation can be expressed as:
 %
 \begin{align}
@@ -632,16 +647,14 @@ The term $\frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}}$ is a Jacobian Matr
 
 
 The term $\frac{\partial \vec{\hat{x}}}{\partial t}$ represents by how much the states at time $\hat{t}$ (in the simulation) would change if the simulation would have started $dt$ later. 
-
-
-
-The virtual trajectory can be parametrized as the sum of the desired trajectory and error:
+%
+The virtual trajectory can be parametrized as the sum of the desired trajectory and errors:
 %
 \begin{align}
 \vec{\hat{x}}( \hat{t} , t ) =  \vec{\hat{x}}_e( \hat{t} , t ) + \vec{\hat{x}}_d( \hat{t} )
 \end{align}
 %
-Because the desired trajectory is independent of starting simulation time $t$:
+Because the desired trajectory is independent of starting simulation time $t$, the sensitivity of the trajectory is only the sensitivity of this error term:
 %
 \begin{align}
 \frac{\partial \vec{\hat{x}}}{\partial t}  = \frac{\partial \vec{\hat{x}}_e}{\partial t}
@@ -674,8 +687,8 @@ since initial error in the simulations is the real error at time $t$. It is then
 Hence trajectory sensitivity can thus be bounded, because the closed-loop error dynamic is linear and stable in simulations (matrix A only has eigenvalues with negative real parts).  All in all, it is thus possible to conclude that:
 \begin{enumerate}
 	\item Sensitivity $\dot{C}_k$ is bounded
-	\item Sensitivity $\dot{C}_k \rightarrow 0$ far ahead in simulations $\hat{t} \rightarrow \infty$
-	\item Sensitivity $\dot{C}_k = 0$ if there is no tracking error $ \vec{x}_e = \vec{0} \quad \dot{\vec{x}}_e = \vec{0}$
+	\item Sensitivity $\dot{C}_k \rightarrow 0$ far ahead in simulations as $\hat{t} \rightarrow \infty$
+	\item Sensitivity $\dot{C}_k = 0$ if there is no tracking error ($ \vec{x}_e = \vec{0} \quad \dot{\vec{x}}_e = \vec{0}$)
 \end{enumerate}
 
 Note that the last conclusion is consistent with the previous analysis where it was assumed a situation where all trajectories (real, desired and simulations) were all the same.
