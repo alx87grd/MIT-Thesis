@@ -262,7 +262,7 @@ Table \ref{tab:robotspec} shows the arm specifications at the joints in term of 
 Note that the DSDM-Arm is strong enough to sustain its own weight in all configurations when using high-force (HF) modes. However, this is not the case when using the actuators in high-speed (HS) mode. 
 
 
-\subsection{Limitations and recommendation for improvements} 
+\subsection{Limitations and recommendations for improvements} 
 
 The main limitations of the DSDM-Arm are due to 1) backlash in the actuator gearing and 2) compliance in the structure. For the ease of implementation, the custom built actuator transmissions use only standard spur gears. The flaw of this design is that the output has a backlash of a few degrees. While it was not a critical issue for demonstrating the proposed control scheme of this thesis, it would be problematic for using the DSDM-Arm platform in task involving precise positioning of the end-effector. The second issue is the arm compliance due to 3D printed plastic parts used to connect the joints to the carbon fiber tubes. 
 
@@ -345,9 +345,9 @@ DSDM controllers are currently implemented as ROS nodes. They receive a torque a
 The motor are controlled by open-source FlexSEA Execute motor board \cite{duval_flexsea-execute:_2016}. Those boards handle low-level high-bandwidth current loops and encoder signal processing. They also include a circuit to control a brake. All those functions are made available from the FlexSEA driver nodes. Here the driver are set to request, receive and broadcast all sensor information from the Execute boards constantly at 500 Hz, which set the tempo for the feedback loops. 
 
 
-\subsection{Limitations and recommendation for improvements} 
+\subsection{Limitations and recommendations for improvements} 
 
-The initial control implementation for DSDM actuator prototypes used a \textit{NI compact rio} where feedback loops were running at very high-sampling rate on a FPGA and a real-time micro-controller \cite{girard_two-speed_2015}. This type of system is however poorly suited to scale to multi-DoF system, and implement complex planning algorithms. Hence, for the DSDM-Arm the architecture was design to easily scale to multiple DoF, make possible the use of high-level programming languages and facilitate connections with motion planning algorithms. However this came at the cost of loosing some control on the low-level loop implementations. The performance of actuator-level DSDM controller has decreased with the new implementation. To improve the system, DSDM controller should be implemented directly on micro-controllers, handling all actuator-level functions, at a higher sampling rate. One implementation issue that could also be improved, is that velocity measurement at low speeds in HS mode are very noisy because of resolution problems. An encoder with improved resolution, or direct velocity sensor should be used to improve the performance. 
+The initial control implementation for DSDM actuator prototypes used a \textit{NI compact rio} where feedback loops were running at very high-sampling rate on a FPGA and a real-time micro-controller \cite{girard_two-speed_2015}. This type of system was however poorly suited to scale to multi-DoF systems, and implementing complex planning algorithms. Hence, for the DSDM-Arm the architecture was design to: easily scale to multiple DoF, make possible the use of high-level programming languages and facilitate connections with motion planning algorithms. However this came at the cost of loosing some control on the low-level loop implementations. The performance of actuator-level DSDM controller has decreased with the new implementation. To improve the system, DSDM controller should be implemented directly on micro-controllers, handling all actuator-level functions, at a higher sampling rate. One implementation issue that could also be improved, is that velocity measurements, at low speeds in high-speed mode, are very noisy because of resolution problems. An encoder with improved resolution, or direct an angular velocity sensor should be used to improve the performance. 
 
 
 
