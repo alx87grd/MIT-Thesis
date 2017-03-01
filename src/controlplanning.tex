@@ -1148,7 +1148,7 @@ As illustrated at Figure. \ref{fig:Probinterpolation}, this scheme can also be i
 %
 %In order to guarantee the good behavior of the value iteration scheme, nodes close to the goal state are aggregated into a big cost free and absorbing termination node.  Moreover, when the equations of motion for a given state and control lead to out-of-bound states, it is considered that the system reach with a very large cost an artificial termination node with probability one. Since it is clear from the physics that there exist proper policies that can reach the termination node, and the cost is positive definite (for both the quadratic and minimum time cost functions) it is also clear that any improper policy will be associated to an infinite cost for an infinite horizon. Thus, given those conditions value iteration algorithm is guarantee to converge to the optimal cost-to-go for any initial conditions.
 
-\subsection{Studied systems}
+\subsection{Example systems}
 
 This section present numerical results of feedback policy to reach a fixed-target with two robotics system using VGA. The first system, see Fig. \ref{fig:vi_sys1}, is a single-axis linear actuator with two gear-ratios, the output dynamic is considered to be a linear mass-damper and rotor-velocity saturations are included. The second system, see Fig. \ref{fig:vi_sys2}, is a non-linear inverted pendulum with no rotor-velocity saturation. 
 %
