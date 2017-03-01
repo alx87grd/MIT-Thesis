@@ -71,7 +71,7 @@ Some advance electric motor systems can extend their operation at high-speed by 
 \begin{figure}[ht]
 	\centering
 		\includegraphics[width=0.5\textwidth]{EM_two.png}
-	\caption{Force-speed curve of an electric motor using flux weakening with two different reduction ratio}
+	\caption[Two-speed electric motor using flux weakening]{Force-speed curve of an electric motor using flux weakening with two different reduction ratio}
 	\label{fig:EM_two}
 \end{figure}
 
@@ -220,7 +220,7 @@ Fig. \ref{fig:torquespeed} illustrates the operating range of the DSDM actuator 
 \label{sec:WeightAdvantage}
 
 
-A DSDM actuator will be lighter than a single motor for applications with a wide range of operating speed. Suppose that an actuator must generate 10 W output power at two operating points: 0.5 Nm of torque at a speed of 20 rad/sec and 0.1 Nm at 100 rad/sec. A single EM motor that satisfies these requirements at both operating points tends to be oversized in terms of power, to reach both operating points, see Fig. \ref{fig:s1}. A DSDM actuator can reach the same operating points using two smaller motors with appropriate gear ratios, see Fig. \ref{fig:s2}. On the other hand the DSDM actuator uses more components: two motors instead of one, more gearing and an additional brake. The DSDM concept pays-off when the difference in speed between two required operating points becomes larger.  Fig. \ref{fig:1vs2} shows the estimated weight of actuators in relation to the ratio of operating speeds ($\lambda=\frac{w_1}{w_2}$), while the required power output is kept at 10 W. The actuator weight is computed assuming that the mass of each component is proportional to its maximum output torque, with values taken from commercially available components in the 10 - 100 watts range: 2 kg/Nm for motors, 0.1 kg/Nm for gearboxes and differentials and 0.2 kg/Nm for brakes \cite{maxon_motor_usa}. As shown in Fig. \ref{fig:1vs2}, the DSDM concept becomes advantageous when there is a large speed difference between the operating points. This is because only the gearbox and brake need to be scaled up for the DSDM actuator to meet the high torque requirement of the low-speed operating point, while the motor size must be increased for the single motor solution.
+A DSDM actuator will be lighter than a single motor for applications with a wide range of operating speed. Suppose that an actuator must generate 10 W output power at two operating points: 0.5 Nm of torque at a speed of 20 rad/sec and 0.1 Nm at 100 rad/sec. A single EM motor that satisfies these requirements at both operating points tends to be oversized in terms of power, to reach both operating points, see Fig. \ref{fig:s1}. A DSDM actuator can reach the same operating points using two smaller motors with appropriate gear ratios, see Fig. \ref{fig:s2}. On the other hand the DSDM actuator uses more components: two motors instead of one, more gearing and an additional brake. The DSDM concept pays-off when the difference in speed between two required operating points becomes larger.  Fig. \ref{fig:1vs2} shows the estimated weight of actuators in relation to the ratio of operating speeds ($\lambda=\frac{w_1}{w_2}$), while the required power output is kept at 10 W. The actuator weight is computed assuming that the mass of each component is proportional to its maximum output torque, with values taken from commercially available \textit{Maxon motor} components in the 10 - 100 watts range: 2 kg/Nm for motors, 0.1 kg/Nm for gearboxes and differentials and 0.2 kg/Nm for brakes. As shown in Fig. \ref{fig:1vs2}, the DSDM concept becomes advantageous when there is a large speed difference between the operating points. This is because only the gearbox and brake need to be scaled up for the DSDM actuator to meet the high torque requirement of the low-speed operating point, while the motor size must be increased for the single motor solution.
 
 \begin{figure}[H]
         \centering
@@ -1186,7 +1186,7 @@ In this case, the transition is simple because the system goes from 1 DoF to 2 D
 \subsubsection{Down-shift: $k:2\rightarrow1$}
 In this case, the transition is harder because the system goes from 2 DoF to 1 DoF, and some synchronization work is needed. As described by eq. \eqref{eq:downshiftmap_nonideal}, closing the brake will lead to an undesirable impulsive behavior if M1 velocity is not zero. M1 speed $w_1$ must thus be brought to zero so that the locking brake can be engaged smoothly without any impact. Hence, as illustrated at Fig. \ref{fig:automaticflow}, when a down-shift is commanded, and intermediary synchronization control mode is activated, and the brake is only closed after M1 as reach zero velocity (a small value when implemented in practice). %Two algorithms, a kinematic and a dynamic approach, can be considered. 
 
-\subsubsection{Synchronization controller}
+\subsection{Synchronization controller}
 First, a solution from a kinematic point-of-view is considered, then more flexible dynamic approach is proposed. Assuming the two motor velocities $w_1$ and $w_2$ can be treated as control inputs, then using the nullspace projection vector from eq.\eqref{eq:kinematicnullspace}, the kinematic control law can be written as 
 %
 \begin{align}
@@ -1367,7 +1367,7 @@ w_1^+ =  w_1^- + \Delta w_1 \approx w_{1,d}  + R_1 \frac{ p_{ext} }{I_o + I_1 R_
 \end{align}
 %
 Hence, it would be possible to engaged the brake and switch to high-force mode almost instantaneously. In practice, because of speed saturation it won't always be possible to perfectly track the desired speed $w_{1,d}$ in the nullspace, or to perfectly predict the contact impulse $p_{ext}$. However, by running this control scheme and bringing $w_1^+$ as close as possible to zero, gear-shift will nonetheless be achieved faster because synchronization error will be smaller at the start of the down-shift process.
-
+%
 The preparation controller is illustrated in the form of a block diagram at Fig. \ref{fig:imp_loop}. Note that the expected impulse would need to to be computed by an high-level controller aware of the general system situation. Section \ref{sec:contact} present techniques to estimate impulsive contact forces based on a dynamic model of a robot that could be used by the high-level controller. 
 
 
@@ -1379,7 +1379,7 @@ The preparation controller is illustrated in the form of a block diagram at Fig.
 \section{Experimental Results}
 \label{sec:dsdm_exp}
 
-This section presents experimental results with the DSDM prototype illustrated at Fig. \ref{fig:dsdm_proto}. Information regarding the mecanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, the high-level control loop is a simple PID controller(recall Fig. \ref{fig:dsdm_control_architecture}). 
+This section presents experimental results with the wrist DSDM prototype of the DSDM-Arm. Information regarding the mecanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, the high-level control loop is a simple PID controller (recall Fig. \ref{fig:dsdm_control_architecture}). Set-points are commanded from a joystick controller. 
 
 \subsection{DSDM Dynamic Behavior}
 
@@ -1397,14 +1397,14 @@ This section presents experimental results with the DSDM prototype illustrated a
 	%\label{fig:dsdm_manual_motors}
 %\end{figure} 
 %
-\begin{figure}[H]
+\begin{figure}[hb]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_manual_shift.pdf}
 	\caption[DSDM behavior overview]{DSDM actuator with torque and mode commands set from a joystick}
 	\label{fig:dsdm_manual_shift}
 \end{figure}
 %
-Fig. \ref{fig:dsdm_manual_shift} gives an overview of how a DSDM actuator works. Before $t=2.5$, the brake is engaged and only M2 is used to drive the output. When is brake is engaged, the DSDM is in high-force mode and the effective gear-ratio is 474. At $t=2.5$, the brake is released and M1 start contributing to the motion. Releasing the brake will be referred to as an up-shift. Between $t=2.5$ and $t=6.5$, the brake is open, both motor contribute to the output speed; the DSDM is in high-speed mode and the effective gear-ratio is 23. At between $t=6.5$, a down-shift is manually commanded. Between $t=6.5$ and $t=7$, the synchronization controller then apply torques to brake M1 to zero speed and the brake is engaged at $t=7$ when M1 speed is detected to be null. Note that here the down-shift was commanded at a infeasible high-velocity by the user driving the system, and the output speed first had to be slowed down to a speed reachable by high-force mode. This process of braking M1 and then engaging the brake will be referred as a down-shift.
+Fig. \ref{fig:dsdm_manual_shift} gives an overview of how a DSDM actuator works. Before $t=2.5$, the brake is engaged and only M2 is used to drive the output. When is brake is engaged, the DSDM is in high-force mode and the effective gear-ratio is 474. At $t=2.5$, the brake is released and M1 start contributing to the motion. Releasing the brake will be referred to as an up-shift. Between $t=2.5$ and $t=6.5$, the brake is open, both motor contribute to the output speed; the DSDM is in high-speed mode and the effective gear-ratio is 23. At between $t=6.5$, a down-shift is manually commanded. Between $t=6.5$ and $t=7$, the synchronization controller then apply torques to brake M1 to zero speed and the brake is engaged at $t=7$ when M1 speed is detected to be null. Note that here the down-shift was commanded from an infeasible high-velocity by the user driving the system, and the output speed had to first be slowed down to a speed reachable by high-force mode. This process of braking M1 and then engaging the brake will be referred as a down-shift.
 
 
 Fig. \ref{fig:dsdm_position_tracking} shows the DSDM tracking position set-points. This experiment illustrates that the high-force mode is slow and with a highly damped behavior, while the high-speed mode is fast and with a under-damped second order behavior. 
@@ -1412,39 +1412,52 @@ Fig. \ref{fig:dsdm_position_tracking} shows the DSDM tracking position set-point
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_position_tracking.pdf}
+		\vspace{-10pt}
 	\caption[DSDM actuator position control]{DSDM actuator tracking position commanded from a joystick }
 	\label{fig:dsdm_position_tracking}
 \end{figure}
 %
-Fig. \ref{fig:dsdm_speed_tracking} shows the DSDM tracking speed set-points. Note that the noisy behavior during high-speed mode is only due to an implementation limitation. At low speed there is a quantization problem: there is a too small amounts of encoder ticks per control loop intervals. 
+Fig. \ref{fig:dsdm_speed_tracking} shows the DSDM tracking speed set-points. Note that the noisy behavior during high-speed mode is only due to an implementation limitation. At low speed there is a quantization problem: there is a too small amounts of encoder ticks per control loop interval. This to limited possible controller gains for closing the loop in speed when using high-speed mode.
 %
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_speed_tracking.pdf}
+		\vspace{-10pt}
 	\caption[DSDM actuator velocity control]{DSDM actuator tracking output velocity commanded from a joystick }
 	\label{fig:dsdm_speed_tracking}
+	\vspace{-10pt}
 \end{figure}
 
 
 \subsection{Nullspace}
 
-Fig. \ref{fig:dsdm_nullspace} illustrates the internal DoF of DSDM actuators. Here the DSDM tracks a constant output speed while motor speeds are varied by projecting additional torques in the nullspace.
+Fig. \ref{fig:dsdm_nullspace} illustrates the internal DoF of DSDM actuators. Here the DSDM tracks a constant output speed while motor speeds are varied by projecting additional torques in the nullspace. This experiment demonstrate that the internal DoF can be controlled independently of the output using the proposed nullspace projection scheme. 
 %
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_nullspace.pdf}
-	\caption[DSDM actuator tracking constant output velocity: nullspace]{Experimental demonstration of independence of the output with respect to the secondary controller input, with the DSDM actuator tracking constant output velocity while sending manual command in the nullspace }
+		\vspace{-10pt}
+	\caption[DSDM actuator tracking constant output velocity: nullspace]{Experimental demonstration of independence of the output with respect to the secondary controller input, with the DSDM actuator tracking constant output velocity while sending manual commands in the nullspace }
 	\label{fig:dsdm_nullspace}
+	\vspace{-10pt}
 \end{figure}
 
 
 \subsection{Seamless Transitions}
 
 \subsubsection{Constant Speed}
+Experiments here show gear-shifts execuion while controlling the output to track a fixed speed. With the DSDM-Arm wrist tracking a 1 rad/s velocity, the average synchronization time for a down-shift, which is about 250 ms without preparation, is improved to 30 ms with the preparation scheme. Faster synchronization times of less than 20 ms were also achieved with another experimental set-up \cite{girard_two-speed_2015}. Hence while those experiments demonstrated that very fast gear-shifts in the range of 20 ms are possibles, even faster synchronizations could be possible, since the bottleneck here is implementation factors an not fundamental aspects. 
+
+\begin{figure}[t]
+	\centering
+		\includegraphics[width=0.70\textwidth]{shift.pdf}
+	\caption[Smoother output velocity control during gear-shifts]{Smoother output velocity control during gear-shifts, with a DSDM controller implemented at high sampling rate on a FPGA}
+	\label{fig:shifts}
+\end{figure}
 
 Fig. \ref{fig:dsdm_cstspd_shifts} illustrates the DSDM actuator maintaining a constant output speed while shifting back-and-forth between high-speed and high-force mode.
 %
-\begin{figure}[htp]
+\begin{figure}[p]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_cstspd_shifts.pdf}
 	\caption[DSDM actuator tracking constant output velocity: shifts]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode (no preparation) }
@@ -1453,15 +1466,18 @@ Fig. \ref{fig:dsdm_cstspd_shifts} illustrates the DSDM actuator maintaining a co
 %
 Fig. \ref{fig:dsdm_cstspd_shifts_withprep} illustrates how the idea of preparation, by adjusting M2 velocity in the nullspace, improve the gear-shifting time. 
 %
-\begin{figure}[htp]
+\begin{figure}[p]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_cstspd_shifts_withprep.pdf}
 	\caption[DSDM actuator tracking constant output velocity: preparation]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode (with preparation) }
 	\label{fig:dsdm_cstspd_shifts_withprep}
 \end{figure}
-
+%
+Note that the undesirable disturbances in the output velocity at Fig. \ref{fig:dsdm_cstspd_shifts} and Fig. \ref{fig:dsdm_cstspd_shifts_withprep}, actually happens during up-shifts (no impacts, the brake is opening) and are caused by the transient response of the high-speed PID controller. This undesirable transient response was limited by implementation issues of the experimental set-up. Fig. \ref{fig:shifts} shows the same experiments when the DSDM controller is implemented on a FPGA at a higher sampling rate, which shows a much smoother output speed throughout the gear-shifting processes. 
+%
+%
 %Fig. \ref{fig:dsdm_cstspd_shifts_withprep_zoom} shows a zoom in on a fast down-shift with preparation. 
-
+%%
 %\begin{figure}[htp]
 	%\centering
 		%\includegraphics[width=0.75\textwidth]{dsdm_cstspd_shifts_withprep_zoom.pdf}
@@ -1469,9 +1485,12 @@ Fig. \ref{fig:dsdm_cstspd_shifts_withprep} illustrates how the idea of preparati
 	%\label{fig:dsdm_cstspd_shifts_withprep_zoom}
 %\end{figure}
 
+\newpage
+
 \subsubsection{Contact with a Compliant Load}
 
-An experiment of the actuator making contact with a spring-like compliant load and making a smooth down-shift as soon as contact is detected is illustrated at Fig. \ref{fig:dsdm_ballon_down_shift_nice2}. 
+An experiment of the actuator making contact with a spring-like compliant load and making a smooth down-shift as soon as contact is detected is illustrated at Fig. \ref{fig:dsdm_ballon_down_shift_nice2}. Results shows that the controller is successful at down-shifting without any kick-back from the spring-like load (output velocity is always positive). In the experiment, the actuator output arrives with high-velocity and first compress the compliant load using its momentum, then the large gear-ratio is engaged seamlessly and larger forces are applied to compress the load further. 
+
 %
 %\begin{figure}[htp]
 	%\centering
@@ -1508,25 +1527,27 @@ An experiment of the actuator making contact with a spring-like compliant load a
 	%\label{fig:dsdm_ballon_down_shift_nice}
 %\end{figure}
 
-\begin{figure}[htp]
-	\centering
-		\includegraphics[width=0.75\textwidth]{dsdm_ballon_down_shift_nice2.pdf}
-	\caption{ Fast downshift during a contact with a compliant load }
-	\label{fig:dsdm_ballon_down_shift_nice2}
-\end{figure}
-
 
 
 \subsubsection{Impact with a Stiff Load}
 
-Fig. \ref{fig:dsdm_stiff_down} illustrates an experiment where the DSDM make a quick down-shift after impacting a stiff heavy object. 
+Fig. \ref{fig:dsdm_stiff_down} illustrates an experiment where the DSDM is making a quick down-shift after impacting a stiff heavy object. Contact detection is done based on encoder measurements only, which is possible during high-speed mode because of the small reduction ratio leading to good actuator-transparency properties. The contact detection then trigger automatically the down-shift commands. Results shows that the DSDM actuator is able to engage high-force mode within 25 ms of the impact, and seamlessly continue its motion pushing the heavy load with large torques. 
 
-\begin{figure}[htp]
+\begin{figure}[p]
 	\centering
-		\includegraphics[width=0.75\textwidth]{dsdm_stiff_down.pdf}
+		\includegraphics[width=0.65\textwidth]{dsdm_ballon_down_shift_nice2.pdf}
+	\caption{ Fast downshift during a contact with a compliant load }
+	\label{fig:dsdm_ballon_down_shift_nice2}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+		\includegraphics[width=0.65\textwidth]{dsdm_stiff_down.pdf}
 	\caption{ Fast downshift during a contact with a heavy stiff load }
 	\label{fig:dsdm_stiff_down}
 \end{figure}
+
+Video of those down-shifts experiments, for the compliant load and the stiff load, are available at the following link: \hyperref[https://youtu.be/mUVrkDZr0kU]{https://youtu.be/mUVrkDZr0kU}.
 
 %
 %\begin{figure}[htp]
@@ -1554,4 +1575,31 @@ Fig. \ref{fig:dsdm_stiff_down} illustrates an experiment where the DSDM make a q
 
 \section{Summary}
 
-In this Chapter, an actuation technology
+In this Chapter, an actuation technology capable of fast switching between two operating modes, equivalent to a small and a large reduction ratio, is presented. Advantages in term of weight, efficiency and reliability are discussed. Equation of motions for the hybrid behavior of the system are derived. A control scheme leveraging the internal DoF of the system to allows for fast and seamless transitions is proposed and experimentally validated. Prototypes DSDM actuators are found to work really well in real-world conditions.
+
+\section{Future work}
+
+Here are a few possibles axis of future development. 
+
+\begin{itemize}
+		\item Developing a product-like actuator system:
+		\begin{itemize}
+			\item Embedded mechanical design using frameless motors
+			\item Dedicated power-electronics and low-level controllers
+		\end{itemize}
+		\item Architecture ideas:
+		\begin{itemize}
+			\item Multi-domain transducers, ex.: M1 $\rightarrow$ pneumatic and M2 $\rightarrow$ hydraulic
+			\item Clutch system to reconfigure motors so both of them can always actively transmit torques (M1 is deadmass during high-force mode)
+		\end{itemize}
+		\item Exploiting more thoroughly the nullspace:
+		\begin{itemize}
+			\item Secondary controller maximizing efficiency based on electrical model
+			\item Formulating a multi-objective optimal control problem including speed limits, torque limits, efficiency and other criteria 
+		\end{itemize}
+		\item Exploring the new possibilities for robotic tasks:
+		\begin{itemize}
+			\item Using DSDM for legged locomotion
+			\item Using DSDM for manipulation of large heavy objects
+		\end{itemize}
+\end{itemize}
