@@ -1401,7 +1401,7 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
         \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane. Two trajectories starting at $q=-2$ are illustrated, blue is open-loop, red is closed loop}\label{fig:phase_plane}
 \end{figure}
 
-For both cost functions the optimal policy for the discrete gear-ratio mode $k$ is quite complex. This illustrates that optimal solutions for this type non-linear hybrid system representative of robotic systems are not trivial, even for a single axis. One observation regarding the gear-ratio selection policy, is that the larger second gear-ratio is used often in situation where the robot needs to be drastically deviated from its natural motion, and the small second gear-ratio is used when the controller let the robot move in the natural direction. This connect with the idea of attenuating the load-dynamics with a large gear-ratio when it is advantageous, or leverage the load-dynamics with a small gear-ratio when the natural motion is advantageous. 
+For both cost functions the optimal policy for the discrete gear-ratio mode $k$ is quite complex. This illustrates that optimal solutions for this type non-linear hybrid system representative of robotic systems are not trivial, even for a single axis. One observation regarding the gear-ratio selection policy, is that the larger second gear-ratio is used often in situation where the robot needs to be drastically deviated from its natural motion, and the small second gear-ratio is used when the controller let the robot move in the natural direction. This connects back with the idea of attenuating the load-dynamics with a large gear-ratio when it is advantageous, or leverage the load-dynamics with a small gear-ratio when the natural motion is advantageous. 
 
 
 
@@ -1493,11 +1493,11 @@ Value iteration is a powerful tool, but computation are intractable for high-dim
 
 Here, the advantages of dynamically changing the gear-ratios, using the R* computed torque controller, are illustrated using simulations of two robots: first a 1-DoF pendulum, then a 3-DoF arm. Both robots are considered having VGA with two possible gear-ratios: 1:1 or 1:10. Reference low-torque trajectories to reach target positions are computed with a RRT algorithm. 
 %
-The first simulated experiment uses a single-axis inverted pendulum equipped with a VGA, see Fig. \ref{fig:vi_sys2}, with the task of reaching the up-right position starting at the bottom. Fig. \ref{fig:sim1} shows the robot tracking the reference low-torque trajectory, where at first the robot accumulates energy, using the 1:1 gear-ratio, and then finishes the motion using the 1:10 gear-ratio. When the gravitational forces are pushing advantageous toward the trajectory the controller select the 1:1 gear-ratio, but when it is advantageous to fight the intrinsic actuator dynamics instead, the 1:10 gear-ratio is selected. This can be seen by comparing the trajectory to natural phase plane vectors as illustrated by Fig. \ref{fig:pps}.
+The first simulated experiment uses a single-axis inverted pendulum equipped with a VGA, see Fig. \ref{fig:vi_sys2}, with the task of reaching the up-right position starting at the bottom. Fig. \ref{fig:sim1} shows the robot tracking the reference low-torque trajectory, where at first the robot accumulates energy, using the 1:1 gear-ratio, and then finishes the motion using the 1:10 gear-ratio. When the gravitational forces are pushing advantageously toward the trajectory the controller select the 1:1 gear-ratio, but when it is advantageous to fight the intrinsic actuator dynamics instead, the 1:10 gear-ratio is selected. This can be seen by comparing the trajectory to natural phase plane vectors as illustrated by Fig. \ref{fig:pps}.
 %
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.75\textwidth]{sim1.pdf}
+		\includegraphics[width=0.90\textwidth]{sim1.pdf}
 	\caption{1-DoF robot simulation: states and inputs trajectory}
 	\label{fig:sim1}
 \end{figure}
@@ -1563,7 +1563,7 @@ In the second experiment, a 3-DoF manipulator is tasked with going from configur
 \subsubsection{Comparison to fixed-gear performance}
 
 
-To evaluate the performance gain of actively changing the gear-ratio, simulations with fixed gear-ratios are conducted where a regular computed torque controller tracks the same trajectories. Results are summarized in TABLE \ref{tab:MaximumTorqueComparison}, in terms of maximum absolute torque, which relates to the required size and weight of motors, and integral of torque squared, which relates to power consumption. Active gear-ratios selection is found to greatly improve both metrics, especially for the 3-DoF robot trajectory where the arm must both achieve high-speeds and also sustain a constant gravitational load at the final configuration. Note that in those simulations high-velocity with 1:10 reductions is inhibited by friction in the motors, no maximum rotor velocity is enforced. For the 3-DoF trajectory, active gear-shifting is found to reduce the maximum torque required by a factor two and the integral of the torque square by a factor 10, compared to any of the fixed-gear options. Those results show the potential of using variable gear-ratio transmissions for huge improvements in terms of actuator size and power consumption. Moreover, here in the simulations, the load was always the same manipulator in different dynamic situations. If the load dynamics is radically changing because of different contact situations with the environment, the performance gain of changing the gear-ratios could be even greater. 
+To evaluate the performance gain of actively changing the gear-ratio, simulations with fixed gear-ratios are conducted where a regular computed torque controller tracks the same trajectories. Results are summarized in Table \ref{tab:MaximumTorqueComparison}, in terms of maximum absolute torque, which relates to the required size and weight of motors, and integral of torque squared, which relates to power consumption. Active gear-ratios selection is found to greatly improve both metrics, especially for the 3-DoF robot trajectory where the arm must both achieve high-speeds and also sustain a constant gravitational load at the final configuration. Note that in those simulations high-velocity with 1:10 reductions is inhibited by friction in the motors, no maximum rotor velocity is enforced. For the 3-DoF trajectory, active gear-shifting is found to reduce the maximum torque required by a factor two and the integral of the torque square by a factor 10, compared to any of the fixed-gear options. Those results show the potential of using variable gear-ratio transmissions for huge improvements in terms of actuator size and power consumption. Moreover, here in the simulations, the load was always the same manipulator in different dynamic situations. If the load dynamics is radically changing because of different contact situations with the environment, the performance gain of changing the gear-ratios could be even greater. 
 %
 \begin{table}[htp]
 	\centering
@@ -1595,7 +1595,7 @@ In the simulation presented so-far, fast gear-shifts were not inhibited by any o
 %
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.70\textwidth]{chattering_compared.jpg}
+		\includegraphics[width=0.90\textwidth]{chattering_compared.jpg}
 	\caption{Fast gear-shifting inhibition scheme comparison}
 	\label{fig:ChatteringComparaison}
 \end{figure}
@@ -1604,9 +1604,9 @@ This figure shows that the hysteresis scheme is not necessary an improvement ove
 
 \subsection{Value iteration vs. model-based controllers}
 
-For low-dimensional systems, numerical results obtain with value iteration when resolution is very fine can almost be seen as a ground truth of the optimal trajectory and control actions. It is thus interesting to compared the model-based approach (RRT planning + R* Computed Torque) to a value iteration solution, to evaluate how far from the global optimum is the model-based control scheme in some situations.
+For low-dimensional systems, numerical results obtained with value iteration when resolution is very fine can almost be seen as a ground truth of the optimal trajectory and control actions. It is thus interesting to compared the model-based approach (RRT planning + R* Computed Torque) to a value iteration solutions, to evaluate how far from the global optimum is the model-based control scheme in some situations.
 
-TODO include side-by-side simulated trajectory with both control policy
+TODO include Figure of side-by-side simulated trajectory with both control policy
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1619,7 +1619,7 @@ This section presents experimental results, focusing on the high-level control a
 
 \subsection{R* Computed Torque controller and RRT trajectory}
 
-First a trajectory following experiments using only one joitn the robot is presented. A 1.5 Kg load is mounted on the end-effector, and the task is to bring it from the bottom position ($q=-\pi$) to the up-right position ($q=0$) using as little torques as possible. An RRT trajectory planning algorithm is used to search for a feasible low torque trajectory reaching the goal, see Fig. \ref{fig:exp_rrt}. Then the R* Computed Torque Controller is used to track the reference trajectory. The experimental results are shown in Fig. \ref{fig:exp_traj}.
+First a trajectory following experiment using only the wrist joint of the robot is presented. A 1.5 Kg load is mounted on the end-effector, and the task is to bring it from the bottom position ($q=-\pi$) to the up-right position ($q=0$) using as little torques as possible. This corresponds to the inverted pendulum swing-up problem. An RRT trajectory planning algorithm is used to search for a feasible low torque trajectory reaching the goal, see Fig. \ref{fig:exp_rrt}. Then the R* Computed Torque Controller is used to track the reference trajectory. The experimental results are shown in Fig. \ref{fig:exp_traj}.
 %
 \begin{figure}[htp]
 	\centering
@@ -1636,12 +1636,12 @@ First a trajectory following experiments using only one joitn the robot is prese
 	\vspace{-10pt}
 \end{figure}
 %
-Results show that the robot is using its 1:23 gear-ratio to accumulate kinetic energy by swinging the arm link back and forth. Also the R* controller selects the 1:474 gear-ratio automatically to attenuate the load dynamics, when the actuator has to force the robot to stay with the trajectory.  Interestingly, the reference trajectory was planned so the robot would accumulate enough kinetic energy to swing straight up with the last swing. However, in the experiment, the dissipative forces are greater than anticipated by the planner, and the last swing is too small (the robot almost stop at $q=-0.9$ at $t=2.6$ in Fig. \ref{fig:exp_traj}). Then, the R* controller automatically engage the large 1:474 gear-ratio, to continue converging on the desired trajectory with much smaller torques than those required if keeping using the 1:23 gear-ratio in this situation (no momentum and a large gravitational force to overpower). This illustrates that including the gear-ratio selection in the feedback loop also increase the robustness of the system. Without the 1:474 gear-ratio option, tracking would have failed as the computed torque with 1:23 in this situation was greater than the maximum allowable motor torque.
+Results show that the robot is using its 1:23 gear-ratio to accumulate kinetic energy by swinging the arm link back and forth. Also the R* controller selects the 1:474 gear-ratio automatically to attenuate the load dynamics, when the actuator has to force the robot to stay with the trajectory.  Interestingly, the reference trajectory was planned so the robot would accumulate enough kinetic energy to swing straight up with the last swing. However, in the experiment, the dissipative forces are greater than anticipated by the planner, and the last swing is too small (the robot almost stop at $q=-0.9$ at $t=2.6$ in Fig. \ref{fig:exp_traj}). Then, the R* controller automatically engage the large 1:474 gear-ratio, to continue converging on the desired trajectory with much smaller torques than those required if keeping using the 1:23 gear-ratio in this situation (no momentum and a large gravitational force to overpower). This illustrates that including the gear-ratio selection in the feedback loop also increases the robustness of the system. Without the 1:474 gear-ratio option, tracking would have failed as the computed torque with 1:23 in this situation was greater than the maximum allowable motor torque.
 
 
 \subsection{R* Sliding Mode controller}
 
-Fig. \ref{fig:rob} shows four additional experiments for demonstrating how disturbance rejection can be improved by using the  R* Sliding Mode controller. Here the controller is only given a simple fixed point-target in all cases. First, when a low uncertainty bound is given to the controller, the robot can reach its target when unloaded (a) but failed when an unknown (to the controller) 0.4 Kg load is added to the end-effector (b). However, when a larger uncertainty bound is given, the robot can reach its target in both cases, unloaded (c) and loaded (d). 
+Fig. \ref{fig:rob} shows four additional experiments with the wrist demonstrating how disturbance rejection can be improved by using the  R* Sliding Mode controller. Here the controller is only given a simple fixed point-target in all cases. First, when a low uncertainty bound is given to the controller, the robot can reach its target when unloaded (a) but failed when an unknown (to the controller) 0.4 Kg load is added to the end-effector (b). However, when a larger uncertainty bound is given, the robot can reach its target in both cases, unloaded (c) and loaded (d). 
 
 \begin{figure}[htp]
 				%\vspace{-10pt}
@@ -1662,7 +1662,7 @@ Fig. \ref{fig:rob} shows four additional experiments for demonstrating how distu
 				\label{fig:rob}
 \end{figure}
 
-Note that the discontinuous torque required to guarantee convergence despite disturbances is bigger for the case when the disturbance bound is increased, and also is greatly reduced when down-shifting to a large gear-ratio at low speeds (since the required discontinuous gain is inversely proportional to the gear-ratio). In a practical implementation, smoothing techniques should be implemented to avoid exciting the unmodeled high-frequency modes with the chattering coming from the discontinuous torque chattering.
+Note that the discontinuous torque required to guarantee convergence despite disturbances is bigger for the case when the disturbance bound is increased, and also is greatly reduced when down-shifting to a large gear-ratio at low speeds (since the required discontinuous gain is inversely proportional to the gear-ratio). In a practical implementation, smoothing techniques should be implemented to avoid exciting the unmodeled high-frequency modes with the torque chattering.
 
 \subsection{2-DoF Experiments}
 
@@ -1688,6 +1688,37 @@ Fig. \ref{fig:exp_traj_2dof_x} and Fig. \ref{fig:exp_traj_2dof_u} show an experi
 \end{figure}
 %
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
 \section{Summary}
 
-In this Chapter, an control algorithms 
+In this Chapter, feedback laws for controlling both the torques and gear-ratios of robotic systems equipped with VGA are proposed. A simple dynamic model is proposed, and analytical solutions are derived for the optimal gear-ratios on a known trajectory. The approach is extended to trajectory tracking control schemes, that can guarantee convergence on a reference trajectory and execute locally optimal gear-ratios based on state feedback. An approach is also proposed to inhibit fast gear-shifting by optimizing over a receding time-horizon. An alternative computational technique is also explored to generate globally optimal control policy for both torque and gear-ratios for simple systems. Simulation and experimental results demonstrate the effectiveness of the proposed controllers.
+
+\section{Future work}
+
+Here are a few possibles axis of future development. 
+
+\begin{itemize}
+		\item Improving the proposed control approaches:
+		\begin{itemize}
+			\item Using reinforcement learning to learn good gear-selection policies
+			\item Decentralizing the gear-ratios selection decisions
+			\item Rollout optimization over sequences of gear-ratios
+		\end{itemize}
+		\item Explore more specific applications:
+		\begin{itemize}
+			\item Legged locomotion
+			\item Manipulation with contacts
+			\item Interaction tasks requiring a wide range of impedance
+		\end{itemize}
+		\item Open research questions not addressed:
+		\begin{itemize}
+			\item Controlling under-actuated robots using VGA
+			\item Efficient trajectory optimization for robots using VGA
+		\end{itemize}
+\end{itemize}
