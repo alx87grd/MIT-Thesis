@@ -35,7 +35,7 @@ This chapter present a novel 3-DoF robotic arm prototype using DSDM actuators, s
 
 \section{Mechanical Design}
 
-This section describe the mechanical design of the arm. The goal was to develop a research platform to validate experimentally the ideas proposed in this thesis, but also to demonstrate the advantage of robotic system with variable gear-ratio actuators. This arm is thus design to be light-weight compared to robotic arm of similar size, maximum speeds and forces. 
+This section describes the mechanical design of the arm. The goal was to develop a research platform to validate experimentally the ideas proposed in this thesis, but also to demonstrates the advantages of robotic systems with variable gear-ratio actuators. This arm is thus design to be light-weight compared to robotic arm of similar size, maximum speeds and forces. 
 
 \subsection{DSDM Actuator Design}
 \label{sec:ActuatorDesign}
@@ -84,7 +84,7 @@ Fig. \ref{fig:diff1} shows the designed differential gearing for the linear actu
 
 \subsubsection{Brake}
 
-The second challenging mechanical component in a DSDM, is the brake. As discussed in Chapter, \ref{sec:MultipleSpeedActuationTechnology} control schemes can be used to bring M1 velocity to zero before engaging the brake, hence the brake only has to be a locking mechanism and does not have to be able to dissipate power. However, during high-force mode, large holding torque must be sustained. From eq. \eqref{eq:torque}, the holding torque requirement can be computed in term of desired maximum output force during high-force mode, or by the maximum M2 motor torque: 
+The second challenging mechanical component in a DSDM, is the brake. As discussed in Chapter, \ref{sec:MultipleSpeedActuationTechnology} control schemes can be used to bring M1 velocity to zero before engaging the brake, hence the brake only has to be a locking mechanism and does not have to be able to dissipate power. However, during high-force mode, large holding torques must be sustained. From eq. \eqref{eq:torque}, the holding torque requirement can be computed in term of desired maximum output force during high-force mode, or by the maximum M2 motor torque: 
 %
 \begin{align}
 	\tau_{brake} = \frac{ \operatornamewithlimits{max} \left[ \tau_{output} \right] }{R_1} = \frac{ R_2 }{ R_1 } \operatornamewithlimits{max} \left[  \tau_2 \right]
@@ -141,7 +141,7 @@ A \textit{Maxon} motor of the serie RE-25, with maximum continuous power of 20 w
 	\label{tab:specrev}
 \end{table}
  
-Note that the ratio $R_2/R_1$ is always keep at a factor of about 20, to match the capability of the brake according to eq. \eqref{eq:brakelim}. Also, the specifications of maximum torque, are given in term of very conservative continuous value advertized by \textit{Maxon} motor. Better performance could be obtained in term of peak torque during short time periods. The whole assembly of embeded DSDM actuator and support bearing for the revolute joint weight about 1.5 Kg. About half of this weight is due to \textit{Maxon} motor assemblies (motors, gear-heads and brakes) and the other half is the custom built transmission and joint support. This value should not be taken as a state-of-art comparison reference to other actuation technology since 1) no optimization for weight has been conducted, 2) industrial DC \textit{Maxon} motor are don't have the best available power density and 3) the design was focus on ease of implementation and modularity. 
+Note that the ratio $R_2/R_1$ is always keep at a factor of about 20, to match the capability of the brake according to eq. \eqref{eq:brakelim}. Also, the specifications of maximum torque, are given in term of very conservative continuous value advertized by \textit{Maxon}. Better performance could be obtained in term of peak torque during short time periods. The whole assembly of embeded DSDM actuator and support bearing for the revolute joint weight about 1.5 Kg. About half of this weight is due to \textit{Maxon} motor assemblies (motors, gear-heads and brakes) and the other half is the custom built transmission and joint support. This value should not be taken as a state-of-art comparison reference to other actuation technology since 1) no optimization for weight has been conducted, 2) industrial DC \textit{Maxon} motor are don't have the best available power density and 3) the design was focus on ease of implementation and modularity. 
 
 
 \subsubsection{Linear Actuator}
@@ -181,7 +181,7 @@ Two \textit{Maxon} RE-25 motors capable of continuous operation of 20 Watts and 
 	\label{tab:specrev}
 \end{table}
 
-It is interesting to note that any commercially available linear actuator matching similar specifications of force and speed are much bigger and heavier than the presented linear actuator prototype, even is the design is really not optimized. With a single gear-ratio, commercial actuator would need to use a DC motor of roughly $0.7 \, \frac{m}{s} \times 600 N \; = \; 0.4 kW $, almost 2/3 of a horsepower. A \textit{Maxon} motor (in the same DC category) weight over 2 kg to meet those specifications, compared to two 20 W motor weighting each about 130g. Of course, the linear actuator with a single big motor would be much more powerful than the presented linear actuator, but such power might be unnecessary. There is a need for actuators that can be both fast and strong, not necessary powerfull, and very lightweight. 
+It is interesting to note that any commercially available linear actuator matching similar specifications of force and speed are much bigger and heavier than the presented linear actuator prototype, even with this un-optimized design. With a single gear-ratio, commercial actuator would need to use a DC motor of roughly $0.7 \, \frac{m}{s} \times 600 N \; = \; 0.4 kW $, almost 2/3 of a horsepower. A \textit{Maxon} motor (in the same DC category) weight over 2 kg to meet those specifications, compared to two 20 W motor weighting each about 130g. Of course, the linear actuator with a single big motor would be much more powerful than the presented linear actuator, but such power might be unnecessary. There is a need for actuators that can be both fast and strong, not necessary powerfull, and very lightweight. 
 
 
 \subsection{Arm Design}
@@ -200,7 +200,7 @@ A 4-bar mechanism is designed to transmit the linear actuator motion to the revo
 	\label{fig:4bar}
 \end{figure}
 
-The geometry of the 4-bar mechanism has been designed to achieve the desired range of angles for the shoulder, and keeping the kinematic relationship, between linear displacement and shoulder angle, as linear as possible. Fig. \ref{fig:shoulder_kinematic} illustrates the kinematic relationship of the designed mechanism. Note that in the software controlling the arm, this kinematic relationship is computed explicitly for the inverse-kinematic but the forward kinematic is approximated with a numerical interpolation (when computing the shoulder position based on encoder measurements of the linear actuator). The shoulder forward kinematic as a unique solution for the range of physically possible linear actuator displacement.
+The geometry of the 4-bar mechanism has been designed to achieve the desired range of angles for the shoulder, and keeping the kinematic relationship, between linear displacement and shoulder angle, as linear as possible. Fig. \ref{fig:shoulder_kinematic} illustrates the kinematic relationship of the designed mechanism. Note that in the software controlling the arm, this kinematic relationship is computed explicitly for the inverse-kinematic but the forward kinematic is approximated with a numerical interpolation (when computing the shoulder position based on encoder measurements of the linear actuator). The shoulder forward kinematic has a unique solution for the range of physically possible linear actuator displacement.
 
 \begin{figure}[htbp]
 	\centering
@@ -214,7 +214,7 @@ The mechanical advantage between linear motion and shoulder rotation is thus on 
 
 \subsubsection{Arm Specifications} 
 
-Table \ref{tab:robotspec2}, shows the DSDM arm joint specifications transposed to end-effector space where they are more meaningful. For doing so, a configuration where all link are aligned and tube lengths of 0.5 m, 0.25 m and 0.25 m is assumed, see Fig. \ref{fig:arm_config}. Then maximum force, maximum speed and impedance at the end-point due to each actuator taken independently is computed. All in all, with the designed reduction ratios, with high-speed mode the end-point inertia due to reflected motor inertia is negligible and speed can reach multiple meter per second. With the high-force mode, the end-point force capability reach 50 N (limited by the wrist) even in this most disadvantageous fully extended configuration, with the end-effector at arms' length.  
+Table \ref{tab:robotspec} shows the arm specifications at the joints in term of force, speed and reflected motor inertia. Table \ref{tab:robotspec2}, shows the DSDM arm joint specifications transposed to end-effector space where they are more meaningful. For doing so, a configuration where all link are aligned and tube lengths of 0.5 m, 0.25 m and 0.25 m is assumed, see Fig. \ref{fig:arm_config}. Then maximum force, maximum speed and impedance at the end-point due to each actuator taken independently is computed. All in all, with the designed reduction ratios, with high-speed mode the end-point inertia due to reflected motor inertia is negligible and speed can reach multiple meter per second. With the high-force mode, the end-point force capability reach 50 N (limited by the wrist) even in this most disadvantageous fully extended configuration, with the end-effector at arms' length.  
 
 \begin{table}[htbp]
 	\centering
@@ -241,7 +241,7 @@ Table \ref{tab:robotspec2}, shows the DSDM arm joint specifications transposed t
 	\label{fig:arm_config}
 \end{figure}
 
-\begin{table}[H]
+\begin{table}[htpb]
 	\centering
 	\caption[DSDM-Arm End-point Specifications]{DSDM-Arm End-point Specifications with Configuration of Fig. \ref{fig:arm_config}}
 		\begin{tabular}{ c c c c c c c }
@@ -259,14 +259,14 @@ Table \ref{tab:robotspec2}, shows the DSDM arm joint specifications transposed t
 	\label{tab:robotspec2}
 \end{table}
 
-Note that the DSDM-Arm is strong enough to sustain its own weight in all configurations when using HF modes. However, this is not the case when using the actuators in HS mode. 
+Note that the DSDM-Arm is strong enough to sustain its own weight in all configurations when using high-force (HF) modes. However, this is not the case when using the actuators in high-speed (HS) mode. 
 
 
 \subsection{Limitations and recommendation for improvements} 
 
 The main limitations of the DSDM-Arm are due to 1) backlash in the actuator gearing and 2) compliance in the structure. For the ease of implementation, the custom built actuator transmissions use only standard spur gears. The flaw of this design is that the output has a backlash of a few degrees. While it was not a critical issue for demonstrating the proposed control scheme of this thesis, it would be problematic for using the DSDM-Arm platform in task involving precise positioning of the end-effector. The second issue is the arm compliance due to 3D printed plastic parts used to connect the joints to the carbon fiber tubes. 
 
-Regarding the backlash in the gearing, this could be avoided by spending more engineering effort to make thorough precision gear-box design. For the compliance in the structure, using metal parts could solve the issue but would lead to a heavier robotic system and also increase design cycle time. Instead, it would be interesting to use 3D printed parts reinforced with carbon fiber, such as the \textit{markforged} technology. 
+Regarding the backlash in the gearing, this could be avoided by spending more engineering effort to make thorough precision gear-box design. For the compliance in the structure, using metal parts could solve the issue but would lead to a heavier robotic system. Instead, it would be interesting to use 3D printed parts reinforced with carbon fiber, such as the \textit{Markforged} technology. 
 
 
 
@@ -282,7 +282,7 @@ This section discuss implementation of the control algorithms for the DSDM-Arm.
 
 \subsection{Global Architecture}
 
-Fig. \ref{fig:archi_diagram} illustrates the hierarchical control architecture for the DSDM-Arm. At the very high-level an operator gives commands to the system using a wireless \textit{xbox-360} controller, and the very low level pwm signal are sent to motor power-electronic circuits. The physical platforms include a desktop computer running Ubuntu 14.04 and ROS \cite{quigley_ros:_2009}, and multiple micro-controllers. 
+Fig. \ref{fig:archi_diagram} illustrates the hierarchical control architecture for the DSDM-Arm. At the very high-level an operator gives commands to the system using a wireless \textit{xbox-360} controller, and at the very low level, pwm signal are sent to motor power-electronic circuits. The physical platforms include a desktop computer running Ubuntu 14.04 and ROS \cite{quigley_ros:_2009}, and multiple micro-controllers. 
 
 \begin{figure}[H]
 	\centering
@@ -291,11 +291,11 @@ Fig. \ref{fig:archi_diagram} illustrates the hierarchical control architecture f
 	\label{fig:archi_diagram}
 \end{figure}
 
-The high-level motion planning algorithm, the centralized robot controller are running on the desktop. Each motor as its own micro-controller handling the low level current control loop. The plan for the DSDM controllers, was to decentralize them on one individual micro-controllers for each actuators. However, at the time of writing these lines, all three DSDM controllers still run on the desktop, which communicates directly with the six motor drivers. Communication between the desktop and motor micro-controllers is done over USB connections.
+The high-level motion planning algorithm, the centralized robot controller are running on the desktop. Each motor as its own micro-controller handling the low level current control loop. The plan for the DSDM controllers, was to decentralize them on one individual micro-controllers for each actuators. However, at the time of writing these lines, all three DSDM controllers still run on the desktop, which communicates directly with the six motor boards. Communication between the desktop and motor micro-controllers is done over USB connections.
 
 \subsection{ROS Architecture}
 
-Fig. \ref{fig:ros_3dsdm} and \ref{fig:ros_dsdm} illustrates the software architecture based in ROS running on the desktop, those figures were generated directly from ROS using the \textit{rqt\_graph} command. Each ellipse, nodes using the ROS nomenclature, represent an independent program, and arrows represent communication pipelines in between those programs, topics using the ROS nomenclature. All programs were written in \textit{python} with the exception of the FlexSEA drivers, which handle the communication with motor micro-controllers, that are written in \textit{C++}.
+Fig. \ref{fig:ros_3dsdm} and \ref{fig:ros_dsdm} illustrates the software architecture in ROS, those figures were generated directly from ROS using the \textit{rqt\_graph} command. Each ellipse, nodes using the ROS nomenclature, represent an independent program, and arrows represent communication pipelines in between those programs, topics using the ROS nomenclature. All programs were written in \textit{python} with the exception of the FlexSEA drivers, which handle the communication with motor micro-controllers, that are written in \textit{C++}.
 
 \begin{figure}[htpb]
 	\centering
@@ -314,7 +314,7 @@ Fig. \ref{fig:ros_3dsdm} and \ref{fig:ros_dsdm} illustrates the software archite
 
 \subsection{Navigation}
 
-The \textit{joy} node read button states of the wireless controller, and broadcast them when button state changes. This program is available as an open-source ROS package. The \textit{nav} node then maps buttons to operating modes and desired goal. Multiple operating mode are available: sending a configuration goal to the planner, sending a reference directly to the robot controller, or manually controlling actuator torque and gear-ratios. 
+The \textit{joy} node read button states of the wireless controller, and broadcast them when button state changes. This program is available as an open-source ROS package. The \textit{nav} node then maps buttons to operating modes and desired goals. Multiple operating mode are available: sending a configuration goal to the planner, sending a reference directly to the robot controller, or manually controlling actuator torques and gear-ratios. 
 
 \subsection{Trajectory Planning}
 
@@ -322,11 +322,11 @@ The \textit{plan} node implement the RRT algorithm, as described in sec. \ref{se
 
 \subsection{State feedback}
 
-The motor micro-controller driver nodes are program to continuously request and receive encoder measurements from motor at a rate of 500 Hz. The DSDM controller nodes then read those values, process them (kinematic relationship based on gear-ratios and filtered differentiation to compute velocities), and broadcast position and velocity of actuator output coordinates. The \textit{obs} node then read all actuator measurements and transpose them to joint coordinates. This step is trivial except for the 4-bar mechanism of the shoulder joint for which an interpolation function synthesized offline is used. 
+The FlexSEA driver nodes are programed to continuously request and receive encoder measurements from motor boards at a rate of 500 Hz. The DSDM controller nodes then read those values, process them (kinematic relationship based on gear-ratios and filtered differentiation to compute velocities), and broadcast position and velocity of actuator output coordinates. The \textit{obs} node then read all actuator measurements and transpose them to joint coordinates. This step is trivial except for the 4-bar mechanism of the shoulder joint for which an interpolation function synthesized offline is used. 
 
 \subsection{Robot Controller}
 
-The master robot controller, loads a reference trajectory, and compute actuator torques and gear-ratio in closed-loop based on state feedback at the rate of 500 Hz. Multiple control policy from chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} are implemented:
+The master robot controller, loads a reference trajectory, and compute actuator torques and gear-ratios in closed-loop based on state feedback at the rate of 500 Hz. Multiple control policy from chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} are implemented:
 %
 \begin{itemize}
 	\item R* Computed Torque controller
@@ -334,15 +334,15 @@ The master robot controller, loads a reference trajectory, and compute actuator 
 	\item Rollout gear-selection
 \end{itemize}
 %
-For controlling only 1-DoF with two gear-ratio options, the Rollout gear-selection can run with a time horizon of 1-2 sec without slowing down the 500 Hz rate of the controller. However, when running the controller for 2-DoF with four gear-ratios options, the predictive simulations had to be simplified by used very rough integration steps for the scheme to run at 500 Hz. This should not be taken as a computational limit of the approach since here non-optimized inefficient \textit{python} code was used.
+For controlling only 1-DoF with two gear-ratios options, the Rollout gear-selection can run with a time horizon of 1-2 sec without slowing down the 500 Hz rate of the controller. However, when running the controller for 2-DoF with four gear-ratios options, the predictive simulations had to be simplified by using very rough integration steps for the scheme to run at 500 Hz. This should not be taken as a computational limit of the approach since here non-optimized inefficient \textit{python} code was used.
 
 \subsection{DSDM Actuator Controllers}
 
-DSDM controller are currently implemented as ROS nodes. They receive a torque and gear-ratio command from the master robot controller and send current set-point and brake state to the motor drivers, also at 500 Hz. DSDM controller nodes implement the control schemes described in Chapter \ref{sec:MultipleSpeedActuationTechnology}.
+DSDM controllers are currently implemented as ROS nodes. They receive a torque and a gear-ratio command from the master robot controller and send current set-points and brake command to the motor drivers, also at 500 Hz. DSDM controller nodes implement the control schemes described in Chapter \ref{sec:MultipleSpeedActuationTechnology}.
 
 \subsection{Motor drivers}
 
-The motor are controlled by open-source FlexSEA Execute motor board \cite{duval_flexsea-execute:_2016}. Those boards handle low-level high-bandwidth current loops and encoder signal processing. They also include a circuit to control a brake. All those functions are made available from the \textit{FlexSEA\_driver} nodes. Here the driver are set to request, receive and broadcast all sensor information from the Execute boards constantly at 500 Hz, which set the tempo for the feedback loops. 
+The motor are controlled by open-source FlexSEA Execute motor board \cite{duval_flexsea-execute:_2016}. Those boards handle low-level high-bandwidth current loops and encoder signal processing. They also include a circuit to control a brake. All those functions are made available from the FlexSEA driver nodes. Here the driver are set to request, receive and broadcast all sensor information from the Execute boards constantly at 500 Hz, which set the tempo for the feedback loops. 
 
 
 \subsection{Limitations and recommendation for improvements} 
