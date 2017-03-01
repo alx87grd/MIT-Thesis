@@ -905,7 +905,7 @@ A rule of thumbs, as a starting point, is to set the time horizon to the expecte
 \section{Trajectory planning}
 \label{sec:SamplingBasedTrajectoryPlanner}
 
-Although not the focus of this thesis, this section briefly discuss motion planning algorithms that are an essential piece of the puzzle for the model-based control architecture. The proposed model-based controllers are theoretically globally stable; given a fixed goal $\vec{q}_d$ the closed system would converge to this position. However, this not considering:
+Although not the focus of this thesis, this section briefly discuss motion planning algorithms that are an essential piece of the puzzle for the model-based control architecture. The proposed model-based controllers are theoretically globally stable; given a fixed goal $\vec{q}_d$, the closed system should converge on it starting from any initial conditions. However, this not considering:
 %
 \begin{itemize}
 	\item Motor torque saturation (more generally input constraints)
@@ -931,7 +931,7 @@ In general, mixed-integer programming is better suited to find optimal solution 
 
 \subsection{RRT algorithm for Robots with Discrete Gear-ratios}
 
-Rapidly-exploring random trees (RRT) have been highly popular over the past decade as a sampling-based approach to quickly identify feasible trajectories in complex motion planning problems \cite{lavalle_rapidly-exploring_1998}\cite{lavalle_planning_2006}. Its main feature is its property of biasing the random search toward un-explored region of the state space. This technique also naturally works with discretized action-space, which makes it a good fit for switched dynamics system where the discrete mode is a control input.
+Rapidly-exploring random trees (RRT) have been highly popular over the past decade as a sampling-based approach to quickly identify feasible trajectories in complex motion planning problems \cite{lavalle_rapidly-exploring_1998}\cite{lavalle_planning_2006}. Its main feature is its property of biasing the random search toward un-explored regions of the state space. This technique also naturally works with discretized action-space, which makes a good fit for switched dynamics system where the discrete mode is a control input.
 
 
 \paragraph{Action set}
@@ -948,7 +948,7 @@ where $p$ is a odd number bigger or equal to 3. Possible gear-ratios modes, are 
 k \in \boldsymbol{K}(\dot{\vec{q}}) : \big\{ k \in \{0,..,l\} \,|\, \vec{w} = R_k \dot{\vec{q}} \in \boldsymbol{W} \big\}
 \end{align}
 %
-in order to satisfy rotor-velocity constraints. Hence the global possible action set at each time step is the combination of all those those possible $p$ torque levels for the $m$ actuators and the available state-dependent gear-ratios options:
+in order to satisfy rotor-velocity constraints. Hence the global possible action set $\boldsymbol{A}$ at each time step is the combination of all those those possible $p$ torque levels for the $m$ actuators and the available state-dependent gear-ratios options:
 %
 \begin{align}
 a \in \boldsymbol{A}(\dot{\vec{q}}) : \big\{ \left( \vec{\tau} , k \right) \,|\, \tau_1  \in \boldsymbol{T}  , ...  ,  \tau_m  \in \boldsymbol{T} ,  k \in \boldsymbol{K}(\dot{\vec{q}})  \big\}
@@ -971,7 +971,7 @@ hence the dimension of the state-space is $2n$. The state constraints are define
 \vec{x} \in \boldsymbol{X}: \big\{ \left( \dot{\vec{q}} , \vec{q} \right) \,|\,  \vec{q} \in \boldsymbol{C}_{free} \;,\; \dot{\vec{q}} \in \boldsymbol{V} \big\}
 \end{align}
 %
-The constraints on joint positions are defined by the free configuration space domain $\boldsymbol{C}_{free}$ \cite{lozano-perez_algorithm_1979}, which exclude configuration leading to collision with obstacle. The constrains on joint velocities are defined as the set for which there exist at least one gear-ratios configuration $k$ leading to allowable rotor velocities:
+The constraints on joint positions are defined by the free configuration space domain $\boldsymbol{C}_{free}$ \cite{lozano-perez_algorithm_1979}, which exclude configuration leading to collision with obstacles. The constrains on joint velocities are defined as the set for which there exist at least one gear-ratios configuration $k$ leading to allowable rotor velocities:
 %
 \begin{align}
 \boldsymbol{V} : \big\{ \dot{\vec{q}} \,|\, \exists k \in \{0,..,l\} \Rightarrow R_k \dot{\vec{q}} \in \boldsymbol{W} \big\}
@@ -996,7 +996,7 @@ The discrete state evolution of the system can be modeled with proposed dynamica
  
 \paragraph{Implementation}
 %
-With the discrete action set, the state-space constraints and the discrete time system evolution, the RRT algorithm can be applied to search for feasible solutions. The other steps are a textbook application of the RRT algorithm \cite{lavalle_planning_2006} and are omitted here.  After execution the algorithm return both a trajectory of states and control inputs. However, the proposed model-based controller only required the trajectory to use as a reference and control inputs are fully computed online in closed-loop. Details on the software implementation used for the experimental robotic system is discussed in Chapter \ref{sec:ExperimentalValidation}.
+With the discrete action set, the state-space constraints and the discrete time system evolution, the RRT algorithm can be applied to search for feasible solutions. The other steps are a textbook application of the RRT algorithm \cite{lavalle_planning_2006} and are omitted here.  After execution the algorithm return both a trajectory of states and control inputs. However, the proposed model-based controllers, R* Computed Torque and R* Sliding Mode, only required the trajectory to use as a reference and control inputs are fully computed online in closed-loop. Details on the software implementation used for the experimental robotic system is discussed in Chapter \ref{sec:ExperimentalValidation}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1010,7 +1010,7 @@ With the discrete action set, the state-space constraints and the discrete time 
 \small"The true logic of this world is in the calculus of probabilities." \\ \emph{-- James Clerk Maxwell}
 \end{flushright}
 
-The proposed approach in this section is to discretize the continuous control problem into a graph search problem, with transition probability, where the discrete input actions can be considered naturally. Dynamic programming approaches can then be used to find global optimal feedback policies. 
+This section explores an alternative approach to synthesize feedback laws. The idea is to discretize the continuous control problem into a graph search problem, with transition probabilities, where the discrete input actions can be considered naturally. Dynamic programming approaches can then be used to find global optimal feedback policies. This is exemplified here for two simple systems.
 
 \subsection{Problem formulation}
 
@@ -1023,7 +1023,7 @@ The control problem of obtaining the global desired behavior is formulated as mi
 
 \subsection{Constraints}
 
-The input valid set $\boldsymbol{U}(\vec{x})$ is defined by allowable motor torque respecting saturation and the discrete options of gear-ratios that are feasible given actual joint velocities:
+The input set $\boldsymbol{U}(\vec{x})$ is defined by allowable motor torques respecting saturations and gear-ratios that are feasible given actual joint velocities:
 \begin{align}
 	\boldsymbol{U}(\vec{x}):&\left\{
 	\begin{array}{l}
@@ -1032,12 +1032,12 @@ The input valid set $\boldsymbol{U}(\vec{x})$ is defined by allowable motor torq
 	\end{array}
 	\right.
 \end{align}
-where $\boldsymbol{W}$ is the set of allowable rotor velocities. The state valid set $X$ include a range of acceptable state and could exclude some regions if desired. 
+where $\boldsymbol{W}$ is the set of allowable rotor velocities. The state set $\boldsymbol{X}$ include a range of acceptable states and could exclude some regions if desired. 
 
 \subsection{Cost function}
 \label{sec:CostFunction}
 
-Here the goal is set to minimize an additive cost function over an infinite horizon, which led to simpler time-independent control policies \cite{bertsekas_dynamic_2000}.
+Here cost function is defined as additive instantaneous costs $g$ over an infinite horizon. This form leads to simpler time-independent control policies \cite{bertsekas_dynamic_2000}.
 %
 \begin{align}
 	J = \lim_{ t \rightarrow \infty} \int_0^t g(\vec{x}(t),\vec{u}(t)) dt 
@@ -1058,13 +1058,13 @@ where $w$ are weighting factors (note that there is no penalty for either gear r
 	\label{eq:g_time}
 \end{align}
 %
-Note that in this section, the goal is fixed and set to zero $\boldsymbol{x}_d=\boldsymbol{0}$.
+Note that in this section, the goal is fixed and set to $\boldsymbol{x}_d=\boldsymbol{0}$.
 
 
 \subsection{Value Iteration}
 \label{sec:VI}
 
-A dynamic programming algorithm, also known as value iteration, is used to solve for almost exact optimal infinite horizon policies for the one-link robot. 
+A dynamic programming algorithm, also known as value iteration, is then used to solve for almost exact optimal infinite horizon policies. 
 
 \subsubsection{Discretization and conversion to a Stochastic Shortest Path problem}
 \label{sec:ConvertionToAStocasticShortestPathProblem}
@@ -1084,7 +1084,7 @@ A dynamic programming algorithm, also known as value iteration, is used to solve
 \end{figure}
 %
 
-Here a evenly spaced grid of nodes is used to represent the state space. The discrete state evolution of the system is computed by projecting in the future with a small time step $\Delta t$, using the continuous time EoM of the robotic system:
+An evenly spaced grid of nodes is used to represent the state space. The discrete state evolution of the system is computed by projecting in the future with a small time step $\Delta t$, using the continuous time EoM of the robotic system:
 %
 \begin{align}
 \boldsymbol{x}(t+1) &= f_d( \boldsymbol{x}(t) , \boldsymbol{u}(t) , \boldsymbol{d}(t) ) \\
