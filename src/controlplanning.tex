@@ -1096,7 +1096,7 @@ An evenly spaced grid of nodes is used to represent the state space. The discret
 \end{array} \right]
 \end{align}
 %
-However, the equations of motion of the system can lead the system to a future state that will not be exactly a grid point corresponding to a discrete node, see Fig. \ref{fig:interpolation}. To solve this problem the cost-to-go of the next point is computed by interpolating the cost-to-go of the neighboring grid points, based on geometric interpolation weight:
+However, the equations of motion of the system can lead the system to a future state that will not be exactly on a grid point corresponding to a discrete node, see Fig. \ref{fig:interpolation}. To solve this problem the cost-to-go of the next point is computed by interpolating the cost-to-go of the neighboring grid points, based on geometric interpolation weight:
 %
 \begin{align}
 	J(\boldsymbol{x}(t+1)) \approx \sum{ w_j J(\boldsymbol{x}_j(t+1)) }  \quad \quad \sum{ w_j  } = 1
