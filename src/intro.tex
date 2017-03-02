@@ -87,7 +87,7 @@ The gear-ratio has a radical effect on the output impedance of a robot; the moto
 Changing the gear-ratio has a radical effect on the natural dynamics of a system. By changing dynamically the gear-ratio, it is possible to select the natural dynamic behavior that is most advantageous for a task. For instance, selecting a small reduction ratio to exploit gravitational forces pulling the robot in a desired direction, or on the other hand, selecting a large reduction ratio to hold a heavy weight with small actuator torques.
 
 \paragraph{Directionality of properties}
-For a multiple DoF mechanism, the speed/force properties are directional. Typically the Jacobian of a mechanism is only a function of the configuration $J=J(\vec{q})$, but a mechanism using $m$ variable gear-ratio actuators with $l$ possible gear-ratio, the Jacobian (from actuator coordinates to task-space coordinates) would also be function of the selected gear-ratios $R$ and dependent on control inputs $J=J(\vec{q},R)$. Hence, for a given configuration there is $n^l$ manipulability ellipsoid option. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear-ratios would be picked to meet the task requirements in terms of load bearing, speed and impedance. 
+For a multiple DoF mechanism, the speed/force properties are directional. Typically the Jacobian of a mechanism is only a function of the configuration $J=J(\vec{q})$, but a mechanism using $m$ variable gear-ratio actuators with $l$ possible gear-ratio, the Jacobian (from actuator coordinates to task-space coordinates) would also be function of the selected gear-ratios $R$ and dependent on control inputs $J=J(\vec{q},R)$. Hence, for a given configuration there is $m^l$ manipulability ellipsoid option. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear-ratios would be picked to meet the task requirements in terms of load bearing, speed and impedance. 
 
 
 \begin{figure}[hb]
@@ -223,12 +223,12 @@ Two generations of DSDM actuator prototypes were designed, manufactured and test
 
 \paragraph{Software}
 %
-A \emph{Python} library was developed for providing tools for planning trajectories, controlling and simulating the behavior of robots using VGA. This library also includes all the novel control scheme proposed in this thesis. Additionally, ROS wrappers to use those algorithms online to control prototypes were also developed. Both library are open-source and available on \emph{Github} \cite{girard_github.com/alx87grd/alexrobotics_2017}\cite{girard_github.com/alx87grd/dsdm_robotics_ros_2017}.
+A \emph{Python} library was developed for providing tools for planning trajectories, controlling and simulating the behavior of robots using VGA. This library also includes all the controllers proposed in this thesis. Additionally, ROS wrappers to use those algorithms online to control prototypes were also developed. Both library are open-source and available on \emph{Github} \cite{girard_github.com/alx87grd/alexrobotics_2017}\cite{girard_github.com/alx87grd/dsdm_robotics_ros_2017}.
 
 
 \paragraph{Analytical}
 %
-Control laws exploiting the nullspace of DSDM actuator, leading to independent control of the internal DoF are synthesized. A modeling approach and representation for multi-DoF system with variable transmissions is proposed, with a special emphasis on intrinsic vs. extrinsic dynamics. A closed-form solution of optimal gear-ratio for a class of $n$-DoF robotic systems on a known trajectory is derived. Model-based control laws and optimal gear-ratio selection algorithms are proposed, and guarantees in terms of stability and chattering behavior are derived.
+Control laws exploiting the nullspace of DSDM actuators, leading to independent control of the internal DoF are synthesized. A modeling approach and representation for multi-DoF system with variable transmissions is proposed, with a special emphasis on intrinsic vs. extrinsic dynamics. A closed-form solution of optimal gear-ratio for a class of $n$-DoF robotic systems on a known trajectory is derived. Model-based control laws and optimal gear-ratios selection algorithms are proposed, and guarantees in terms of stability and chattering behavior are derived.
 
 \paragraph{Simulations}
 %
@@ -236,12 +236,12 @@ The advantage of dynamic gear-selection is demonstrated using simulations of mul
 
 \paragraph{Experiments}
 %
-Multiple experiments with actuator prototypes demonstrate the salient features of VGA actuators and the ability of the DSDM technology to change gear-ratio quickly and seamlessly even in very dynamic situations. Experiments with a 1-DoF and a 2-DoF system reproduce the advantageous behaviors obtained in simulations and demonstrate the viability of the technology and control schemes in real-world conditions.
+Multiple experiments with actuator prototypes demonstrate the salient features of VGA actuators and the ability of the DSDM technology to change gear-ratio quickly and seamlessly even in very dynamic situations. Experiments usign 1-DoF and 2-DoF of the robotic arm prototype reproduce the advantageous behaviors obtained in simulations and demonstrate the viability of the technology and control schemes in real-world conditions.
 
 
 \section{Organization of the thesis}
 \label{sec:OrganisationOfTheThesis}
 
-First, chapter \ref{sec:VisionForAircraftManufacturingAutomation} discuss manufacturing applications that would benefit from the developed technologies in this thesis. Chapter \ref{sec:MultipleSpeedActuationTechnology} then present a variable gear-ratio actuator technology, referred to as DSDM, using a gear-shifting methodology adapted to robotics. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} explore the generalized problem of dynamic selection of gear-ratios for a robotic systems equipped with variable gear-reducer, and present control algorithms. Chapter \ref{sec:ExperimentalValidation} present a novel robotic arm using three custom built VGA that is used in all experiments presented in this thesis and discuss the mechanical design and control system implementation. %Chapter \ref{sec:casestudy} presents examples of using the proposed control algorithms in different situations.
+First, chapter \ref{sec:VisionForAircraftManufacturingAutomation} discusses manufacturing applications that would benefit from the developed technologies in this thesis. Chapter \ref{sec:MultipleSpeedActuationTechnology} then presents a variable gear-ratio actuator technology, referred to as DSDM, using a gear-shifting methodology adapted to robotics. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} explores the generalized problem of dynamic selection of gear-ratios for a robotic systems equipped with variable gear-reducer, and present control algorithms. Chapter \ref{sec:ExperimentalValidation} presents a novel robotic arm using three custom built DSDM actuators, used in all experiments presented in this thesis, and discusses the mechanical design and control system implementation. %Chapter \ref{sec:casestudy} presents examples of using the proposed control algorithms in different situations.
 
 
