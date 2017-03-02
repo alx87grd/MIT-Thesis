@@ -326,7 +326,7 @@ The FlexSEA driver nodes are programed to continuously request and receive encod
 
 \subsection{Robot Controller}
 
-The master robot controller, loads a reference trajectory, and compute actuator torques and gear-ratios in closed-loop based on state feedback at the rate of 500 Hz. Multiple control policy from chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} are implemented:
+The master robot controller, loads a reference trajectory, and compute actuator torques and gear-ratios in closed-loop based on state feedback at the rate of 500 Hz. Multiple control policies from chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} are implemented:
 %
 \begin{itemize}
 	\item R* Computed Torque controller
@@ -347,7 +347,7 @@ The motor are controlled by open-source FlexSEA Execute motor board \cite{duval_
 
 \subsection{Limitations and recommendations for improvements} 
 
-The initial control implementation for DSDM actuator prototypes used a \textit{NI compact rio} where feedback loops were running at very high-sampling rate on a FPGA and a real-time micro-controller \cite{girard_two-speed_2015}. This type of system was however poorly suited to scale to multi-DoF systems, and implementing complex planning algorithms. Hence, for the DSDM-Arm the architecture was design to: easily scale to multiple DoF, make possible the use of high-level programming languages and facilitate connections with motion planning algorithms. However this came at the cost of loosing some control on the low-level loop implementations. The performance of actuator-level DSDM controller has decreased with the new implementation. To improve the system, DSDM controller should be implemented directly on micro-controllers, handling all actuator-level functions, at a higher sampling rate. One implementation issue that could also be improved, is that velocity measurements, at low speeds in high-speed mode, are very noisy because of resolution problems. An encoder with improved resolution, or direct an angular velocity sensor should be used to improve the performance. 
+The initial control implementation for DSDM actuator prototypes used a \textit{NI compact rio} where feedback loops were running at very high-sampling rate on a FPGA and a real-time micro-controller \cite{girard_two-speed_2015}. This type of system was however poorly suited to scale to multi-DoF systems, and implementing complex planning algorithms. Hence, for the DSDM-Arm the architecture was design to: easily scale to multiple DoF, make possible the use of high-level programming languages and facilitate connections with motion planning algorithms. However this came at the cost of losing some control on the low-level control loops implementations. The performance of actuator-level DSDM controller has decreased with the new implementation. To improve the system, DSDM controllers should be implemented directly on micro-controllers, handling all actuator-level functions, at a higher sampling rate. One implementation issue that could also be improved, is that velocity measurements, at low speeds in high-speed mode, are very noisy because of resolution problems. An encoder with improved resolution, or direct an angular velocity sensor should be used to improve the performance. 
 
 
 
