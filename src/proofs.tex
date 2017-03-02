@@ -7,23 +7,23 @@
 
 Here the derivation of the simplified form of equations of motion, where intrinsic and extrinsic forces are two separate terms, is derived for a class of $n$-DoF fully actuated robots.
 
-\paragraph{Assumptions} 
+\subsection{Assumptions} 
 
-Two assumptions are necessary for this form. First, that a coordinates system can be selected so that the gear-ratio matrix $R$ is diagonal for possible gear-ratio configurations:
+Three assumptions are necessary for this form. First, the robotic system is fully-actuated, i.e. $m=n$, so that the matrix $R$ is square and invertible. Second, that a coordinates system can be selected so that the gear-ratio matrix $R$ is diagonal for all possible configurations:
 %
 \begin{align}
 R_{i,j} = 0 \quad \forall \; i \neq j
 \end{align}
 %
-Second, that dynamic forces related to viscous damping and inertial forces in motor rotor are linear with respect to rotor velocity:
+Third, that dynamic forces related to viscous damping and inertial forces in motor rotor are linear with respect to rotor velocity:
 %
 \begin{align}
 \vec{\tau}_{rotor-inertia} = I \dot{\vec{w}}  \quad  \vec{\tau}_{rotor-damping} = B \vec{w}
 \end{align}
 %
-Note that additionally, in all cases, matrix $I$ and $D$ are diagonal matrices since motor rotors are not coupled directly. 
+where  matrices $I$ and $D$ are diagonal since motor rotors are not coupled directly. 
 
-\paragraph{Derivation}
+\subsection{Derivation}
 
 Starting from the general eq.\eqref{eq:eom_ndof} the EoM are:
 %
@@ -34,7 +34,7 @@ H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g }
 		\right]
 \end{align}
 %
-Then substituting motor velocity with joint coordinates using the kinematic relation of eq. \eqref{eq:coortransform}:
+Then substituting motor velocities with joint coordinates, using the kinematic relation of eq. \eqref{eq:coortransform}:
 %
 \begin{align}
 H \vec{ \ddot{q} } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g }
@@ -100,7 +100,7 @@ J &=  \tau^2 = \frac{\tau_E^2}{R^2} + 2 \tau_E \tau_I + R^2 \tau_I^2
 \end{align}
 %
 
-Finding the gear-ratio that minimize this cost can be formulated as:
+Finding the gear-ratio that minimizes this cost can be formulated as:
 %
 \begin{align}
 R^* &=  \operatornamewithlimits{argmin}\limits_{R} J \\
@@ -304,7 +304,7 @@ The control law for motor torques takes the following form:
 \vec{\tau} = R_k^{-1} \left( H_k \ddot{\vec{q}}_r + \vec{c}_k \right) 
 \label{eq:ctc_k}
 \end{align}
-where the vector $\ddot{\vec{q}}_r$ represent instantaneous desired acceleration. The control law for the gear-ratio selection takes the form of an optimization, however here stability is demonstrated for the more general case of arbitrary gear-ratio sequence. Hence the stability result can be extended for any type of gear-ratio selection scheme used in conjunction with the computed torque. 
+where the vector $\ddot{\vec{q}}_r$ represents instantaneous desired acceleration. The control law for the gear-ratio selection takes the form of an optimization, however here stability is demonstrated for the more general case of arbitrary gear-ratio sequence. Hence the stability result can be extended for any type of gear-ratio selection scheme used in conjunction with the computed torque. 
 
 When substituting the control law, eq.\eqref{eq:ctc_k}, in the equations of motion, eq.\eqref{eq:eom_k}, then the resulting closed-loop behavior is simply:
 \begin{align}
@@ -374,7 +374,7 @@ where lambda is a positive constant. Then convergence to the desired trajectory 
 V = \vec{s}^T \vec{s} \rightarrow 0 \quad\Rightarrow\quad  \vec{s} \rightarrow \vec{0} \quad\Rightarrow\quad \vec{q}_e \rightarrow \vec{0}
 \end{align}
 %
-Note that here the Lyapunov-like function must be continuous and the same for all discrete mode, and its derivative negative definite for all discrete gear-ratio mode $k$ for the argument to hold for arbitrary sequence of gear-ratio $k$ \cite{liberzon_switching_2003}:
+Note that here the Lyapunov-like function must be continuous and the same for all discrete mode, and its derivative negative definite for all discrete modes $k$ for the argument to hold for arbitrary sequence of gear-ratio $k$ \cite{liberzon_switching_2003}:
 %
 \begin{align}
 \dot{V}_k < 0 \quad \forall k \quad \quad\Rightarrow\quad V \rightarrow 0
@@ -493,7 +493,7 @@ where $\operatornamewithlimits{max} \left[\vec{\tau}_{k}\right]_{i}$ is the maxi
 \subsection{On a trajectory}
 \label{sec:chat1}
 
-Here a minimum time delay between a back-and-forth gear-shift sequence is derived for the situation where the robot has converged on a trajectory and is staying on the trajectory. In that case, it is assumed that both the simulation trajectory and the real system follow the same desired trajectory, see Fig. \ref{fig:costontrajrollout}.
+Here a minimum time delay for a back-and-forth gear-shift sequence is derived for the situation where the robot has converged on a trajectory and is staying on the trajectory. In that case, it is assumed that both the simulation trajectory and the real system follow the same desired trajectory, see Fig. \ref{fig:costontrajrollout}.
 
 \begin{figure}[H]
 	\centering
@@ -506,7 +506,7 @@ Here a minimum time delay between a back-and-forth gear-shift sequence is derive
 
 \paragraph{Proof} 
 
-Without lost of generality, lets assume a gear shift sequence where the robot is first using mode $i$, then shift to mode $j$ at time $t$ and then shift back to mode $i$ at time $t+\Delta t$. If such a sequence happened while using the gear-ratio selection law given by eq. \eqref{eq:rolloutsimple}, then the following inequality must have been satisfied:
+Without loss of generality, lets assume a gear shift sequence where the robot is first using mode $i$, then shift to mode $j$ at time $t$ and then shift back to mode $i$ at time $t+\Delta t$. If such a sequence happened while using the gear-ratio selection law given by eq. \eqref{eq:rolloutsimple}, then the following inequality must have been satisfied:
 %
 \begin{align}
 i \rightarrow j  \quad\text{at time}\quad t          &\quad\Rightarrow\quad J_j(t) + Q < J_i(t)                  \\
@@ -521,20 +521,20 @@ J_k^B = \int_{t+\Delta t}^{t+h}{       C_k  d\hat{t}  }   \quad \quad
 J_k^C = \int_{t+h}^{t+\Delta t+h}{     C_k  d\hat{t}  }
 \end{align}
 %
-Then it is possible to express the computed cost of predictive simulation done at $\Delta t$ time difference by the sum of a identical part and a different part:
+Then it is possible to express the computed cost of predictive simulation done at $\Delta t$ time difference by the sum of an identical part and a different part:
 %
 \begin{align}
 J_k(t)          &= \int_{t}^{t+h}{ C_k   d\hat{t} }  = J_k^A + J_k^B \\
 J_k(t+\Delta t) &= \int_{t+\Delta t}^{t+\Delta t+h}{   C_k  d\hat{t}} = J_k^B + J_k^C
 \end{align}
 %
-The difference between computed cost separated by $\Delta t$ is:
+The difference between computed costs separated by $\Delta t$ is:
 %
 \begin{align}
 \Delta J_k = J_k(t+\Delta t) - J_k(t) &= J_k^C - J_k^A
 \end{align}
 %
-Now assuming there is an upper bound on instantaneous cost $C_k^{max}$, an upper bound also exist for the integral cost. Since the instantaneous cost is always positive definite, the integral cost cannot be negative. Hence:
+Now assuming there is an upper bound on instantaneous cost $C_k^{max}$, an upper bound also exist integral costs over a finite amount of time. Since the instantaneous cost is always positive definite, the integral cost cannot be negative. Hence:
 %
 \begin{align}
 0 \leq J_k^C   \leq  C_k^{max} \Delta t \\
@@ -572,10 +572,17 @@ Hence resulting in the desired inequality relating instantaneous cost and time b
 %
 Note that if there is more than 2 discrete gear-ratio options, this analysis gives not insight about possible sequences of gear-shift during this interval, but still guarantee the minimum time for a full cycle (coming back to the starting gear-ratio).
 
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Arbitrary}
 \label{sec:chat2}
 
-Fig. \ref{fig:rollouttrajs} gives a graphical support illutrating the 2D space, where at all time virtual trajectories branch-off the real robot trajectory.
+Fig. \ref{fig:rollouttrajs} gives a graphical support illustrating the 2D space, where at all time virtual trajectories branch-off the real robot trajectory.
 
 \begin{figure}[H]
 	\centering

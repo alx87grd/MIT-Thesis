@@ -56,7 +56,7 @@ In this appendix, the nomenclature and the mathematical equations, used to repre
 \section{Equations of motions}
 \label{sec:eom}
 
-The general form of the equations of motion of robotic system (interconnected rigid body driven by actuators) are:
+The general form of the equations of motion of robotic systems (interconnected rigid body driven by actuators) is:
 %
 \begin{align}
 H(\vec{q}) \vec{\ddot{q}} + C(\vec{q},\vec{\dot{q}}) \vec{\dot{q}} + D \vec{\dot{q}} + \vec{g}(\vec{q}) = B(\vec{q}) \vec{\tau} 
@@ -98,14 +98,14 @@ Fig. \ref{fig:coord} shows all the used coordinates systems.
 	\label{fig:coord}
 \end{figure}
 %
-The following equation represent the most general case:
+The following equation represents the most general case:
 %
 \begin{align}
 H_k \vec{\ddot{q}} + C_k \vec{\dot{q}} + D_k \vec{\dot{q}} + \vec{g} =  \underbrace{ J_a^T(\vec{q}) R^T }_{B(\vec{q})}  \vec{\tau} + J_e^T(\vec{q}) \vec{f}_e + J_c^T(\vec{q}) \vec{f}_c
 \label{eq:manipulator}
 \end{align}
 %
-Where matrices with subscript $k$ means the rotor dynamics contribution, when the gear-ratio configuration $R_k$ is used, are included:
+Where matrices with subscript $k$ include the motor-rotor dynamics contributions when the gear-ratio configuration $R_k$ is used:
 %
 \begin{align}
 H_k   &= H + J_a^T R_k^T I_a R_k J_a        \\
@@ -114,7 +114,7 @@ D_k   &= D + J_a^T R_k^T B_a R_k J_a
 \label{eq:coord_transform}
 \end{align}
 %
-Coordinates transform are defined by:
+Coordinates transforms are defined by:
 %
 \begin{align}
 \vec{\dot{p}}   &= J_e( \vec{q} ) \vec{\dot{q} }  \quad \text{ from joint-space to end-effector   } \\
@@ -128,7 +128,7 @@ Note that the distinction between actuator output coordinates and joint coordina
 \section{Contact}
 \label{sec:contact}
 
-This section present useful equations for representing contact situations.
+This section presents equations for representing contact situations.
 
 \subsection{Kinematic Constraints}
 \label{sec:constraints}
@@ -146,7 +146,7 @@ The time-derivative of the constraint must also be equal to zero, which gives so
 \label{eq:constraint_diff}
 \end{align}
 %
-when $J_c$ is the constraint jacobian:
+when $J_c$ is the constraint Jacobian:
 %
 \begin{align}
 J_c( \vec{ q } )                    &= \frac{d \vec{\phi}( \vec{ q } ) }{d\vec{ q }}
@@ -156,7 +156,7 @@ J_c( \vec{ q } )                    &= \frac{d \vec{\phi}( \vec{ q } ) }{d\vec{ 
 \subsection{Constraint forces}
 \label{sec:constraint_forces}
 
-The constraint jacobian can be used to map constraint forces $\vec{f}_c$ to generalized forces in the EoM:
+The constraint Jacobian can be used to map constraint forces $\vec{f}_c$ to generalized forces in the EoM:
 %
 \begin{align}
 H \vec{\ddot{q}} + \vec{c} = B \vec{\tau} + J_c( \vec{ q } )^T  \vec{f}_c
@@ -181,7 +181,7 @@ Alternatively, it possible to solve for acceleration $\vec{\ddot{q}}$ and constr
 \subsection{Impact impulsive behavior}
 \label{sec:impact}
 %
-When the robot first enter contact with a fixed object, impulsive contact forces will act on the system. Integrating eq. \eqref{eq:manipulator_constraint} over the short impact interval gives:
+When the robot first enters contact with a fixed object, impulsive contact forces will act on the system. Integrating eq. \eqref{eq:manipulator_constraint} over the short impact interval gives:
 %
 \begin{align}
 \int{ ( H \vec{\ddot{q}} + \vec{c} ) dt } &= \int{ ( B \vec{\tau} + J_c( \vec{ q } )^T  \vec{f}_c ) dt } \\
@@ -243,18 +243,18 @@ Alternatively, it possible to solve for velocity $\vec{\dot{q}}^+$ and impulsive
 
 \section{Hybrid system dynamics}
 
-Hybrid dynamical system needs can be represented in the general form:
+Hybrid dynamical system can be represented in the general form:
 %
 \begin{align}
 \text{Continuous evolution: } \left(  \dot{\vec{x}} , \dot{k} \right) &=  \left( \, f_k( \vec{x} , \vec{u} , \vec{d} ) \, , \, 0 \, \right) \\
-\text{Discrete jumps: } \left(  \vec{x}^+ , k^+ \right) &=  \left( h_{ij}( \vec{x}^- ) , j \right) \quad\text{if}\quad \left(  \vec{x} , k , \vec{u} \right) \in D_{ij}  
+\text{Discrete jumps: } \left(  \vec{x}^+ , k^+ \right) &=  \left( h_{ij}( \vec{x}^- , \vec{u}^- ) , j \right) \quad\text{if}\quad \left(  \vec{x} , k , \vec{u} \right) \in D_{ij}  
 \end{align}
 %
-where $\vec{x}$ is a continuous state vector, and $k$ is a discrete mode and $D_{ij}$ is the domain mapping conditions leading to a transition $k:i \rightarrow j$. For robotic systems, the discrete mode can represent discrete configurations of the robot and contact/non-contact conditions. The jump map then represents the impulsive response when contact is made. Also in this thesis, discrete gear-ratios configuration also represent discrete modes.
+where $\vec{x}$ is a continuous state vector, and $k$ is a discrete mode and $D_{ij}$ is the domain mapping conditions leading to a transition $k:i \rightarrow j$. For robotic systems, the discrete mode can represent discrete configurations of the robot , like gear-ratios in this thesis, and contact/non-contact conditions. The jump map then represents the impulsive response when contact is made. 
 
 \subsection{Switched system}
 
-A restricted class of hybrid system, called switched system, is hybrid system for which the jump map for continuous state is the identify function:
+A restricted class of hybrid system, called switched system, are hybrid systems for which the jump map for continuous state is the identify function:
 %
 \begin{align}
 \text{Continuous evolution: } \left(  \dot{\vec{x}} , \dot{k} \right) &=  \left( \, f_k( \vec{x} , \vec{u} , \vec{d} ) \, , \, 0 \, \right) \\
@@ -264,10 +264,10 @@ A restricted class of hybrid system, called switched system, is hybrid system fo
 
 \subsubsection{Switched system where the discrete mode is a control input}
 
-In the situation where the discrete operating mode $k$ is a control input, then there no need to keep track of discrete mode evolution and only the piece wise EoM are sufficient to model the system evolution:
+In the situation where the discrete operating mode $k$ is a control input, then there is no need to keep track of discrete mode evolution and only the piece-wise continuous differential equations are sufficient to model the system evolution:
 %
 \begin{align}
 \dot{\vec{x}} = f_k( \vec{x} , \vec{u} , \vec{d} ) 
 \end{align}
 %
-The model of robot using variable transmission with discrete configuration that is used in Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} is of this category. 
+The model for robots using variable transmissions with discrete configurations, that is used in Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}, is of this category. 
