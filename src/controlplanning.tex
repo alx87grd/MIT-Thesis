@@ -46,7 +46,7 @@ As illustrated by phase portraits in Fig. \ref{fig:pp}, if $R$ is small then the
 				\label{fig:pp}
 \end{figure}
 
-The vector fields of Fig. \ref{fig:pp} illustrate the natural evolution of the system with no actuator torques. Suppose that we want to move from state A to state B on the phase plane. Starting off state A with the gear-ratio of 1:1 brings the system along the curved trajectory shown in Fig. \ref{fig:pp1}. Switching the gear-ratio to 1:10 at state C will change the trajectory to the one in Fig. \ref{fig:pp2}, and bring the system to the destination state B. Note that no actuator torque is necessary for following this trajectory. A salient feature of actively changing the gear-ratio is that, the natural vector field behavior can be altered, in order to move in the desired direction with small torques.
+The vector fields of Fig. \ref{fig:pp} illustrates the natural evolution of the system with no actuator torques. Suppose that we want to move from state A to state B on the phase plane. Starting off state A with the gear-ratio of 1:1 brings the system along the curved trajectory shown in Fig. \ref{fig:pp1}. Switching the gear-ratio to 1:10 at state C will change the trajectory to the one in Fig. \ref{fig:pp2}, and bring the system to the destination state B. Note that no actuator torque is necessary for following this trajectory. A salient feature of actively changing the gear-ratio is that, the natural vector field behavior can be altered, in order to move in the desired direction with small torques.
 
 %a vector field having properties useful for moving in a desired direction can be selected to minimize the necessary torque to apply to the system. 
 
@@ -60,20 +60,20 @@ From the control perspective, automating the gear-ratios selection in a robotic 
 
 \paragraph{Trajectory planning}
 
-In robotic, the generation of good reference trajectories is usually formulated as an optimization problem. Most optimal control techniques are based on either variational approaches or some form of gradient descent to find a trajectory that minimize a cost function \cite{betts_practical_2010}. Hence those techniques cannot be used directly to optimize discrete variables. An interesting approach to get around this problem is to use the switching instants as optimization parameters instead \cite{xu_optimal_2004}\cite{majdoub_hybrid_2010}. However, to use this approach a sequence of operating modes must be predefined first. Mixed-integer programming can be used to generate optimal open-loop trajectories of dynamical system with both continuous and discrete input variables \cite{richards_spacecraft_2002}. For instance, mixed-integer programming has been used to generate optimal open-loop trajectories for a car with both a continuous torque and a discrete gear-selection input \cite{gerdts_solving_2005}. Computation time was however in the order of hours for a 6 sec trajectory. 
+In robotic, the generation of good reference trajectories is usually formulated as an optimization problem. Most optimal control techniques are based on either variational approaches or some form of gradient descent to find a trajectory that minimizes a cost function \cite{betts_practical_2010}. Hence those techniques cannot be used directly to optimize discrete variables. An interesting approach to get around this problem is to use the switching instants as optimization parameters instead \cite{xu_optimal_2004}\cite{majdoub_hybrid_2010}. However, to use this approach a sequence of operating modes must be predefined first. Mixed-integer programming can be used to generate optimal open-loop trajectories of dynamical system with both continuous and discrete input variables \cite{richards_spacecraft_2002}. For instance, mixed-integer programming has been used to generate optimal open-loop trajectories for a car with both a continuous torque and a discrete gear-selection input \cite{gerdts_solving_2005}. Computation time was however in the order of hours for a 6 sec trajectory. 
 
 Sample-based planning scheme can also be used to find efficient trajectory \cite{lavalle_planning_2006}. These algorithms work generally better then optimization approaches when tackling highly-constrained system and when the goal is only to find a feasible trajectory and not necessary the optimal solution. The other advantage is that discrete control actions, like the selection of a gear-ratio in a discrete set, can be considered without complications since these algorithm works with discretized models.
 
-Open-loop trajectories can be unstable and if the system deviate from the original plan, due to uncertainty, the optimized gear-ratios sequence might be completely unadapted after some time. For a robotic system to really leverage the advantage offered by multiple gear-ratios, it would be advantageous if gear-ratios are selected actively based on the actual conditions of the system. This chapter focus on finding closed-loop policies for the gear-ratios selection.
+Open-loop trajectories can be unstable and if the system deviates from the original plan, due to uncertainty, the optimized gear-ratios sequence might be completely un-adapted after some time. For a robotic system to really leverage the advantage offered by multiple gear-ratios, it would be advantageous if gear-ratios are selected actively based on the actual conditions of the system. This chapter focuses on finding closed-loop policies for the gear-ratios selection.
 
 \paragraph{Feedback control}
 
-One possible approach for closing the loop would be simply to re-plan trajectory continuously online. However, the rate at which this would be possible for hybrid robotic systems would not be sufficient. Here we aim at having control policies that can react to a situation in a matter of milliseconds, for instance down-shifting as a robotic leg touch the ground. Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback law of linear hybrid systems with linear constraints for a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it is only computationally tractable for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section \ref{sec:DynamicProgrammingAproach}, which is an extension of work published by the author in \cite{girard_practical_2016}.
+One possible approach for closing the loop would be simply to re-plan trajectory continuously online. However, the rate at which this would be possible for hybrid robotic systems would not be sufficient. Here we aim at having control policies that can react to a situation in a matter of milliseconds, for instance down-shifting as a robotic leg touch the ground. Most of the analytical results regarding feedback control of hybrid systems are for specific cases, for instance the optimal feedback laws for linear hybrid systems with linear constraints and a quadratic cost function have been shown to have a particular form \cite{borrelli_dynamic_2005}. One computational technique that generate feedback laws and that can be used for non-linear systems with any kind of constraints is dynamic programming \cite{donald_e._kirk_optimal_2004}. Two disadvantages of the techniques are however that it is only computationally tractable for low-dimensional systems (so called curse of dimensionality) and also that the resulting feedback laws are in the form of a look-up table. This approach is investigated in section \ref{sec:DynamicProgrammingAproach}, which is an extension of work published by the author in \cite{girard_practical_2016}.
 
 \subsection{Original contributions}
 \label{sec:maincont}
 
-The main original contribution of this chapter, is an alternative model-based approach (section \ref{sec:HierachicalControlApproach}) with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The main idea is introduced in \cite{girard_leveraging_2017} and this thesis chapter present improved algorithms and new results. The main ideas to make tractable closed-loop control of this type of multi-DoF non-linear hybrid systems are 1) Using a simple modeling approach for variable transmissions that does not augment the number of state variables. 2) Exploiting the structure in the equations of motion when expressed in the inverse-dynamic form.  3) Using an outer-loop first specifying an instantaneously desired acceleration $\ddot{\vec{q}}_r$, similarly to feedback linearization, which fix locally the trajectory and makes possible computation of optimal instantaneous gear-ratios.
+The main original contribution of this chapter, is an alternative model-based approach (section \ref{sec:HierachicalControlApproach}) with the advantage of scaling to high-dimensional robotics system, and easily applicable to trajectory tracking problems. The main idea was introduced by the author in \cite{girard_leveraging_2017} and this thesis chapter presents improved algorithms and new results. The main ideas to make tractable closed-loop control of this type of multi-DoF non-linear hybrid systems are 1) Using a simple modeling approach for variable transmissions that does not augment the number of state variables. 2) Exploiting the structure in the equations of motion when expressed in the inverse-dynamic form.  3) Using an outer-loop first specifying an instantaneously desired acceleration $\ddot{\vec{q}}_r$, similarly to feedback linearization, which fix locally the trajectory and makes possible computation of optimal instantaneous gear-ratios.
 
 To the best knowledge of the author, this is the first exploration of closed-loop selection of gear-ratios for multi-DoF robotic systems. Many conceptual insight regarding gear-ratios selection when fighting different type of forces and unknown disturbances are explored. The treatment also encompass the very wide class of $n$-DoF mechanical system with EoM that can take the form of so-called manipulator equations (eq. \eqref{eq:manipulator}, and is valid for many type of variable transmissions. The main restriction is that each joint of the system must be actuated, although it could also be extended to under-actuated systems when using a partial feedback linearization approach. 
 
@@ -83,7 +83,7 @@ To the best knowledge of the author, this is the first exploration of closed-loo
 \section{Control architecture}
 \label{sec:arch}
 
-This chapter proposed control schemes to dynamically select the optimal gear-ratios online. The focus is on feedback policies, that can react quickly to the states of the robot, and engage the appropriate gear-ratios with minimal delays (in the order of 20 ms). Two approaches are investigated and illustrated at Fig. \ref{fig:controlarchitectures}. 
+This chapter proposed control schemes to dynamically select the optimal gear-ratios online. The focus is on feedback policies that can react quickly to the states of the robot, and engage the appropriate gear-ratios with minimal delays (in the order of 20 msec). Two approaches are investigated and illustrated at Fig. \ref{fig:controlarchitectures}. 
 %
 \begin{figure}[H]
 				\vspace{-10pt}
@@ -99,7 +99,7 @@ This chapter proposed control schemes to dynamically select the optimal gear-rat
 				\label{fig:controlarchitectures}
 \end{figure}
 %
-The architecture of both control approaches is designed so the control signal is a torque and a gear-ratio for each actuator. Note that in the case of discrete gear-ratios options, instead of transmitting the actual gear-ratios $R$, the control signal can be a label $k$ indexing the discrete $R_k$ options. Hence, it is assumed that low-level VGA controllers handle tracking the motor torque setpoint and the gear-shifting process. This is analogous to automating a car equipped with a semi-automatic transmission, and designing control policies replacing the driver for which the two control inputs are a throttle level a and shift-up/shift-down signal. The low-level VGA controllers would be specific to the type of actuator used in the system. For the particular case where the VGA are DSDM actuators, the low-level controllers would be the control laws described in Chapter \ref{sec:MultipleSpeedActuationTechnology}. The architecture difference is that, for the dynamic programming approach given a goal, a global feedback policy is synthesized directly. However, for the model-based approach the high-level controller is separated into two levels. A feedback policy for trajectory tracking and a open-loop motion planning algorithm that generate a reference trajectory to reach the goal. 
+The architecture of both control approaches is designed so the control signal is a torque and a gear-ratio for each actuator. Note that in the case of discrete gear-ratios options, instead of transmitting the actual gear-ratios $R$, the control signal can be a label $k$ indexing the discrete $R_k$ options. Hence, it is assumed that low-level VGA controllers handle tracking the motor torque setpoint and the gear-shifting process. This is analogous to automating a car equipped with a semi-automatic transmission, and designing control policies replacing the driver for which the two control inputs are a throttle level a and shift-up/shift-down signal. The low-level VGA controllers would be specific to the type of actuator used in the system. For the particular case where the VGA are DSDM actuators, the low-level controllers would be the control laws described in Chapter \ref{sec:MultipleSpeedActuationTechnology}. The architecture difference is that, for the dynamic programming approach given a goal, a global feedback policy is synthesized directly. However, for the model-based approach the high-level controller is separated into two levels. A feedback policy for trajectory tracking and an open-loop motion planning algorithm that generate a reference trajectory to reach the goal. 
 
 \paragraph{Trajectory generation} Algorithm synthesizing a dynamic trajectory that meets performance requirements for reaching the target robot configuration starting at the actual robot configuration: 
 %
@@ -189,7 +189,7 @@ In this section, a simple approach is proposed for modeling robots using variabl
 \subsection{1-DoF system}
 \label{sec:1DOFSystem}
 
-First, a generic 1-DoF robot with a variable transmission is considered for simplicity. If the actuator's intrinsic resistive forces $\tau_I$ (rotor intertia and friction) are approximated to a linear quantity, the equations of motion (EoM) can be written as:
+First, a generic 1-DoF robot with a variable transmission is considered for simplicity. If the actuator's intrinsic resistive forces $\tau_I$ (rotor inertia and friction) are approximated to a linear quantity, the equations of motion (EoM) can be written as:
 %
 \begin{align}
   H \ddot{q} + D \dot{q} + g( q )	&= R  \left[ \tau - I \dot{w} - B w	\right] \\
@@ -267,9 +267,9 @@ The derivation of this simplified form is available in the Appendix \ref{sec:Rdi
 \subsection{Limitation of the simplified model}
 \label{sec:limitation}
 %
-The main assumption of the proposed model is that gear-ratios are considered as independent control inputs, neglecting all the dynamics and delays associated with changing the gear-ratios. For a system with discrete gear-ratio, transient behaviors from one gear-ratio to another are thus neglected. Physically this implies that the kinetic energy of the system may be discontinuous at a gear-shift since the energy necessary for the transition is not considered. In the case of a car transmission for instance, this model would not keep track of the energy used for accelerating or braking the engine during the synchronization process. This model can be used if the gear-shift process is fast compared to the dynamics of the robots and if the energetic losses due to the gear-shift are negligibly small. Note that, for the DSDM-Arm presented in this thesis, this modeling assumption is supported by the characteristic of DSDM actuators, that can change gear-ratio quickly and seamlessly. For a robot equipped with continuously varying transmissions (CVT), this model would neglect forces associated with $\dot{R}$, a type of quasi-steady assumption. 
+The main assumption of the proposed model is that gear-ratios are considered as independent control inputs, neglecting all the dynamics and delays associated with changing the gear-ratios. For a system with discrete gear-ratio, transient behaviors from one gear-ratio to another are thus neglected. Physically this implies that the kinetic energy of the system may be discontinuous at a gear-shift since the energy necessary for the transition is not considered. In the case of a car transmission for instance, this model would not keep track of the energy used for accelerating or braking the engine during the synchronization process. This model can be used if the gear-shift process is fast compared to the dynamics of the robots and if the energetic losses due to the gear-shift are negligibly small. Note that, for the DSDM-Arm presented in this thesis, this modeling assumption is supported by the characteristic of DSDM actuators, which can change gear-ratios quickly and seamlessly. For a robot equipped with continuously varying transmissions (CVT), this model would neglect forces associated with the rate of change of the gear-ratios $\dot{R}$, a type of quasi-steady assumption. 
 %
-In addition this model also assumes that all motor rotors are in an inertial reference frame, neglecting gyroscopic effects, which may be induced when the axes of motor rotors are rotated.
+In addition, this model also assumes that all motor rotors are in an inertial reference frame, neglecting gyroscopic effects, which may be induced when the axes of motor rotors are rotated.
 
 \subsection{Uncertainty}
 \label{sec:uncertainty}
@@ -309,7 +309,7 @@ When the variable transmissions have discrete configurations, the gear-ratios ma
 	R_k \in \{R_1,R_2, ... , R_l\} 
 \end{align}
 %
-where the variable $k$ is a label indexing the different hybrid operating modes of the system, and $l$ is the total number of discrete operating modes. The subscript $k$ will be used to specify a variable specific to a discrete gear-ratios mode. The inverse dynamic equations takes the form:
+where the variable $k$ is a label indexing the different hybrid operating modes of the system, and $l$ is the total number of discrete operating modes. The subscript $k$ will be used to specify a variable specific to a discrete gear-ratios mode. The inverse dynamics equation takes the form:
 %
 \begin{align}
 	\vec{\tau}_k =  R_k^{-1} \vec{\tau}_E + R_k \vec{\tau}_I + R_k^{-1} \vec{d} \quad\forall \; k
@@ -317,7 +317,7 @@ where the variable $k$ is a label indexing the different hybrid operating modes 
 %
 Where $\vec{\tau}_k$ represent the torque $\vec{\tau}$ when using gear-ratios $R_k$. Note that the defined sum of extrinsic forces $\vec{\tau}_I$ and extrinsic forces $\vec{\tau}_E$, are not function of gear-ratios and are thus the same for every discrete mode $k$. 
 
-The equation of motions thus now have a hybrid nature. With the assumption that transitions are seamless however, states are continuous when gear-ratios changes, and the system is called a switched system \cite{liberzon_switching_2003}. The forward dynamics takes the following form:
+The equations of motions thus now have a hybrid nature. With the assumption that transitions are seamless however, states are continuous when gear-ratios changes, and the system is called a switched system \cite{liberzon_switching_2003}. The differential equations are discontinuous, but there is no instantaneous jumps in states. The forward dynamics equation takes the following form:
 %
 \begin{align}
 	\ddot{q}  &=  H_k^{-1} \left[ R_k \tau - \vec{c}_k( \dot{\vec{q}} , \vec{q} ) + \vec{d} \right] \quad\forall \; k 
@@ -367,7 +367,7 @@ The natural viscous damping reflected to the end-point is also influenced by gea
 Another point of practical importance is that $R$ should be constrained to values not leading to rotor velocities $\vec{w}=R \dot{\vec{q}}$ exceeding their maximum speed. This is to avoid solutions with infeasible gear shifts, for example using the low gear at a high speed is impossible. Motor torque saturation could also be included by adding domain constraints on motor torques.
 
 \subsection{Optimization Formulation}
-The optimal gear-ratios is determined by minimizing the total actuator torques and, optionally, the difference in end-point impedance:
+The optimal gear-ratios are determined by minimizing the total actuator torques and, optionally, the difference in end-point impedance:
 %
 \begin{align}
 	R^{*}(\ddot{\vec{q}},\dot{\vec{q}},\vec{q}) &= \operatornamewithlimits{argmin}\limits_{R} \left[ \vec{\tau}^T \vec{\tau} + \alpha_1 \| M_{d} - M \| + \alpha_2 \| V_{d} - V \| \right]  \\
@@ -457,7 +457,7 @@ In the situation where a robot maintains a constant speed, assuming the output l
  \label{eq:impmatching}
 \end{align}
 %
-In this situation, to avoid dissipative motor forces it is best to have the smallest possible gear-ratio. In the limit, this correspond to completely disconnecting the load from the actuator.
+In this situation, to avoid dissipative motor forces it is best to have the smallest possible gear-ratio. In the limit, this corresponds to completely disconnecting the load from the actuator.
 
 %\paragraph{Resisting disturbances}
 %%
@@ -496,14 +496,14 @@ The proposed closed-loop controller, shown in Fig. \ref{fig:Rstar_block_big}, is
 \ddot{\vec{q}}_r &= \ddot{\vec{q}}_d + K_D ( \dot{\vec{q}}_d - \dot{\vec{q}} ) + K_P ( \vec{q}_d - \vec{q} ) 
 \end{align} 
 %
-Then given the actual position $\vec{q}$, actual speed $\dot{\vec{q}}$ and desired instantaneous acceleration $\ddot{\vec{q}}_r$ compute extrinsic and intrinsic forces for this dynamic state:
+Then given the actual position $\vec{q}$, actual speed $\dot{\vec{q}}$ and desired instantaneous acceleration $\ddot{\vec{q}}_r$, extrinsic and intrinsic forces for this dynamic state are computed:
 %
 \begin{align}
 	&\vec{\tau}_{E} = H \vec{ \ddot{q}_r } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \quad
 	&\vec{\tau}_{I} = I \vec{ \ddot{q}_r } + B \vec{ \dot{q} } 
 \end{align}
 %
-Then the controller compute and execute the locally optimal gear-ratios $R^*$, as described previously for a known trajectory, and execute the corresponding motor torques: 
+Then the controller computes and executes the locally optimal gear-ratios $R^*$, as described previously for a known trajectory, and execute the corresponding motor torques: 
 %
 \begin{align}
 R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \vec{\tau}^T\vec{\tau}  \right] \quad\text{where}\quad \vec{\tau} = R^{-1} \vec{\tau}_{E} + R \vec{\tau}_{I}
@@ -533,7 +533,7 @@ The salient feature of the R* Computed Torque controller is that the optimal gea
 \subsection{R* Sliding Mode Control}
 \label{sec:slidingmode}
 
-In general Computed Torque Control is susceptible to modeling uncertainties and disturbances. This section presents an approach based on sliding mode control \cite{slotine_applied_1991}, to improve robustness and guaranteeing performance despite uncertainty. Moreover, the presented control algorithm leverage the gear-ratio options to decrease sensitivity of the robot to disturbance when uncertainty is large. The control scheme is illustrated at Fig. \ref{fig:sliding_blocks}.
+In general Computed Torque Control is susceptible to modeling uncertainties and disturbances. This section presents an approach based on sliding mode control \cite{slotine_applied_1991}, to improve robustness and guaranteeing performance despite uncertainty. Moreover, the presented control algorithm leverages the gear-ratios options to decrease sensitivity of the robot to disturbance when uncertainty is large. The control scheme is illustrated at Fig. \ref{fig:sliding_blocks}.
 
 First, the following intermediary variables are computed:
 %
@@ -545,7 +545,7 @@ First, the following intermediary variables are computed:
  \label{eq:slidingvar}
 \end{align}
 %
-As for the R* Computed Torque, the inverse dynamic for intrinsic and extrinsic forces are then computed for this dynamic state:
+As for the R* Computed Torque, intrinsic and extrinsic forces are then computed for this dynamic state:
 %
 \begin{align}
 	&\vec{\tau}_{E} = H \vec{ \ddot{q}_r } + C\vec{ \dot{q} } + D \vec{ \dot{q} } + \vec{ g } \quad
@@ -563,7 +563,7 @@ The instead of simply using the inverse dynamic equation to compute torques, a d
  \label{eq:slidingctl}
 \end{align}
 %
-Then the controller compute and execute the locally optimal gear-ratios $R^*$, minimizing the sliding mode torque that depends on selected gear-ratios, and execute the corresponding motor torques: 
+Then the controller computes and executes the locally optimal gear-ratios $R^*$, minimizing the sliding mode torque that depends on selected gear-ratios, and execute the corresponding motor torques: 
 %
 \begin{align}
 R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \vec{\tau}^T\vec{\tau}  \right] \quad\text{where}\quad \vec{\tau} = R^{-1} \vec{\tau}_{E} + R \vec{\tau}_{I} - R^{-1} G sgn( \vec{s} ) 
@@ -584,7 +584,7 @@ To guarantee convergence despite uncertainty, the discontinuous gain are set as 
 	G &= \left[ H + R^T I R \right] K \\ K_{ii} &> \operatornamewithlimits{max}\limits_{\vec{d}} \left| \left(  \left[ H + R^T I R \right]^{-1} \vec{d} \right)_{i} \right| + \eta
 \end{align}
 %
-where $\vec{d}$ is an unknown generalized force vector, representing modeling uncertainty in the extrinsic dynamics and external disturbances, see section \ref{sec:uncertainty}. Note that the discontinuous gain is a function of the state-dependent inertia matrix, bounds on disturbances and the selected gear-ratios. The interesting features of the R* Sliding Mode Controller is that with gear-ratios selected to minimize the sliding mode torque, then naturally larger gear-ratios  will be selected in response to large uncertainty. 
+where $\vec{d}$ is an unknown generalized force vector, representing modeling uncertainty in the extrinsic dynamics and external disturbances, see section \ref{sec:uncertainty}. Note that the discontinuous gain is a function of the state-dependent inertia matrix, bounds on disturbances and the selected gear-ratios. The interesting features of the R* Sliding Mode Controller is that with gear-ratios selected to minimize the sliding mode torque, then naturally, larger gear-ratios are selected in response to large uncertainty. 
 
 \subsubsection{1-DoF system exemplified} 
 
@@ -617,11 +617,11 @@ Minimizing the torque computed with this sliding mode control law over possible 
 \label{eq:rstar_sliding}
 \end{align}
 
-If no disturbance is expected ($| d |_{max}=0$) then the solution is, as before, a compromise between extrinsic and intrinsic forces. However, knowledge of uncertainty in the form of disturbances bound modify the optimal gear-ratios solution. When large disturbances are expected ($| d |_{max}$ is large) the solution is biased toward larger gear-ratios, which is consistent with the sensitivity analysis that concluded that larger gear-ratios attenuate the effect of disturbances. All in all, minimizing torque computed with the sliding mode law, is a way to naturally improve the decision regarding the best gear-ratios, in function of some knowledge of the expected uncertainty.
+If no disturbance is expected ($| d |_{max}=0$) then the solution is, as before, a compromise between extrinsic and intrinsic forces. However, knowledge of uncertainty in the form of disturbances bound modifies the optimal gear-ratios solution. When large disturbances are expected ($| d |_{max}$ is large) the solution is biased toward larger gear-ratios, which is consistent with the sensitivity analysis that concluded that larger gear-ratios attenuate the effect of disturbances. All in all, minimizing torque computed with the sliding mode law, is a way to naturally improve the decision regarding the best gear-ratios, in function of some knowledge of the expected uncertainty.
 %
 
 \subsection{Adaptation}
-If the uncertainty is structured as unknown model parameters in the extrinsic dynamics, the term represented by $\vec{\tau}_E$, then traditional adaptation schemes can be used for estimating the unknown parameters. Then, if adaptation converge to the correct computed torque, then the computed best gear-ratios will also converge to the true optimal gear-ratios:
+If the uncertainty is structured as unknown model parameters in the extrinsic dynamics, the term represented by $\vec{\tau}_E$, then traditional adaptation schemes can be used for estimating the unknown parameters. Then, if adaptation converges to the correct computed torque, then the computed best gear-ratios will also converge to the true optimal gear-ratios:
 %
 \begin{align}
 	\hat{\vec{\tau}}_E \rightarrow \vec{\tau}_E 
@@ -630,7 +630,7 @@ If the uncertainty is structured as unknown model parameters in the extrinsic dy
  \label{eq:adapt}
 \end{align}
 %
-If used in conjunction with the R* Computed Torque controller, decisions regarding the optimal gear-ratios would improve as adaptation converge. Note that correct gear-ratios decision depends on the correct estimation of extrinsic torque, not model parameters explicitly, which are harder to estimate since requiring condition related to sufficient excitation. 
+If used in conjunction with the R* Computed Torque controller, decisions regarding the optimal gear-ratios would improve as adaptation converges. Note that correct gear-ratios decision depends on the correct estimation of extrinsic torque, not model parameters explicitly, which are harder to estimate since requiring condition related to sufficient excitation. 
 
 As an example, for a 1-DoF robot with the following EoM:
 %
@@ -687,7 +687,7 @@ to compute necessary torque $\vec{\tau}$ to achieve a specified acceleration $\v
 
 \subsection{Closed-loop selection of discrete gear-ratios}
 
-So-far the proposed control schemes made no assumption regarding the different gear-ratios options, and analytical solutions assumed that gear-ratio have continuous domains. However, many variable transmission mechanisms, such as the DSDM actuator technology proposed in this thesis, offer only a discrete set of possible values. In that situation, the optimization step in the proposed control algorithms would than be a combinatorial optimization problem. However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly to find the optimal discrete option:
+So-far the proposed control schemes made no assumption regarding the different gear-ratios options, and analytical solutions assumed that gear-ratio have continuous domains. However, many variable transmission mechanisms, such as the DSDM actuator technology proposed in this thesis, offer only a discrete set of possible values. In that situation, the optimization step in the proposed control algorithms would then be a combinatorial optimization problem. However, if the number of options $l$ is reasonably small, then every possible options can be computed quickly to find the optimal discrete option:
 %
 \begin{align}
 k^{*} &= \operatornamewithlimits{argmin}\limits_{k} \left[  \vec{\tau}_1^T\vec{\tau}_1  , ... , \vec{\tau}_k^T\vec{\tau}_k , ...  , \vec{\tau}_l^T\vec{\tau}_l \right]
@@ -697,11 +697,11 @@ In practice this brute force approach is usually feasible. For instance, for the
 
 \subsubsection{Point-by-point}
 
-In theory if the controlled robotic system would behave exactly like the proposed model, then selecting optimal gear-ratios at each time steps would be the optimal behavior. However, because the control effort associated with gear-shifts is neglected in the model and the basic gear-selection scheme does do penalize mode transitions, using the proposed controller can lead to rapid switching between gear-ratios (chattering) in certain situations. In practice, this is not desirable since for most type of variable transmissions, since changing the gear-ratio: 1) is not really instantaneous 2) the shifting process would require some effort/energy 3) fast switching can lead to mechanical wear and also excite unmodeled vibration modes. 
+In theory if the controlled robotic system would behave exactly like the proposed model, then selecting optimal gear-ratios at each time steps would be the optimal behavior. However, because the control effort associated with gear-shifts is neglected in the model and the basic gear-selection scheme does not penalize mode transitions, using the proposed controller can lead to rapid switching between gear-ratios (chattering) in certain situations. In practice, this is not desirable since for most type of variable transmissions, since changing the gear-ratio: 1) is not really instantaneous 2) the shifting process would require some effort/energy 3) fast switching can lead to mechanical wear and also excite un-modeled vibration modes. 
 
 \subsubsection{Hysteresis}
 
-To avoid undesirable rapid switching behaviors, hysteresis can be added to the gear-selection logic. Instead of simply executing the optimal gear-ratios command at each time step, a logical step is added, which only allows mode change if a minimal amount of time $\Delta t$ as elapsed since the last mode change. This thus directly guaranteed a minimal period between gear-shifts. However, this technique is clearly sub-optimal in certain situations. For instance, imagine a system with two modes, on a trajectory where $k=1$ is optimal for all time except for the interval $t\in[1,1.1]$. If an hysteresis of $\Delta t = 1$ is used in the controller, then $k=2$ will be selected for the interval $t\in[1,2]$. Hence, not gear-shifting at all would have been better (sub-optimal during 0.1 sec) compared to shifting with hysteresis (sub-optimal during 0.9 sec), from the whole trajectory point of view. 
+To avoid undesirable rapid switching behaviors, hysteresis can be added to the gear-selection logic. Instead of simply executing the optimal gear-ratios command at each time step, a logical step is added, which only allows mode change if a minimal amount of time $\Delta t$ as elapsed since the last mode change. This thus directly guaranteed a minimal period between gear-shifts. However, this technique is clearly sub-optimal in certain situations. For instance, imagine a system with two modes, on a trajectory where $k=1$ is optimal for all time except for the interval $t\in[1,1.1]$. If a hysteresis of $\Delta t = 1$ is used in the controller, then $k=2$ will be selected for the interval $t\in[1,2]$. Hence, not gear-shifting at all would have been better (sub-optimal during 0.1 sec) compared to shifting with hysteresis (sub-optimal during 0.9 sec), from the whole trajectory point of view. 
 
 \subsubsection{Minimax optimization for sliding mode}
 
@@ -746,7 +746,7 @@ k^{*}      &= \operatornamewithlimits{argmin}\limits_{k} \left[ J_k + Q [[ k \ne
 %\vec{\tau} &= \vec{\tau}_{k^*}( \dot{\vec{q}} , \vec{q} )
 \end{align}
 %
-where $Q$ is the cost penalty for gear-shifting. Hence, optimal gear-ratios, computed at time $t$, are the optimal ones considering an integral cost over the future horizon $h$. Note that state errors are not penalized in the integral cost, because the base policy for motor torques already enforce trajectory tracking. The scheme is illustrated at Fig. \ref{fig:rollout}.
+where $Q$ is the cost penalty for gear-shifting. Hence, optimal gear-ratios, computed at time $t$, are the optimal ones considering an integral cost over the future horizon $h$. Note that state errors are not penalized in the integral cost, because the base policy for motor torques already enforces trajectory tracking. The scheme is illustrated at Fig. \ref{fig:rollout}.
 %
 \begin{figure}[htp]
 	\centering
@@ -756,13 +756,13 @@ where $Q$ is the cost penalty for gear-shifting. Hence, optimal gear-ratios, com
 \end{figure}
 
 
-This scheme is very related to the Rollout controller \cite{bertsekas_dynamic_2000}, and it will thus be refer to as the Rollout gear-ratios selection.  However here the optimization is conducted only over the gear-ratios options, not all possible control actions at time $t$ like in the original technique. The two reasons for not implementing a full scale optimization including also many possible torque inputs at time $t$ are: 1) computational limitations and 2) by applying the base policy torques at time $t$, convergence to the desired trajectory can be guaranteed. 
+This scheme is closely related to the Rollout control approach \cite{bertsekas_dynamic_2000}, and it will thus be refer to as the Rollout gear-ratios selection.  However here the optimization is conducted only over the gear-ratios options, not all possible control actions at time $t$ like in the original technique. The two reasons for not implementing a full scale optimization including also many possible torque inputs at time $t$ are: 1) computational limitations and 2) by applying the base policy torques at time $t$, convergence to the desired trajectory can be guaranteed. 
 
 Advantageous features of the Rollout gear-selection scheme are 1) filtering-out fast un-desirable gear-shifts 2) commanding gear-shifts in advance, which can compensate for gear-shift delay in the physical system (situation just entering the horizon at time $t+h$ influence the gear-ratios selection at time $t$).
 
 \subsubsection{Extension from Rollout to Model Predictive Control (MPC)}
 
-The proposed control scheme require simulating $l$ trajectory at each time steps, which is usually tractable computationally. However, this is sub-optimal in the sense that gear-ratios are fixed on each trajectory. With more computational power, additional options of more complex sequences of discrete gear-ratios could be included. Each option of a predetermined sequence of gear-ratios could be seen as a form of motion primitive, a proposed approach to simpified control/planning when the number of possible action is too large to fully explore \cite{gray_predictive_2012}. This would also connect with the idea of family of modes proposed to simplify MPC control of hybrid systems \cite{_feedback_????}. The proposed Rollout gear-selection scheme, can thus also be seen as optimizing over $l$ motion primitives consisting of using fixed gear-ratios for the next $h$ seconds. 
+The proposed control scheme requires simulating $l$ trajectory at each time steps, which is usually tractable computationally. However, this is sub-optimal in the sense that gear-ratios are fixed on each trajectory. With more computational power, additional options of more complex sequences of discrete gear-ratios could be included. Each option of a predetermined sequence of gear-ratios could be seen as a form of motion primitive, a proposed approach to simplify control/planning when the number of possible action is too large to fully explore \cite{gray_predictive_2012}. This would also connect with the idea of family of modes proposed to simplify MPC control of hybrid systems \cite{_feedback_????}. The proposed Rollout gear-selection scheme, can thus also be seen as optimizing over $l$ motion primitives consisting of using fixed gear-ratios for the next $h$ seconds. 
 
 Furthermore, if the optimization would also be conducted over possible motor torques, instead of constraining them to always follow a given feedback law, then the control scheme would correspond to full scale MPC. However, MPC is in general very hard to implement at satisfactory fast rate for non-linear multi-DOF robotic systems, especially when the system is hybrid \cite{_feedback_????}. 
 %
@@ -780,7 +780,7 @@ Here stability properties of the proposed control laws are discussed. The main i
 
 \subsection{Chattering and high-frequency switching}
 
-This section discuss results regarding the chattering behavior when using the proposed control scheme. 
+This section discusses results regarding the chattering behavior when using the proposed control schemes. 
 
 \subsubsection{Decision boundaries}
 
@@ -838,7 +838,7 @@ Fig. \ref{fig:inv_sur} and \ref{fig:inv_sld_sur} illustrate two possible class o
 
 In practice, a situation of type (b) can be a typical failure mode of switched system. This section explore with a simple example of how this situation can arise and how the proposed control schemes make sure this is avoided. Imagine a car with an automatic transmission going up-hill, with a gear-selection scheme only based on a velocity decision boundary. The car starts from rest with its low-gear $k=1$ and accelerate. After reaching reaching a threshold velocity, the automatic transmission then engage the high-gear $k=2$. With the high-gear however, the effect of gravity is much larger and the car slow down until it cross again the threshold velocity. The low-gear $k=1$ is then engaged again and the car starts accelerating. The car then cross again the threshold and the cycle would continue forever. What is happening here is that the car converge toward its velocity goal when $k=1$ but diverge when $k=2$. With the proposed R* Computed Torque controller, this could happen if gravity forces were underestimated in the model. However, if gravity forces are either correctly modeled, or alternatively included in the uncertainty bounds with the sliding mode controller, then convergence would be guaranteed for both modes, and enough torque to continue accelerating toward the target velocity would have been applied. %Furthermore, if it takes more torque to continuing accelerating with $k=2$, the the R* Computed Torque would not have selected the high-gear in this situation. 
 
-So far, situations of chattering in the vicinity of decision boundary of type (a) and (b), have been ruled-out impossible if the controller is designed to guarantee convergence for all discrete mode $k$. However, situations of type (c), illustrated at Fig. \ref{fig:hifreq_sur} refer to as high-frequency switching, is still possible and un-desirable. The decision boundary can very complex for highly non-linear systems, hence even a simple trajectory can cross decision boundaries at undesirable high-frequencies. 
+So far, situations of chattering in the vicinity of decision boundary of type (a) and (b), have been ruled-out impossible if the controller is designed to guarantee convergence for all discrete mode $k$. However, situations of type (c), illustrated at Fig. \ref{fig:hifreq_sur} and called high-frequency switching, is still possible and un-desirable. The decision boundary can very complex for highly non-linear systems, hence even a simple trajectory can cross decision boundaries at undesirable high-frequencies. 
 
 \subsubsection{Minimum cycle time with Rollout}
 
@@ -863,7 +863,7 @@ In an arbitrary situation the minimum value is:
 \Delta t \geq \frac{ Q }{ C^{max} + \dot{C}^{max} h }
 \end{align}
 %
-where the variable $h$ is the time horizon and $\dot{C}$ represent the sensitivity of cost due to changes of trajectories in the predictive simulations. When the system has reach the desired trajectory, the real trajectory and all simulated trajectories follow the desired one, and this sensitivity term vanish. Details of those derivations are available in appendix \ref{sec:chat}.
+where the variable $h$ is the time horizon and $\dot{C}$ represents the sensitivity of computed costs due to changes of trajectories in the predictive simulations. When the system has reach the desired trajectory, the real trajectory and all simulated trajectories follow the desired one, and this sensitivity term vanish. Details of those derivations are available in appendix \ref{sec:chat}.
 
 
 \subsection{Parameters selection guidelines}
@@ -879,12 +879,13 @@ K^D_{ii} = \frac{2}{\tau} \quad   K^P_{ii} = \left(\frac{1}{\tau}\right)^2
 %
 where $\tau$ is a time constant parameter driving the desired exponential error convergence rate.
 
-\paragraph{R* Sliding Mode} For the sliding mode controller, there is two parameters to tune the convergence rate, $\lambda$ which is inversely proportional to error convergence time constant after reaching the sliding surface, and $\eta$ which is inversely proportional to the guaranteed time for reaching the sliding surface. The discontinuous gain should then be set to based on disturbance bounds as follow, to guarantee convergence:
+\paragraph{R* Sliding Mode} For the sliding mode controller, there is two parameters to tune the convergence rate, $\lambda$ which is inversely proportional to error convergence time constant after reaching the sliding surface, and $\eta$ which is inversely proportional to the guaranteed time for reaching the sliding surface. The discontinuous gain should then be set based on disturbance bounds as follow:
 %
 \begin{align}
 K_{ii} = \operatornamewithlimits{max}\limits_{\vec{d}} \left[ H_k^{-1} \vec{d} \right]_i + \eta
 \end{align}
 %
+in order to guarantee convergence.
 
 \paragraph{Rollout gear-selection}
 %
@@ -905,7 +906,7 @@ A rule of thumbs, as a starting point, is to set the time horizon to the expecte
 \section{Trajectory planning}
 \label{sec:SamplingBasedTrajectoryPlanner}
 
-Although not the focus of this thesis, this section briefly discuss motion planning algorithms that are an essential piece of the puzzle for the model-based control architecture. The proposed model-based controllers are theoretically globally stable; given a fixed goal $\vec{q}_d$, the closed system should converge on it starting from any initial conditions. However, this not considering:
+Although not the focus of this thesis, this section briefly discusses a motion planning algorithms, that is an important piece of the global control solution for the model-based control architecture. The proposed model-based controllers are theoretically globally stable; given a fixed goal $\vec{q}_d$, the closed system should converge on it starting from any initial conditions. However, this not considering:
 %
 \begin{itemize}
 	\item Motor torque saturation (more generally input constraints)
@@ -927,7 +928,7 @@ As discussed in section \ref{sec:chal}, the two class of algorithm that are suit
 	\item Sampling-based search algorithms
 \end{itemize}
 %
-In general, mixed-integer programming is better suited to find optimal solution to simple situations, while sampling-based approach are more efficient at finding feasible sub-optimal solutions in complex situations (many constraints), for instance finding a path in a maze. The approach that was implemented here, focus on finding feasible trajectory quickly, and is based on rapidly-exploring random trees.
+In general, mixed-integer programming is better suited to find optimal solution to simple situations, while sampling-based approach are more efficient at finding feasible sub-optimal solutions in complex situations (many constraints), for instance finding a path in a maze. The approach that was implemented here, focuses on finding feasible low-torque trajectories quickly, and is based on rapidly-exploring random trees.
 
 \subsection{RRT algorithm for Robots with Discrete Gear-ratios}
 
@@ -942,13 +943,13 @@ To implement the algorithm for robot using variable gear-ratios actuators the ac
 \tau_i  \in \boldsymbol{T} : \{ -\tau_{max} , ... , 0 , ... , +\tau_{max} \}
 \end{align}
 %
-where $p$ is a odd number bigger or equal to 3. Possible gear-ratios modes, are already a discrete set, but the possible selectable gear-ratios set $\boldsymbol{K}$ is state-dependent:
+where $p$ is an odd number bigger or equal to 3. Possible gear-ratios modes, are already a discrete set, but the possible selectable gear-ratios set $\boldsymbol{K}$ is state-dependent:
 %
 \begin{align}
 k \in \boldsymbol{K}(\dot{\vec{q}}) : \big\{ k \in \{0,..,l\} \,|\, \vec{w} = R_k \dot{\vec{q}} \in \boldsymbol{W} \big\}
 \end{align}
 %
-in order to satisfy rotor-velocity constraints. Hence the global possible action set $\boldsymbol{A}$ at each time step is the combination of all those those possible $p$ torque levels for the $m$ actuators and the available state-dependent gear-ratios options:
+in order to satisfy rotor-velocity constraints. Hence the global possible action set $\boldsymbol{A}$ at each time step is the combination of all those possible $p$ torque levels for the $m$ actuators and the available state-dependent gear-ratios options:
 %
 \begin{align}
 a \in \boldsymbol{A}(\dot{\vec{q}}) : \big\{ \left( \vec{\tau} , k \right) \,|\, \tau_1  \in \boldsymbol{T}  , ...  ,  \tau_m  \in \boldsymbol{T} ,  k \in \boldsymbol{K}(\dot{\vec{q}})  \big\}
@@ -1064,7 +1065,7 @@ Note that in this section, the goal is fixed and set to $\boldsymbol{x}_d=\bolds
 \subsection{Value Iteration}
 \label{sec:VI}
 
-A dynamic programming algorithm, also known as value iteration, is then used to solve for almost exact optimal infinite horizon policies. 
+A dynamic programming algorithm, also known as value iteration, is then used to solve for almost exact optimal infinite-horizon policies. 
 
 \subsubsection{Discretization and conversion to a Stochastic Shortest Path problem}
 \label{sec:ConvertionToAStocasticShortestPathProblem}
@@ -1096,7 +1097,7 @@ An evenly spaced grid of nodes is used to represent the state space. The discret
 \end{array} \right]
 \end{align}
 %
-However, the equations of motion of the system can lead the system to a future state that will not be exactly on a grid point corresponding to a discrete node, see Fig. \ref{fig:interpolation}. To solve this problem the cost-to-go of the next point is computed by interpolating the cost-to-go of the neighboring grid points, based on geometric interpolation weight:
+However, the equations of motion of the system can lead the system to a future state that will not be exactly on a grid point corresponding to a discrete node, see Fig. \ref{fig:interpolation}. To solve this problem, the cost-to-go of the next point is computed by interpolating the cost-to-go of the neighboring grid points, based on geometric interpolation weight:
 %
 \begin{align}
 	J(\boldsymbol{x}(t+1)) \approx \sum{ w_j J(\boldsymbol{x}_j(t+1)) }  \quad \quad \sum{ w_j  } = 1
@@ -1140,7 +1141,7 @@ J(\boldsymbol{x}_i) \Leftarrow \operatornamewithlimits{min}\limits_{\boldsymbol{
 
 
 
-As illustrated at Figure. \ref{fig:Probinterpolation}, this scheme can also be interpreted as aggregating the continuous space state into discrete nodes with the weight factors corresponding to aggregation probabilities. Hence, the problem that is solved correspond to a stochastic shortest path problem. Knowledge regarding stochastic distribution of disturbances could be included easily with this formulation. However here disturbance are fixed to their expected value of zero, the certainty equivalence assumption \cite{bertsekas_dynamic_2000}. Even if the uncertainty of the system is not modeled directly, the interpolation scheme has an effect equivalent to including a disturbance leading to an uncertainty on the state evolution of roughly the size of the grid.
+As illustrated at Figure. \ref{fig:Probinterpolation}, this scheme can also be interpreted as aggregating the continuous space state into discrete nodes with the weight factors corresponding to aggregation probabilities. Hence, the problem that is solved corresponds to a stochastic shortest path problem. Knowledge regarding stochastic distribution of disturbances could be included easily with this formulation. However here, disturbances are fixed to their expected value of zero, the certainty equivalence assumption \cite{bertsekas_dynamic_2000}. Even if the uncertainty of the system is not modeled directly, the interpolation scheme has an effect equivalent to including a disturbance leading to an uncertainty on the state evolution of roughly the size of the grid.
 
 
 %\subsubsection{Termination conditions}
@@ -1150,7 +1151,7 @@ As illustrated at Figure. \ref{fig:Probinterpolation}, this scheme can also be i
 
 \subsection{Example systems}
 
-This section present numerical results of feedback policy to reach a fixed-target with two robotics system using VGA. The first system, see Fig. \ref{fig:vi_sys1}, is a single-axis linear actuator with two gear-ratios, the output dynamic is considered to be a linear mass-damper and rotor-velocity saturations are included. The second system, see Fig. \ref{fig:vi_sys2}, is a non-linear inverted pendulum with no rotor-velocity saturation. 
+Numerical results of feedback policy to reach a fixed-target are presented for two simple robotics system using VGA. The first system, see Fig. \ref{fig:vi_sys1}, is a single-axis linear actuator with two gear-ratios, the output dynamic is considered to be a linear mass-damper and rotor-velocity saturations are included. The second system, see Fig. \ref{fig:vi_sys2}, is a non-linear inverted pendulum with no rotor-velocity saturation. 
 %
 \begin{figure}[htp]
         \centering
@@ -1169,7 +1170,7 @@ This section present numerical results of feedback policy to reach a fixed-targe
 \subsection{Implementation}
 \label{sec:Methodology}
 
-The discretization parameters used are as follow: the state space is discretized into a 101 x 101 grid (101 equally spaced positions and 101 equally spaced speed values) leading to 10201 possible nodes, the actuator torque is discretized into 21 possible torque values, leading to a total of 42 possibles control actions including the gear ratio selection. The state transition is computed using a time discretization of $\Delta t$ = 0.05 sec. The interpolation weights are computed using a bivariate spline approximation. The value iterations are stopped manually when the maximum difference between $J_k$ and $J_{k+1}$ are many orders of magnitude smaller then the variations of $J$ across the state space. The computation takes on average 200-500 iterations and 2-5 minutes.
+The discretization parameters used are as follow: the state space is discretized into a 101 x 101 grid (101 equally spaced positions and 101 equally spaced speed values) leading to 10201 possible nodes, the actuator torque is discretized into 21 possible torque values, leading to a total of 42 possible control actions including the gear ratio selection. The state transition is computed using a time discretization of $\Delta t$ = 0.05 sec. The interpolation weights are computed using a bivariate spline approximation. The value iterations are stopped manually when the maximum difference between $J_k$ and $J_{k+1}$ are many orders of magnitude smaller than the variations of $J$ across the state space. The computation takes on average 200-500 iterations and 2-5 minutes.
 
 %\subsection{Reinforcement Learning}
 %
@@ -1279,7 +1280,7 @@ The discretization parameters used are as follow: the state space is discretized
 \subsection{Numerical results}
 
 \subsubsection{System 1 - Linear mass-damper robot}
-Fig. \ref{fig:J} to \ref{fig:u1} illustrate the numerical results for system 1. Three different cost functions are explored, a quadratic cost function, a mininimum time cost and minimum energy case which is simply a special case of the quadratic cost where weight are sets to drastically penalize control inputs over state error. The absence of color indicates states with no solution (a constraint will be violated for any possible control actions). Fig. \ref{fig:phase_plane} shows the closed loop behavior of the system in the phase plane when the optimal policy is applied.
+Fig. \ref{fig:J} to \ref{fig:u1} illustrate the numerical results for system 1. Three different cost functions are explored, a quadratic cost function, a minimum time cost and minimum energy case which is simply a special case of the quadratic cost where weight are sets to drastically penalize control inputs over state error. The absence of color indicates states with no solution (a constraint will be violated for any possible control actions). Fig. \ref{fig:phase_plane} shows the closed loop behavior of the system in the phase plane when the optimal policy is applied.
 %
 \begin{figure}[p]
 				\vspace{-2pt}
@@ -1401,7 +1402,7 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
         \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane. Two trajectories starting at $q=-2$ are illustrated, blue is open-loop, red is closed loop}\label{fig:phase_plane}
 \end{figure}
 
-For both cost functions the optimal policy for the discrete gear-ratio mode $k$ is quite complex. This illustrates that optimal solutions for this type non-linear hybrid system representative of robotic systems are not trivial, even for a single axis. One observation regarding the gear-ratio selection policy, is that the larger second gear-ratio is used often in situation where the robot needs to be drastically deviated from its natural motion, and the small second gear-ratio is used when the controller let the robot move in the natural direction. This connects back with the idea of attenuating the load-dynamics with a large gear-ratio when it is advantageous, or leverage the load-dynamics with a small gear-ratio when the natural motion is advantageous. 
+For both cost functions the optimal policy for the discrete gear-ratio mode $k$ is quite complex. This illustrates that optimal solutions for this type non-linear hybrid system representative of robotic systems are not trivial, even for a single axis. One observation regarding the gear-ratio selection policy, is that the larger second gear-ratio is used often in situation where the robot needs to be drastically deviated from its natural motion, and the small second gear-ratio is used when the controller let the robot move in the natural direction. This connects back with the idea of attenuating the load-dynamics, with a large gear-ratio when it is advantageous, or leveraging the load-dynamics, with a small gear-ratio when the natural motion is advantageous. 
 
 
 
@@ -1480,7 +1481,7 @@ For both cost functions the optimal policy for the discrete gear-ratio mode $k$ 
 
 \subsection{Advanced dynamic programming techniques}
 
-Value iteration is a powerful tool, but computation are intractable for high-dimensional systems. However, there exist many approximate techniques that can be used; approximate dynamic programming is also refer as reinforcement learning. The approach proposed in this section, of formulating the control of hybrid robot as a stochastic shortest path problem, could thus be use in conjunction with many approach derived in the field of artificial intelligence such as Q-learning. However, the problem of approximating cost-to-go, state-space or policies in a lower dimensional space, to make computation tractable, is not trivial for non-linear robotic system.
+Value iteration is a powerful tool, but computations are intractable for high-dimensional systems. However, there exist many approximate techniques that can be used; approximate dynamic programming is also known as reinforcement learning. The approach proposed in this section, of formulating the control of hybrid robot as a stochastic shortest path problem, could thus be used in conjunction with many approach derived in the field of artificial intelligence such as Q-learning. However, the problem of approximating the cost-to-go, the state-space or the policies in a lower dimensional space, to make computation tractable, is not trivial for non-linear robotic system.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1552,7 +1553,7 @@ In the second experiment, a 3-DoF manipulator is tasked with going from configur
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.75\textwidth]{3d_u.pdf}
-	\caption{ 3-DoF robot simulation: control inputs trajectory}
+	\caption{ 3-DoF robot simulation: control inputs trajectories}
 	\label{fig:3d_u}
 \end{figure}
 %%
@@ -1666,7 +1667,7 @@ Note that the discontinuous torque required to guarantee convergence despite dis
 
 \subsection{2-DoF Experiments}
 
-Fig. \ref{fig:exp_traj_2dof_x} and Fig. \ref{fig:exp_traj_2dof_u} show an experiment using 2-DoF, the wrist joint and the elbow joint of the DSDM-Arm. The goal is a fixed joint configuration, and the R* Sliding Mode controller including the Rollout gear-selection scheme are used. Results shows success in tracking the goal for both DoF.
+Fig. \ref{fig:exp_traj_2dof_x} and Fig. \ref{fig:exp_traj_2dof_u} show an experiment using 2-DoF, the wrist joint and the elbow joint of the DSDM-Arm. The goal is a fixed joint configuration, and the R* Sliding Mode controller, including the Rollout gear-selection scheme, is used. Results shows success in tracking the goal for both DoF.
 
 %
 \begin{figure}[htp]
@@ -1697,7 +1698,7 @@ Fig. \ref{fig:exp_traj_2dof_x} and Fig. \ref{fig:exp_traj_2dof_u} show an experi
 
 \section{Summary}
 
-In this Chapter, feedback laws for controlling both the torques and gear-ratios of robotic systems equipped with VGA are proposed. A simple dynamic model is proposed, and analytical solutions are derived for the optimal gear-ratios on a known trajectory. The approach is extended to trajectory tracking control schemes, that can guarantee convergence on a reference trajectory and execute locally optimal gear-ratios based on state feedback. An approach is also proposed to inhibit fast gear-shifting by optimizing over a receding time-horizon. An alternative computational technique is also explored to generate globally optimal control policy for both torque and gear-ratios for simple systems. Simulation and experimental results demonstrate the effectiveness of the proposed controllers.
+In this Chapter, feedback laws for controlling both the torques and gear-ratios of robotic systems equipped with VGA are proposed. A simple dynamic model is proposed, and analytical solutions are derived for the optimal gear-ratios on a known trajectory. The approach is extended to trajectory tracking control schemes (R* Computed Torque and R* Sliding Mode), which can guarantee convergence on a reference trajectory and execute locally optimal gear-ratios based on state feedback. An approach (Rollout gear-selection) is also proposed to inhibit fast gear-shifting by optimizing over a receding time-horizon. An alternative computational technique (Value iteration) is also explored to generate global control policies for both torque and gear-ratios for simple systems. Simulation and experimental results demonstrate the effectiveness of the proposed controllers.
 
 \section{Potential directions of further development}
 
@@ -1707,13 +1708,12 @@ Here are a few possible axis of future development.
 		\item Improving the proposed control approaches:
 		\begin{itemize}
 			\item Using reinforcement learning to learn good gear-selection policies
+			\item Explore adaptive controllers
 			\item Decentralizing the gear-ratios selection decisions
-			\item Rollout optimization over sequences of gear-ratios
 		\end{itemize}
 		\item Explore more specific applications:
 		\begin{itemize}
-			\item Legged locomotion
-			\item Manipulation with contacts
+			\item Legged locomotion or manipulation including contacts
 			\item Interaction tasks requiring a wide range of impedance
 		\end{itemize}
 		\item Open research questions not addressed:
