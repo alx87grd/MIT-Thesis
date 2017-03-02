@@ -140,7 +140,7 @@ Many dual-motor actuators have been proposed in the literature \cite{tagliamonte
         \caption{Other types of dual-motor architectures}\label{fig:dualmotoractuators}
 \end{figure}
 %
-Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuator model illustrating the conceptual differences between many approaches. Variable stiffness actuators use a variable transmission placed between a compliant element and the load, where it influence the reflected output stiffness but not the steady-state power-transmission characteristics. Macro-micro actuators have a fixed reflected output stiffness, but the advantage is that the additional direct-drive motor on the output makes possible to emulate a wide-range of output impedance. \textbf{The proposed VGA actuators in this thesis are fundamentally different, it is the transmission between the motor and the load that is varied, like in a car transmission.} The main advantage of VGA is regarding efficient power transmission, enabling small motors to make full use of their maximum power at high speed and at low speed. Macro-micro actuators and VSA have no advantages over a regular electric motor regarding the range of speed at which power can be transmitted. On the other hand, macro-micro and VSA have the ability to store and release potential energy in their compliant element, which is not the case with VGA. Regarding, natural reflected impedance, both VSA and VGA have the ability to change it. One fundamental difference is that VGA can only attenuate or amplify the natural inertia and friction of the rotor, while VSA can only modify its reflected stiffness. 
+Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuator model illustrating the conceptual differences between many approaches. Variable stiffness actuators use a variable transmission placed between a compliant element and the load, where it influence the reflected output stiffness but not the steady-state power-transmission characteristics. Macro-micro actuators have a fixed reflected output stiffness, but the advantage is that the additional direct-drive motor on the output makes possible to emulate a wide-range of output impedance. \textbf{The proposed VGA actuators in this thesis are fundamentally differents, it is the transmission between the motor and the load that is varied, like in a car transmission.} The main advantage of VGA is regarding efficient power transmission, enabling small motors to make full use of their maximum power at high speed and at low speed. Macro-micro actuators and VSA have no advantages over a regular electric motor regarding the range of speed at which power can be transmitted. On the other hand, macro-micro and VSA have the ability to store and release potential energy in their compliant element, which is not the case with VGA. Regarding, natural reflected impedance, both VSA and VGA have the ability to change it. One fundamental difference is that VGA can only attenuate or amplify the natural inertia and friction of the rotor, while VSA can only modify its reflected stiffness. 
 
 \begin{figure}[htp]
 	\centering
@@ -209,7 +209,7 @@ During the high-force mode, see Fig. \ref{fig:HF}, the brake is closed and M2 dr
         \caption{Two modes of operation}\label{fig:opmode}
 \end{figure}
 
-Fig. \ref{fig:torquespeed} illustrates the operating range of the DSDM actuator plotted on the standard torque-speed plane. The high-force mode region is determined by the performance of M2 alone, since M1 is locked. The high-speed mode region can exceed the performance of M1 alone, as M2 can be used simultaneously to increase the output speed. The fail safe zone indicate the guaranteed performance of the DSDM actuator in case of failure in either motor. 
+Fig. \ref{fig:torquespeed} illustrates the operating range of the DSDM actuator plotted on the standard torque-speed plane. The high-force mode region is determined by the performance of M2 alone, since M1 is locked. The high-speed mode region can exceed the performance of M1 alone, as M2 can be used simultaneously to increase the output speed. The fail safe zone indicates the guaranteed performance of the DSDM actuator in case of failure in either motor. 
 
 \begin{figure}[H]
 	\centering
@@ -247,7 +247,7 @@ Note that a two-speed actuator using a single motor and a variable transmission 
 \subsection{Efficiency advantage}
 \label{sec:EffAdvantage}
 
-VGA actuators, including DSDM actuators, can transmit power more efficiently given various operating conditions. Electric motor efficiency is a function of velocity and applied torque. The efficiency map depends on the electric motor type (DC brushed, AC induction, DC brushless, etc). As a general rule, motors are typically more efficient in the upper-end of their velocity range. Hence, by using multiple gear-ratios, not only motors can be down-sized, but power transmission can be made more efficient. For instance, switching to a large gear-ratio to use a motor at its most efficient operating conditions with high rotor speeds. This efficiency advantage has been studied for electric cars equipped with multiple speed transmissions \cite{ren_effect_2009} \cite{holdstock_energy_2012} \cite{zhang_three-speed_2013} \cite{mckeegan_antonovs_2011}. This advantage is also of high interest for any mobile robots where on-board energy is limited. Any quantitative analysis of this benefit depends heavily on the specific of the type of motor used, the controller, the robotic system and the task executed by the robotic system. Section \ref{sec:shift_sim} will offer some quantivative simulation results regarding reduced energy consumption of robotic manipulator achieved using VGA actuators.
+VGA actuators, including DSDM actuators, can transmit power more efficiently given various operating conditions. Electric motor efficiency is a function of velocity and applied torque. The efficiency map depends on the electric motor type (DC brushed, AC induction, DC brushless, etc.). As a general rule, motors are typically more efficient in the upper-end of their velocity range. Hence, by using multiple gear-ratios, not only motors can be down-sized, but power transmission can be made more efficient. For instance, switching to a large gear-ratio to use a motor at its most efficient operating conditions with high rotor speeds. This efficiency advantage has been studied for electric cars equipped with multiple speed transmissions \cite{ren_effect_2009} \cite{holdstock_energy_2012} \cite{zhang_three-speed_2013} \cite{mckeegan_antonovs_2011}. This advantage is also of high interest for any mobile robots where on-board energy is limited. Any quantitative analysis of this benefit depends heavily on the specific of the type of motor used, the controller, the robotic system and the task executed by the robotic system. Section \ref{sec:shift_sim} will offer some quantitative simulation results regarding reduced energy consumption of robotic manipulator achieved using VGA actuators.
 
 Another significant efficiency advantage of DSDM actuators over single-gear motors, is that high-speed mode can be backdrivable for interaction tasks while the high-force mode can be made non-backdrivable (using a irreversible large reduction for M2) in order to be able to hold an object against gravity without having to consume any electrical energy. A backdrivable single-gear motor will always have to supply electrical power just to sustain gravity forces, leading to zero efficiency for holding tasks. Hence, for a robot requiring backdrivability in some task and often holding objects against gravity, the efficiency gain could be huge. Note that some industrial robot arms use brake mounted on actuator outputs to address this type of energy consumption issue \cite{meike_energy_2011}.
 
@@ -438,7 +438,7 @@ w_o \\ w_1
 \right] = \vec{w} = \vec{\dot{q}} 
 \end{align}
 %
-Note that since there is no conservative forces in the actuator, all displacement coordinates are ignorable and the dynamic equation is independent of rotor and output angles.
+Note that since there are no conservative forces in the actuator, all displacement coordinates are ignorable and the dynamic equation is independent of rotor and output angles.
 %
 \begin{align}
 \underbrace{ 
@@ -610,7 +610,7 @@ When the brake is open, if the gear-ratio $R_2$ of M2 is large, the equation can
 %\label{eq:dsdm_output_HS}
 %\end{align}
 %
-Assuming the reflected impedance of M1 is much smaller than that of M2, and neglecting motor side damping, the equation reduce to:
+Assuming the reflected impedance of M1 is much smaller than that of M2, and neglecting motor side damping, the equation is reduced to:
 %
 \begin{align}
 \left[
@@ -646,7 +646,7 @@ Note that, when a DSDM is connected to a robotic system, the left-hand side of e
 \label{eq:dsdm_output_HFw02}
 \end{align}
 %
-Also, although neglected in \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0}, motor damping could be reintroduce easily by substituting motor torque $\tau_i$ with the effective torque $\tau_i - b_i w_i$ since those forces are collocaed. 
+Also, although neglected in \eqref{eq:dsdm_output_HSw0} and \eqref{eq:dsdm_output_HFw0}, motor damping could be reintroduce easily by substituting motor torque $\tau_i$ with the effective torque $\tau_i - b_i w_i$ since those forces are collocated. 
 
 \newpage
 \subsection{Hybrid Behavior}
@@ -662,7 +662,7 @@ Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of th
 %
 \begin{table}[H]
 	\centering
-	\caption{Hybrid model: Continous equations and discrete jump maps}	% Table caption must be placed on top of the table %
+	\caption{Hybrid model: Continuous equations and discrete jump maps}	% Table caption must be placed on top of the table %
 		\begin{tabular}{ c l l l }
 				\hline \hline
 				Situation           & Discrete Mode     & Mapping   & Equation of motions \\
@@ -695,7 +695,7 @@ During high-force mode (labeled $k=1$), when the brake is engaged, and high-spee
 
 \subsubsection{High-Force Mode $k=1$}
 
-From eq. \eqref{eq:dsdm_output_HF}, the continous differential equation mapping during high-force mode can be written as:
+From eq. \eqref{eq:dsdm_output_HF}, the continuous differential equation mapping during high-force mode can be written as:
 %
 \begin{align}
 \left[
@@ -714,7 +714,7 @@ From eq. \eqref{eq:dsdm_output_HF}, the continous differential equation mapping 
 
 \subsubsection{High-Speed Mode $k=2$}
 
-From eq. \eqref{eq:ss_full}, the continous differential equation mapping during high-speed mode can be written as:
+From eq. \eqref{eq:ss_full}, the continuous differential equation mapping during high-speed mode can be written as:
 %
 \begin{align}
 \left[
@@ -795,7 +795,7 @@ w_o^- - \frac{w_1^-}{ R_1 \left( \frac{I_o}{I_2 R_2^2} + 1 \right) } \\ 0
 \label{eq:downshiftmap_nonideal}
 \end{align}
 %
-The impulsive mapping of eq.\eqref{eq:downshiftmap_nonideal} is derived using eq.\eqref{eq:manipulator_impact_velocity_delta}, where the contact Jacobian is defined by the zero velocity constraint on M1 when the brake close:
+The impulsive mapping of eq.\eqref{eq:downshiftmap_nonideal} is derived using eq.\eqref{eq:manipulator_impact_velocity_delta}, where the contact Jacobian is defined by the zero velocity constraint on M1 when the brake closes:
 \begin{align} 
 0 = J_c \vec{w} = 
 \left[
@@ -812,25 +812,25 @@ w_0 \\ w_1
 \end{align}
 
 
-
+%Hence, during normal operations gear-shifts should not lead to any impulsive behaviors. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Impacts}
+\subsection{Output Impacts}
 \label{sec:model_impact}
 
-During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities can suddenly change. Since there is no impulsive forces on the motor side, the effect of a contact on a DSDM actuator can be reduce to an impulsive torque applied to the output. The output impulse $p_{ext}$ (integral of the impulsive torque during the impact) is thus sufficient to characterized the velocity jumps:
+During a contact, impulsive forces can create a sudden change of velocity. Hence, if a DSDM actuator is used on a robotic system making contact with objects, its internal velocities can suddenly change. Since there is no impulsive forces on the motor side, the effect of a contacts on a DSDM actuator can be reduce to an impulsive torque applied to the output. The output impulse $p_{ext}$ (integral of the impulsive external torque during the impact) is thus sufficient to characterized the internal velocity jumps:
 %
 \begin{align}
 p_{ext} = \int_{t^-}^{t^+} \tau_{ext} dt
 \label{eq:outputimpulsedefine}
 \end{align}
 %
-Section \ref{sec:impact} discuss how such impulsive forces can be computed with a dynamic model of a robotic system.
+Section \ref{sec:impact} discusses how such impulsive forces can be computed with a dynamic model of a robotic system.
 
 \subsubsection{During High-speed Mode}
 
-During high-speed mode, applying eq. \eqref{eq:manipulator_impact}, it leads to to impulsive map:
+During high-speed mode, applying eq. \eqref{eq:manipulator_impact}, it leads to impulsive map:
 %
 \begin{align}
 \left[
@@ -1080,7 +1080,7 @@ The same structure can also be found for the impulsive behavior in case of impac
 w_0^+  =  w_0^- + \frac{p_{ext}}{I_o + R_k^2  I_k } \quad k \in {1,2}
 \end{align}
 %
-Hence, if both motor are identical ($I_1=I_2$), then the only parameter changing in those equations is the reduction ratio $R_k$. Thus, from a high-level point of view, with the commanded torque routed as described by eq. \eqref{eq:torquerooting}, the behavior of a DSDM is equivalent to a single motor actuator with two gear-ratios. 
+Hence, if motors are identical ($I_1=I_2$), then the only parameter changing in those equations is the reduction ratio $R_k$. Thus, from a high-level point of view, with the commanded torque routed as described by eq. \eqref{eq:torquerooting}, the behavior of a DSDM is equivalent to a single motor actuator with two gear-ratios. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1100,7 +1100,7 @@ Fig. \ref{fig:dsdm_control_architecture} shows the proposed hierarchical control
 	\label{fig:dsdm_control_architecture}
 \end{figure}
 
-This section discuss the design of the actuator-level controller, focusing on gear-shift transitions. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} will discuss extensively the design of centralized high-level controllers, and one implementation of the whole control system is presented in chapter \ref{sec:ExperimentalValidation}.
+This section discusses the design of the actuator-level controller, focusing on gear-shift transitions. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} will discuss extensively the design of centralized high-level controllers, and one implementation of the whole control system is presented in chapter \ref{sec:ExperimentalValidation}.
 
 
 \subsection{State-machine}
@@ -1125,7 +1125,7 @@ The proposed control scheme for the DSDM actuator-level controller has three dis
 
 \subsection{High-force mode controller}
 
-During high-force mode, the role of the DSDM controller is simple: keeping M1 locked with the brake closed and directly transmit the desired torque $\tau_d$ to M2, see Fig. \ref{fig:HF_loop}. 
+During high-force mode, the role of the DSDM controller is simple: keeping M1 locked with the brake closed and directly transmits the desired torque $\tau_d$ to M2, see Fig. \ref{fig:HF_loop}. 
 
 %During high-force mode, the actuator behaves like a regular geared EM motor and standard control schemes can be used. 
 
@@ -1138,7 +1138,7 @@ During high-force mode, the role of the DSDM controller is simple: keeping M1 lo
 
 During high-speed mode, the role of the DSDM controller is to: keep the brake open, transmit the desired torque $\tau_d$ to M1 and optionally track a secondary objective, see Fig. \ref{fig:HS_loop}. Exploiting the nullspace of eq. \eqref{eq:dyn_null_proj}, a secondary objective can be achieved without influencing the output behavior. Note that the nullspace projection vector, see eq.\eqref{eq:dyn_null_proj}, depends only on parameters associated with the motors. Therefore, it is possible to project the secondary controller inputs on the output nullspace even if the output dynamic parameters that include the load inertia and damping are unknowns. 
 %
-The nullspace can be used for many possible objectives. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary objective could also used for maximizing efficiency, avoiding speed saturation of M1, etc. This chapter focus is on using the secondary objective to achieve fast and seamless gear-shifts.
+The nullspace can be used for many possible objectives. In case the first motor is overloaded, for example, the second motor can reduce the load by projecting inputs through the null space, producing no effect upon the output, but changing the proportion of the two input commands. The secondary objective could also be used for maximizing efficiency, avoiding speed saturation of M1, etc. This chapter focus is on using the secondary objective to achieve fast and seamless gear-shifts.
 
 %Fig. \ref{fig:HS_loop} and Fig. \ref{fig:HF_loop} show DSDM control algorithms implemented as intermediary control loops between hardware and high-level commands. The high-speed controller tracks a received desired torque by controlling the current in M1, and can also optionally track a secondary objective without affecting the main-loop, by projecting the secondary input into the nullspace of the main-loop. The high-force controller directly convert a received desired torque to a current set-point for M2.
 
@@ -1251,9 +1251,9 @@ and a $w_1$ closed-loop dynamic converging exponentially to zero if the synchron
  \dot{w}_1 = -C w_1 + \underbrace{\left[\frac{R_1^2}{I_T} + \frac{R_1^2 I_o}{R_2^2 I_2 I_T} \right] \tau_d - \left[\frac{R_1 b_o}{I_T}\right] w_o }_{\text{Undesirable coupling from main loop}}
 \end{align}
 
-Hence, the output is not influenced by the braking law due to orthogonality, and is only controlled by the desired torque $\tau_d$. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturation. The other advantage of this approach over fully uncoupling the equations, is that the nullspace projection only require motor-side parameters and is valid even when load-side dynamic is unknown. 
+Hence, the output is not influenced by the braking law due to orthogonality, and is only controlled by the desired torque $\tau_d$. On the other hand, $w_1$ is directly influenced by the braking law but also by the output speed and the desired output torque $\tau_d$. Mathematically, it would be possible to also fully uncouple $\dot{w}_1$ equation, but the control law would not be practical in the scenario of $R_1<<R_2$ when considering torque and speed saturation. The other advantage of this approach over fully uncoupling the equations, is that the nullspace projection only requires motor-side parameters and is valid even when load-side dynamic is unknown. 
 
-Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and fidelity to desired motor torque. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If the main loop behavior is conflicting with the synchronization, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes so large that both motor torques saturate then synchronization is guaranteed: %In the worst-case scenario, $w_1$ is kept at a positive value for a long time because of a conflicting large $\tau_d$ command, which would eventually lead to saturation of torques with a large PI gain:
+Increasing the gain $C$ will lead to faster braking of $w_1$, however motor torque will saturate if the gain is too large. A large synchronization gain $C$ can still be used for faster braking at a cost of deviation from the desired torque $\tau_d$. There is thus a trade-off in practice, passed the torque saturation point, between fast braking of $w_1$ for fast transition and fidelity to desired motor torque. Moreover, when considering the finite range of motor torques and speeds, there are situations where the synchronization controller won't converge. For instance, if the main loop ask for acceleration of the output with a large $\tau_d$ at high-speed while also asking for a down-shift, the situation is not feasible. In those conflicting infeasible situations there is also a trade-off with prioritizing the main-loop with a small $C$ but failing to synchronize M1, or prioritizing the down-shift command with a large $C$ but failing to track the main loop command. To resolve this, the approach that was implemented is using a complex PI compensator ( $C(s) = k_p + \frac{k_i}{s}$ ). Hence that way, at first the gain $C$ is small and the synchronization controller doesn't affect the main loop. If the main loop behavior is conflicting with the down-shift, and synchronization doesn't converge at first, the gain $C$ will slowly increase and eventually shift the priority to down-shifting. Eventually, when the $C$ becomes very large and both motor torques would eventually saturate:% then synchronization is guaranteed: %In the worst-case scenario, $w_1$ is kept at a positive value for a long time because of a conflicting large $\tau_d$ command, which would eventually lead to saturation of torques with a large PI gain:
 %
 \begin{align}
 C \rightarrow \infty \quad\Rightarrow\quad 
@@ -1269,9 +1269,10 @@ which lead to the behavior:
 %
 \begin{align}
 I_T \dot{w}_1 = - \left( R_1 b_o \right) w_o  - \left( R_1^2 + \frac{R_1^2 I_o }{R_2^2 I_2} + \frac{R_1 I_o}{R_2 I_2} \right) \tau_{max}
+\label{eq:windup}
 \end{align}
 %
-If $w_1$ is a positive value, then $w_o$ is usually positive too and at worst a small negative value (due to kinematic constraints and motor speed saturations). Hence, the damping term is either negative or negligibly small. Hence $w_1$ is guaranteed to continuously decrease and to eventually cross zero where the brake can be engaged. 
+If $w_1$ is a positive value, then $w_o$ is usually positive too and at worst a small negative value (due to kinematic constraints and motor speed saturations). Hence, the damping term is either negative, and thus helping the process, or negligibly small. Hence $w_1$ is guaranteed to continuously decrease and to eventually cross zero where the brake can be engaged. This is assuming no external forces overpower the the second term in eq.\eqref{eq:windup}.
 %
 Note that if the high-level controller is planning only feasible gear-shifts, than no down-shift in impossible situations should be commanded. Hence, in normal operation the down-shift controller should never reach this drastic synchronization mode. This mode is however useful when the DSDM controller receive commands directly from a human operator.
 
@@ -1289,7 +1290,7 @@ w_1 = 0 \quad \Leftrightarrow \quad w_2 = R_2 w_o
 %
 Hence the ideal situation, to be prepared for a down-shift, is having M2 alone providing the output velocity. This is however only possible for low output velocity, due to motor velocity constraints. When possible to use this approach, the synchronization is done in advance and the down-shift operation is faster, since only limited by the time the brake takes to close. More generally, matching eq.\eqref{eq:shiftcond} as close as possible will improve gear-shift time since synchronization error will be smaller to start with.
 
-This idea can be also extended to a more complex impulsive behavior situations. As illustrated by Fig. \ref{fig:app}, down-shifting can be particularly useful in contact situation happening in the context of manipulation or locomotion, where large forces must be bear rapidly after contact. For instance a robotic leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot. For this situation, where motor velocity will suddenly change right before the desired down-shift, the preparation condition takes this form:
+This idea can be also extended to a more complex impulsive behavior situations. As illustrated by Fig. \ref{fig:app}, down-shifting can be particularly useful in contact situations happening in the context of manipulation or locomotion, where large forces must be bear rapidly after contact. For instance a robotic leg approaching the ground with high-speed mode, then making contact with the ground and transitioning to high-force mode to bear the weight of the robot. For this situation, where motor velocity will suddenly change right before the desired down-shift, the preparation condition takes this form:
 %
 \begin{align}
 w_1^+ = w_1^- + \Delta w_1 = 0 \quad \Leftrightarrow \quad w_2^+ = R_2 w_o^+ = w_2^- 
@@ -1320,7 +1321,7 @@ leading to
  w_o^- = u_0 \quad \text{and} \quad w_1^+ = u_1
 \end{align}
 %
-Therefore, if an impact is expected and the upcoming impulsive impact reaction $p_{ext} = \int{\tau_{ext} dt}$ can be computed, using this control law lead to independent control of the approaching speed of the actuator output $w_o^-$, which would be used for the primary objective (for instance making contact with the object at the right place and time), and resulting velocity of M1 post-impact $w_1^+$, which would be set to zero to allow for instantaneous down-shift.
+Therefore, if an impact is expected and the upcoming impulsive impact reaction $p_{ext} = \int{\tau_{ext} dt}$ can be computed, using this control law lead to independent control of the approaching speed of the actuator output $w_o^-$, which would be used for the primary objective (for instance making contact with the object at the right place and time), and resulting velocity of M1 post-impact $w_1^+$, which would be set to zero to allows for instantaneous down-shift.
 
 %\paragraph{Dynamic algo}
 %
@@ -1370,7 +1371,7 @@ w_1^+ =  w_1^- + \Delta w_1 \approx w_{1,d}  + R_1 \frac{ p_{ext} }{I_o + I_1 R_
 %
 Hence, it would be possible to engaged the brake and switch to high-force mode almost instantaneously. In practice, because of speed saturation it won't always be possible to perfectly track the desired speed $w_{1,d}$ in the nullspace, or to perfectly predict the contact impulse $p_{ext}$. However, by running this control scheme and bringing $w_1^+$ as close as possible to zero, gear-shift will nonetheless be achieved faster because synchronization error will be smaller at the start of the down-shift process.
 %
-The preparation controller is illustrated in the form of a block diagram at Fig. \ref{fig:imp_loop}. Note that the expected impulse would need to to be computed by an high-level controller aware of the general system situation. Section \ref{sec:contact} present techniques to estimate impulsive contact forces based on a dynamic model of a robot that could be used by the high-level controller. 
+The preparation controller is illustrated in the form of a block diagram at Fig. \ref{fig:imp_loop}. Note that the expected impulse would need to be computed by an high-level controller aware of the general system situation. Section \ref{sec:contact} present techniques to compute impulsive contact forces with a model for multi-DoF robots, that could be used by the high-level controller. 
 
 
 
@@ -1381,7 +1382,7 @@ The preparation controller is illustrated in the form of a block diagram at Fig.
 \section{Experimental Results}
 \label{sec:dsdm_exp}
 
-This section presents experimental results with the wrist DSDM prototype of the DSDM-Arm. Information regarding the mecanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, the high-level control loop is a simple PID controller (recall Fig. \ref{fig:dsdm_control_architecture}). Set-points are commanded from a joystick controller. 
+This section presents experimental results with the wrist DSDM prototype of the DSDM-Arm. Information regarding the mechanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, the high-level control loop is a simple PID controller (recall Fig. \ref{fig:dsdm_control_architecture}). Set-points are commanded from a joystick controller. 
 
 \subsection{DSDM Dynamic Behavior}
 
@@ -1409,7 +1410,7 @@ This section presents experimental results with the wrist DSDM prototype of the 
 Fig. \ref{fig:dsdm_manual_shift} gives an overview of how a DSDM actuator works. Before $t=2.5$, the brake is engaged and only M2 is used to drive the output. When is brake is engaged, the DSDM is in high-force mode and the effective gear-ratio is 474. At $t=2.5$, the brake is released and M1 start contributing to the motion. Releasing the brake will be referred to as an up-shift. Between $t=2.5$ and $t=6.5$, the brake is open, both motor contribute to the output speed; the DSDM is in high-speed mode and the effective gear-ratio is 23. At between $t=6.5$, a down-shift is manually commanded. Between $t=6.5$ and $t=7$, the synchronization controller then apply torques to brake M1 to zero speed and the brake is engaged at $t=7$ when M1 speed is detected to be null. Note that here the down-shift was commanded from an infeasible high-velocity by the user driving the system, and the output speed had to first be slowed down to a speed reachable by high-force mode. This process of braking M1 and then engaging the brake will be referred as a down-shift.
 
 
-Fig. \ref{fig:dsdm_position_tracking} shows the DSDM tracking position set-points. This experiment illustrates that the high-force mode is slow and with a highly damped behavior, while the high-speed mode is fast and with a under-damped second order behavior. 
+Fig. \ref{fig:dsdm_position_tracking} shows the DSDM tracking position set-points. This experiment illustrates that the high-force mode is slow and with a highly damped behavior, while the high-speed mode is fast and with an under-damped second order behavior, because of smaller dissipative forces in the motor. 
 %
 \begin{figure}[H]
 	\centering
@@ -1419,9 +1420,9 @@ Fig. \ref{fig:dsdm_position_tracking} shows the DSDM tracking position set-point
 	\label{fig:dsdm_position_tracking}
 \end{figure}
 %
-Fig. \ref{fig:dsdm_speed_tracking} shows the DSDM tracking speed set-points. Note that the noisy behavior during high-speed mode is only due to an implementation limitation. At low speed there is a quantization problem: there is a too small amounts of encoder ticks per control loop interval. This to limited possible controller gains for closing the loop in speed when using high-speed mode.
+Fig. \ref{fig:dsdm_speed_tracking} shows the DSDM tracking speed set-points. Note that the noisy behavior during high-speed mode is only due to an implementation limitation. At low speed there is a quantization problem: there is a too small amounts of encoder ticks per control loop interval. This limited the controller gains for closing the loop in speed when using high-speed mode.
 %
-\begin{figure}[H]
+\begin{figure}[htb]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_speed_tracking.pdf}
 		\vspace{-10pt}
@@ -1433,9 +1434,9 @@ Fig. \ref{fig:dsdm_speed_tracking} shows the DSDM tracking speed set-points. Not
 
 \subsection{Nullspace}
 
-Fig. \ref{fig:dsdm_nullspace} illustrates the internal DoF of DSDM actuators. Here the DSDM tracks a constant output speed while motor speeds are varied by projecting additional torques in the nullspace. This experiment demonstrate that the internal DoF can be controlled independently of the output using the proposed nullspace projection scheme. 
+Fig. \ref{fig:dsdm_nullspace} illustrates the internal DoF of DSDM actuators. Here the DSDM tracks a constant output speed while motor speeds are varied by projecting additional torques in the nullspace. This experiment demonstrates that the internal DoF can be controlled independently of the output using the proposed nullspace projection scheme. 
 %
-\begin{figure}[H]
+\begin{figure}[htb]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_nullspace.pdf}
 		\vspace{-10pt}
@@ -1448,7 +1449,7 @@ Fig. \ref{fig:dsdm_nullspace} illustrates the internal DoF of DSDM actuators. He
 \subsection{Seamless Transitions}
 
 \subsubsection{Constant Speed}
-Experiments here show gear-shifts execuion while controlling the output to track a fixed speed. With the DSDM-Arm wrist tracking a 1 rad/s velocity, the average synchronization time for a down-shift, which is about 250 ms without preparation, is improved to 30 ms with the preparation scheme. Faster synchronization times of less than 20 ms were also achieved with another experimental set-up \cite{girard_two-speed_2015}. Hence while those experiments demonstrated that very fast gear-shifts in the range of 20 ms are possibles, even faster synchronizations could be possible, since the bottleneck here is implementation factors an not fundamental aspects. 
+Experiments here show gear-shifts execution while controlling the output to track a fixed speed. With the DSDM-Arm wrist tracking a 1 rad/s velocity, the average synchronization time for a down-shift, which is about 250 msec without preparation, is improved to 30 msec with the preparation scheme. Faster synchronization times of less than 20 msec were also achieved with another experimental set-up \cite{girard_two-speed_2015}. Hence while those experiments demonstrated that very fast gear-shifts in the range of 20 msec are possible, even faster synchronizations could be possible, since the bottleneck here is implementation factors, not fundamental aspects. 
 
 \begin{figure}[t]
 	\centering
@@ -1466,7 +1467,7 @@ Fig. \ref{fig:dsdm_cstspd_shifts} illustrates the DSDM actuator maintaining a co
 	\label{fig:dsdm_cstspd_shifts}
 \end{figure}
 %
-Fig. \ref{fig:dsdm_cstspd_shifts_withprep} illustrates how the idea of preparation, by adjusting M2 velocity in the nullspace, improve the gear-shifting time. 
+Fig. \ref{fig:dsdm_cstspd_shifts_withprep} illustrates how the idea of preparation, by adjusting M2 velocity in the nullspace, improves the gear-shifting time. 
 %
 \begin{figure}[p]
 	\centering
@@ -1491,7 +1492,7 @@ Note that the undesirable disturbances in the output velocity at Fig. \ref{fig:d
 
 \subsubsection{Contact with a Compliant Load}
 
-An experiment of the actuator making contact with a spring-like compliant load and making a smooth down-shift as soon as contact is detected is illustrated at Fig. \ref{fig:dsdm_ballon_down_shift_nice2}. Results shows that the controller is successful at down-shifting without any kick-back from the spring-like load (output velocity is always positive). In the experiment, the actuator output arrives with high-velocity and first compress the compliant load using its momentum, then the large gear-ratio is engaged seamlessly and larger forces are applied to compress the load further. 
+An experiment of the actuator making contact with a spring-like compliant load and making a smooth down-shift as soon as contact is detected is illustrated at Fig. \ref{fig:dsdm_ballon_down_shift_nice2}. Results show that the controller is successful at down-shifting without any kick-back from the spring-like load (output velocity is always positive). In the experiment, the actuator output arrives with high-velocity and compresses the compliant load using its momentum, then the large gear-ratio is engaged seamlessly and larger forces are applied to compress the load further. 
 
 %
 %\begin{figure}[htp]
@@ -1533,7 +1534,7 @@ An experiment of the actuator making contact with a spring-like compliant load a
 
 \subsubsection{Impact with a Stiff Load}
 
-Fig. \ref{fig:dsdm_stiff_down} illustrates an experiment where the DSDM is making a quick down-shift after impacting a stiff heavy object. Contact detection is done based on encoder measurements only, which is possible during high-speed mode because of the small reduction ratio leading to good actuator-transparency properties. The contact detection then trigger automatically the down-shift commands. Results shows that the DSDM actuator is able to engage high-force mode within 25 ms of the impact, and seamlessly continue its motion pushing the heavy load with large torques. 
+Fig. \ref{fig:dsdm_stiff_down} illustrates an experiment where the DSDM is making a quick down-shift after impacting a stiff heavy object. Contact detection is done based on encoder measurements only, which is possible during high-speed mode because of the small reduction ratio leading to good actuator-transparency properties. The contact detection then trigger automatically the down-shift commands. Results show that the DSDM actuator is able to engage high-force mode within 25 msec of the impact, and seamlessly continue its motion pushing the heavy load with large torques. 
 
 \begin{figure}[p]
 	\centering
@@ -1577,11 +1578,11 @@ Video of those down-shifts experiments, for the compliant load and the stiff loa
 
 \section{Summary}
 
-In this Chapter, an actuation technology capable of fast switching between two operating modes, equivalent to a small and a large reduction ratio, is presented. Advantages in term of weight, efficiency and reliability are discussed. Equation of motions for the hybrid behavior of the system are derived. A control scheme leveraging the internal DoF of the system to allows for fast and seamless transitions is proposed and experimentally validated. Prototypes DSDM actuators are found to work really well in real-world conditions.
+In this Chapter, an actuation technology capable of fast switching between two operating modes, equivalent to a small and a large reduction ratio, is presented. Advantages in term of weight, efficiency and reliability are discussed. Equations of motions for the hybrid behavior of the system are derived. A control scheme leveraging the internal DoF of the system to allow for fast and seamless transitions is proposed and experimentally validated. Prototypes DSDM actuators are found to work well in real-world conditions.
 
-\section{Future work}
+\section{Potential directions of further development}
 
-Here are a few possibles axis of future development. 
+Here are a few possible axis of future development. 
 
 \begin{itemize}
 		\item Developing a product-like actuator system:
