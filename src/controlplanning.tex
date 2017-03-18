@@ -704,6 +704,7 @@ In theory if the controlled robotic system would behave exactly like the propose
 To avoid undesirable rapid switching behaviors, hysteresis can be added to the gear-selection logic. Instead of simply executing the optimal gear-ratios command at each time step, a logical step is added, which only allows mode change if a minimal amount of time $\Delta t$ as elapsed since the last mode change. This thus directly guaranteed a minimal period between gear-shifts. However, this technique is clearly sub-optimal in certain situations. For instance, imagine a system with two modes, on a trajectory where $k=1$ is optimal for all time except for the interval $t\in[1,1.1]$. If a hysteresis of $\Delta t = 1$ is used in the controller, then $k=2$ will be selected for the interval $t\in[1,2]$. Hence, not gear-shifting at all would have been better (sub-optimal during 0.1 sec) compared to shifting with hysteresis (sub-optimal during 0.9 sec), from the whole trajectory point of view. 
 
 \subsubsection{Minimax optimization for sliding mode}
+\label{sec:minimax}
 
 When optimizing the torque computed with the sliding mode, chattering can be very severe as components of $sgn( \vec{s} )$ can oscillate rapidly between values of $\pm1$. One approach to alleviate this is to reformulate the optimization to treat variables $sgn( \vec{s} )$ as random disturbances and optimize for the worst-case scenario:
 %
@@ -897,7 +898,7 @@ Q = \Delta t_{shift} \operatornamewithlimits{max} \left[ \vec{\tau}^T \vec{\tau}
 %
 For the time horizon $h$ it is not necessary a case of larger is better, since the cost computed with fixed gear-ratios over a long simulated period does not represent well the real future cost, since gear-shift are possible in the real future. Very short time horizon would largely inhibit gear-shifting since gain of changing the gear-ratios on a short period would be small compared to the gear-shift penalty. 
 
-A rule of thumbs, as a starting point, is to set the time horizon to the expected average amount of time spent between two gear-shifts. This is motivated by the fact that in that case, most predicted trajectory with fixed gear-ratios will be representative of the real future trajectory. Simulations and experiments can be used to experimentally adjust this parameter.
+A rule of thumbs, as a starting point, is to set the time horizon to the expected average amount of time spent between two gear-shifts. This is motivated by the fact that in that case, most predicted trajectory with fixed gear-ratios will be representative of the real future trajectory. Simulations and experiments can be used to experimentally adjust this parameter. Alternatively, the cost function could also be discounted: putting more weight on immediate cost and less weight on far ahead uncertain cost. 
 
 
 

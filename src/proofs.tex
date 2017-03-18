@@ -583,15 +583,14 @@ Note that if there is more than 2 discrete gear-ratio options, this analysis giv
 \label{sec:chat2}
 
 Fig. \ref{fig:rollouttrajs} gives a graphical support illustrating the 2D space, where at all time virtual trajectories branch-off the real robot trajectory.
-
+%
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.8\textwidth]{rollouttrajs.png}
 	\caption{Real trajectory and simulated virtual trajectory in the Rollout controller}
 	\label{fig:rollouttrajs}
 \end{figure}
-
-
+%
 The time derivative of the cost $J_k$, representing how much the computed cost change if the simulation is conducted $dt$ later in time, is given by:
 %
 \begin{align}
@@ -625,21 +624,27 @@ And the final result is modified to be:
 \end{align}
 %
 
-\subsubsection{Sensitivity of simulated trajectories}
-
+\subsubsection{Sensitivity of cost along simulated trajectories}
+%
 Regarding the new term, the time derivative of instantaneous cost in the simulation can be expressed as:
 %
 \begin{align}
 \dot{C}_k    = \frac{\partial C_k}{\partial t} = \frac{\partial C_k}{\partial \vec{\tau}} \frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}} \frac{\partial \vec{\hat{x}}}{\partial t} 
 \end{align}
 %
-The term $\frac{\partial C_k}{\partial \vec{\tau}}$ is the sensitivity of the used cost function with respect to computed torques. For quadratic torques cost:
+This term represent how much the computed cost can vary, between two simulations computed with $dt$ interval, for time interval shared by the two simulations. 
+
+\paragraph{Cost function sensitivity}
+%
+The term $\frac{\partial C_k}{\partial \vec{\tau}}$ is the sensitivity of the used cost function with respect to computed torques. For a quadratic torque criterion $C_k = \vec{\tau}_k^T \vec{\tau}_k$, like always used in this thesis, it is equal to:
 %
 \begin{align}
 \frac{\partial C_k}{\partial \vec{\tau}_k} = 2\vec{\tau}_k^T
 \end{align}
+
+\paragraph{Control law sensitivity}
 %
-The term $\frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}}$ is a Jacobian Matrix representing the sensitivity of computed torque with respect to states. This matrix could be computed analytically with the feedback laws, for the computed torque:
+The term $\frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}}$ is a Jacobian matrix representing the sensitivity of computed torque with respect to states. This matrix could be computed analytically with the feedback laws, for the computed torque control law:
 %
 \begin{align}
 \frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}} = 
@@ -651,8 +656,29 @@ The term $\frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}}$ is a Jacobian Matr
 \end{array} \right] 
 \end{align}
 %
+%
+For the sliding mode control law, because of the additional discontinuous term $\vec{\tau}_d = G \sgn( \vec{s} )$, the derivative $\frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}}$ can be unbounded when $s_i \approx 0$. However, the difference over a finite time interval $\Delta t$ is bounded since worst case scenario:
+%
+\begin{align}
+-2G \leq \left[ \Delta \vec{\tau}_d \right]_i \leq 2G
+\end{align}
+%
+Lets assume for simplicity that the cost function would penalize independently the continuous torque term and the discontinuous torque term:
+%
+\begin{align}
+C_k = C_{c} + C_{d} = C_{c} + \vec{\tau}_d^T \vec{\tau}_d
+\end{align}
+%
+then the resulting modified lower bound on minimum delay would be:
+%
+\begin{align}
+\Delta t \geq \frac{Q - \operatornamewithlimits{max}\left[\vec{\tau}_d^T \vec{\tau}_d\right] h }{ C_{c}^{max}  +   \dot{C}_{c}^{max} h }
+\end{align}
+%
+This shows that with large discontinuous gains, it would be harder to guarantee a minimum delay. There is thus a double advantages for using a smoothing technique (ex: boundary layer \cite{slotine_applied_1991} or higher order sliding mode \cite{perruquetti_sliding_2002}) for which the control law is not discontinuous. In addition to the advantage of smoothing the torque command, it would also make it easier to design a rollout gear selection that guarantee a minimum delay. Alternatively, as proposed in section \ref{sec:minimax}, reformulating the cost function to make it independent of the sign of $\vec{s}$ it another approach to alleviate this problem.  
 
-
+\paragraph{Virtual trajectory sensitivity}
+%
 The term $\frac{\partial \vec{\hat{x}}}{\partial t}$ represents by how much the states at time $\hat{t}$ (in the simulation) would change if the simulation would have started $dt$ later. 
 %
 The virtual trajectory can be parametrized as the sum of the desired trajectory and errors:
@@ -673,11 +699,13 @@ Because the desired trajectory is independent of starting simulation time $t$, t
 %\vec{\hat{x}}_e( \hat{t} , t ) = \int_{t}^{t+h}{  \dot{\hat{\vec{x}}}_e \, d\hat{t} } + \vec{x}_e(t)
 %\end{align}
 %%
-For the closed-loop system with the Computed Torque controller, the error dynamic is stable and linear, hence:
+For the closed-loop system with the computed torque controller, the error dynamic is stable and linear, hence:
 %
 \begin{align}
 \dot{\vec{x}}_e = A \vec{x}_e  \quad \Rightarrow \quad  \vec{x}_e( t ) = e^{A t} \vec{x}_e(t=0)
 \end{align}
+%
+Similarly for the sliding mode controller, after all sliding surfaces are reached (happens in finite time) then the error dynamic is also linear and stable.
 %
 Using this matrix exponential solution for error trajectory in the simulations leads to 
 %
@@ -685,20 +713,28 @@ Using this matrix exponential solution for error trajectory in the simulations l
 \vec{\hat{x}}_e( \hat{t} , t ) = e^{A (\hat{t} - t )} \vec{x}_e(t)  
 \end{align}
 %
-since initial error in the simulations is the real error at time $t$. It is then possible to compute the sensitivity of virtual time with respect to simulation initialization time:
+since initial error in the simulations is the real error at time $t$. It is then possible to compute the sensitivity of virtual state trajectory with respect to simulation initialization time:
 %
 \begin{align}
 \frac{\partial \vec{\hat{x}}}{\partial t}  = -A e^{A (\hat{t} - t )} \vec{x}_e(t) + e^{A (\hat{t} - t )} \dot{\vec{x}}_e(t) \leq \vec{b} \quad \forall \, \hat{t} > t
 \end{align}
 %
-Hence trajectory sensitivity can thus be bounded, because the closed-loop error dynamic is linear and stable in simulations (matrix A only has eigenvalues with negative real parts).  All in all, it is thus possible to conclude that:
+Hence trajectory sensitivity can thus be bounded, because the closed-loop error dynamic is linear and stable in simulations (matrix A only has eigenvalues with negative real parts).  
+
+\paragraph{Sensitivity conclusions}
+%
+All in all, it is thus possible to conclude that:
 \begin{enumerate}
-	\item Sensitivity $\dot{C}_k$ is bounded
+	\item Sensitivity $\dot{C}_k$ is bounded (with a continuous control law)
 	\item Sensitivity $\dot{C}_k \rightarrow 0$ far ahead in simulations as $\hat{t} \rightarrow \infty$
 	\item Sensitivity $\dot{C}_k = 0$ if there is no tracking error ($ \vec{x}_e = \vec{0} \quad \dot{\vec{x}}_e = \vec{0}$)
 \end{enumerate}
-
-Note that the last conclusion is consistent with the previous analysis where it was assumed a situation where all trajectories (real, desired and simulations) were all the same.
-
-
+%
+Note that conclusion 3 is consistent with the previous analysis (sec. \ref{sec:chat1}) where it was assumed a situation where all trajectories (real, desired and simulations) were all identical. Also conclusion 2 suggest that the sensitivity of future cost would no grow forever as the time horizon $h$ is increased, hence by using the following:
+%
+\begin{align}
+\int_{t}^{t+h}{ \dot{C}_k \, d\hat{t} } \leq \dot{C}_k^{max} h
+\end{align}
+%
+the result is probability very conservative and unadapted when the time horizon $h$ is very large.
 
