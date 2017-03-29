@@ -434,7 +434,7 @@ Here eq. \eqref{eq:aaa} is applied to the robot in Fig. \ref{fig:bigpicture}, an
 When the robot accelerates from rest with no viscous forces, the optimal gear ratio at the up-right position, where no gravity acts, is given by:
 \begin{align}
 	R^{*}  = \sqrt{ \left | \frac{H \ddot{q} }{ I \ddot{q} } \right |   } = \sqrt{ \frac{H}{I}}
- \label{eq:impmatching}
+ \label{eq:impmatchinginertia}
 \end{align}
 In this situation, the problem is reduced to impedance matching for two inertial loads. The optimal gear ratio minimizing the torque for a given acceleration is the one for which the load inertia and the motor reflected inertia are the same.
 
@@ -454,7 +454,7 @@ In the situation where a robot maintains a constant speed, assuming the output l
 %
 \begin{align}
 	R^{*}  = \sqrt{ \left | \frac{D \dot{q} }{ B \dot{q} } \right |   } = \sqrt{ \frac{D}{B}} \rightarrow 0
- \label{eq:impmatching}
+ \label{eq:coastingex}
 \end{align}
 %
 In this situation, to avoid dissipative motor forces it is best to have the smallest possible gear-ratio. In the limit, this corresponds to completely disconnecting the load from the actuator.
@@ -1123,7 +1123,6 @@ Thus the value iteration updates have the form:
 \begin{align}
 	J(\boldsymbol{x}_i) \Leftarrow \operatornamewithlimits{min}\limits_{\boldsymbol{u}} 
 	\left[ g(\boldsymbol{x}_i,\boldsymbol{u}) + \sum{ w_j J(\boldsymbol{x}_j(t+1))}  \right]
-		\label{eq:interpol}
 \end{align}
 %
 and the optimal control policy $\pi:\vec{x}\mapsto\vec{u}$ is computed for all nodes as:
@@ -1268,50 +1267,50 @@ For the minimum energy controller, interestingly the mode selection policy is no
 
 \subsubsection{System 2 - Inverted pendulum robot}
 %
-Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted pendulum system for both a minimal time goal and a quadratic cost minimization. Figure \ref{fig:u0} shows the optimal torque policy and Figure \ref{fig:u1} shows the optimal gear selection policy. The resulting closed loop behavior is illustrated in the phase plane at Figure \ref{fig:phase_plane}. Figure \ref{fig:phase_plane} also shows closed-loop state trajectories and control inputs for a simulation starting at $q$ = -2 rad.
+Figure \ref{fig:J2} illustrates the computed optimal cost-to-go for the inverted pendulum system for both a minimal time goal and a quadratic cost minimization. Figure \ref{fig:u02} shows the optimal torque policy and Figure \ref{fig:u12} shows the optimal gear selection policy. The resulting closed loop behavior is illustrated in the phase plane at Figure \ref{fig:phase_plane2}. Figure \ref{fig:phase_plane2} also shows closed-loop state trajectories and control inputs for a simulation starting at $q$ = -2 rad.
 
 \begin{figure}[p]
         \centering
 				\subfloat[Minimum time]{
         \includegraphics[width=0.48\textwidth]{J_time.png}
-				\label{fig:J_time}}
+				\label{fig:J_time2}}
         \subfloat[Quadratic cost]{
 				\includegraphics[width=0.48\textwidth]{J_quadratic.png}%J_LQR.png
-				\label{fig:J_LQR}}
-        \caption{Optimal cost-to-go $J^*$}\label{fig:J}
+				\label{fig:J_LQR2}}
+        \caption{Optimal cost-to-go $J^*$}\label{fig:J2}
 \end{figure}
 
 \begin{figure}[p]
         \centering
 				\subfloat[Minimum time]{
         \includegraphics[width=0.48\textwidth]{u0_time.png}
-				\label{fig:u0_time}}
+				\label{fig:u0_time2}}
         \subfloat[Quadratic cost]{
 				\includegraphics[width=0.48\textwidth]{u0_quadratic.png}
-				\label{fig:u0_LQR}}
-        \caption{Optimal policy for the continuous torque command $\tau$ [Nm]}\label{fig:u0}
+				\label{fig:u0_LQR2}}
+        \caption{Optimal policy for the continuous torque command $\tau$ [Nm]}\label{fig:u02}
 \end{figure}
 
 \begin{figure}[p]
         \centering
 				\subfloat[Minimum time]{
         \includegraphics[width=0.48\textwidth]{u1_time.png}
-				\label{fig:u1_time}}
+				\label{fig:u1_time2}}
         \subfloat[Quadratic cost]{
 				\includegraphics[width=0.48\textwidth]{u1_quadratic.png}
-				\label{fig:u1_LQR}}
-        \caption{Optimal policy for the discrete gear selection $k \in \{1,2\}$}\label{fig:u1}
+				\label{fig:u1_LQR2}}
+        \caption{Optimal policy for the discrete gear selection $k \in \{1,2\}$}\label{fig:u12}
 \end{figure}
 
 \begin{figure}[p]
         \centering
 				\subfloat[Minimum time]{
         \includegraphics[width=0.48\textwidth]{PP_time.png}
-				\label{fig:phase_plane_time}}
+				\label{fig:phase_plane_time2}}
         \subfloat[Quadratic cost]{
 				\includegraphics[width=0.48\textwidth]{PP_quadratic.png}
-				\label{fig:phase_plane_LQR}}
-        \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane. Two trajectories starting at $q=-2$ are illustrated, blue is open-loop, red is closed loop}\label{fig:phase_plane}
+				\label{fig:phase_plane_LQR2}}
+        \caption[Closed loop behavior in the phase plane]{Closed loop behavior with the optimal policy illustrated in the phase plane. Two trajectories starting at $q=-2$ are illustrated, blue is open-loop, red is closed loop}\label{fig:phase_plane2}
 \end{figure}
 
 For both cost functions the optimal policy for the discrete gear-ratio mode $k$ is quite complex. This illustrates that optimal solutions for this type non-linear hybrid system representative of robotic systems are not trivial, even for a single axis. One observation regarding the gear-ratio selection policy, is that the larger second gear-ratio is used often in situation where the robot needs to be drastically deviated from its natural motion, and the small second gear-ratio is used when the controller let the robot move in the natural direction. This connects back with the idea of attenuating the load-dynamics, with a large gear-ratio when it is advantageous, or leveraging the load-dynamics, with a small gear-ratio when the natural motion is advantageous. 
