@@ -1075,10 +1075,10 @@ A dynamic programming algorithm, also known as value iteration, is then used to 
 \begin{figure}[t]
         \centering
 				\subfloat[Interpolation]{
-				\includegraphics[width=0.40\textwidth]{interpolation.png}
+				\includegraphics[width=0.40\textwidth]{interpolation.pdf}
 				\label{fig:interpolation}}
         \subfloat[Agregation probabilities]{
-				\includegraphics[width=0.40\textwidth]{Probinterpolation.png}
+				\includegraphics[width=0.40\textwidth]{Probinterpolation.pdf}
 				\label{fig:Probinterpolation}}
        \caption{Approximation of the cost-to-go: two interpretations }
 			\label{fig:aaa}
@@ -1157,11 +1157,11 @@ Numerical results of feedback policy to reach a fixed-target are presented for t
 \begin{figure}[htp]
         \centering
 				\subfloat[Linear mass-damper]{
-				\includegraphics[width=0.40\textwidth]{vi_sys1.png}
+				\includegraphics[width=0.40\textwidth]{vi_sys1.pdf}
 				\label{fig:vi_sys1}}
 				\hspace{+5pt}
         \subfloat[Inverted pendulum]{
-				\includegraphics[width=0.40\textwidth]{vi_sys2.png}
+				\includegraphics[width=0.40\textwidth]{vi_sys2.pdf}
 				\label{fig:vi_sys2}}
        \caption{Two studied robotic systems}
 			\label{fig:studiedsys}
@@ -1187,96 +1187,7 @@ The discretization parameters used are as follow: the state space is discretized
    %
 %This update is conducted for each set of $\left[ \boldsymbol{x}_{(t)}  , \boldsymbol{u}_{(t)}  , \boldsymbol{x}_{(t+1)}   \right]$ collected using simulated experiments. The controller used for the experiment is $\epsilon$-greedy, i.e. $\epsilon$ fraction of the time it picks a random action, else it is using the optimal action so far ( $ u(\boldsymbol{x})  = arg\min_{\boldsymbol{u}} Q( \boldsymbol{x}, \boldsymbol{u} ) $ ). The training is done as follow: first conduct a 10 sec simulation with the $\epsilon$-greedy controller, then go through the collected state-action pairs and conduct a Q-values update for each data-point, then start again.
 
-%\paragraph{Numerical results}
-%\label{sec:NumericalResults}
-%
-%This approach was found to be practical only for very simple robots. For instance, one degree of freedom lead to two states (position and speed). If each of those variable is discretized into 100 levels, the total number of possible states is 10000. Then if we use 10 possible levels of torque times two gear ratios we have 20 possibles action. Hence, we must keep track of 200000 Q-values, and we need to visit each of those values multiple time to converge. For more complex systems the brute force look-up table approach is thus even less tractable then value iteration.
-%
-%\begin{figure}[hpt]
-        %\centering
-				%\subfloat[Cost-to-go]{
-				%\includegraphics[width=0.32\textwidth]{Q_1_J2.png}}
-        %\subfloat[Policy for torque]{
-				%\includegraphics[width=0.25\textwidth]{Q_1_u0.png}}
-				%\subfloat[Trajectory using the learned policy]{
-				%\includegraphics[width=0.32\textwidth]{Q_1_xu.png}}
-       %\caption{Results with Q-Learning for a 1-DOF robot after thousands of simulated experiments}
-			%\label{fig:Q}
-%\end{figure}
-%
-%The results are illustrated at Fig. \ref{fig:Q}. For this experiment, the set of possible action was limited to only 3 torque levels, to reduce the necessary computation time. After thousands of simulated experiment, it was possible to see a cost-to-go mapping similar to the one obtained with value iteration. Interesting point is that for some region of the state-space, the cost-to-go is different (still equal to the initialization value) because those zones were never visited during the experiments. Also, even if the state-space exploration was far from complete, the controller obtained at this point was still able to bring the robot on the target.
-%
-%
-%\subsubsection{Feature based reinforcement learning}
-%
-%
-%In this section, instead of learning a look-up table for the cost-to-go or Q-values, an approximation of the cost-to-go using features and a small set of weights is learned. This approach as the advantage of scaling more easily to complex robots and to avoid Bellman`s "curse of dimensionality". The approximation will be done directly on the cost-to-go function:
-%
-%\begin{align}
-	%\hat{J}(\boldsymbol{x}) &= \sum_i  w_i  f_i(\boldsymbol{x})  
-	%\label{eq:Qhat}
-%\end{align}
-%
-%With the weight update:
-%\begin{align}
-	%w_i =w_i + \alpha \left[ g(\boldsymbol{x} , \boldsymbol{u}) + \lambda \hat{J}(\boldsymbol{x}_{(t+1)})  -  \hat{J}(\boldsymbol{x}) \right] f_i(\boldsymbol{x},\boldsymbol{u}) 
-%\end{align}
-%
-%This correspond to temporal-difference learning scheme. During the learning phase, the controller $\epsilon$-greedy is again used. One difference is that since only the cost-to-go is estimated, the greedy policy needs to do a one-step look-ahead to select the best action, i.e. $ u(\boldsymbol{x})  = arg\min_{\boldsymbol{u}} \left[ g(\boldsymbol{x} , \boldsymbol{u}) + \lambda \hat{J}(\boldsymbol{x}_{(t+1)}) \right] $. Note that with this approach, since we are doing both policy evaluation and policy improvement simultaneously, we will converge to a local minimum, unlike Q-learning where we are guarantee to find the global optimum if we run it for long enough.
-%
-%
-%\paragraph{Feature design}
-%\label{sec:features}
-%
-%The features were picked using physical intuition from the dynamical system. Since the cost-to-go function needs to represent how far away the system is from the goal, in term of future cost with the optimal behavior, one good indicator in the energy level. If the actual energy level is very different from the goal energy level, then a lot of control effort will be required to change that and there is no way around it. So the first feature is :
-%%
-%\begin{align}
-	%f_1(\boldsymbol{x}) &=  | energy( \boldsymbol{x} )  - energy( \boldsymbol{x}_{target} ) |
-%\end{align}
-%%
-%However, simply having the correct energy level is not enough to reach the goal. We also need to penalize position error and velocity leading away from the goal, both which will make the system incur additional cost. In order to do that, sliding variable are used, one for each joint of the robot. A sliding variable is the combination of a position error and a velocity error into a single scalar:
-%%
-%\begin{align}
-	%s_i &=  \dot{q_e}  + \lambda q_e
-%\end{align}
-%%
-%where $q_e$ is a joint position error and $\dot{q_e}$ is a joint velocity error. If $s_i$ is very small then the error on this joint is converging toward zero, hence this can be used to know if the system is in a good/bad situation. So for the 1-DOF robot, only two features are used: the absolute error on energy level and the absolute value of the sliding variable. Three variables thus parametrize $\hat{J}$ (the third one correspond to an offset). For the 2-DOF robot, only an additional sliding variable is added as a feature to account for the additional joint.
-%
-%
-%\paragraph{Numerical results}
-%\label{sec:NumericalResults}
-%
-%Fig. \ref{fig:aaa} shows the first experiment, with the initial weights set so the initial cost-to-go is only the energy error. We can see that this is not enough and the controller fail to stabilize the robot. However, after only 20 experiments, the weights had converged and the resulting controller was doing a good job of bringing the robot to the target. Note that the approximated cost-to-go is not too far from the cost-to-go obtained using value iteration, at least considering only 3 parameters are used. 
-%
-%\begin{figure}[hp]
-        %\centering
-				%\subfloat[Approximated Cost-to-go]{
-				%\includegraphics[width=0.28\textwidth]{eG1_J0.png}}
-        %\subfloat[Phase plane trajectory]{
-				%\includegraphics[width=0.32\textwidth]{eG1_pp0.png}}
-				%\subfloat[State and input trajectory]{
-				%\includegraphics[width=0.32\textwidth]{eG1_xu0.png}}
-       %\caption{Results of 2-features learning after 1 experiment (controller failed to stabilize the goal) }
-			 %\label{fig:aaa}
-%\end{figure}
-%
-%\begin{figure}[hp]
-        %\centering
-				%\subfloat[Approximated Cost-to-go]{
-				%\includegraphics[width=0.28\textwidth]{eG1_J20.png}}
-        %\subfloat[Phase plane trajectory]{
-				%\includegraphics[width=0.32\textwidth]{eG1_pp20.png}}
-				%\subfloat[State and input trajectory]{
-				%\includegraphics[width=0.32\textwidth]{eG1_xu20.png}}
-       %\caption{Results of 2-features learning after 20 experiments (weight converged)}
-			%\label{fig:aaa}
-%\end{figure}
-%
-%Similar results were obtained for the 2-DOF robot, see the youtube video at \url{https://youtu.be/JJejTTy1-bU}. 
-%
-%Note: I tried adding a lot more features, for instance directly the states, the square of the states, sin/cos of the states, etc. However, no meaningful improvement was obtained by doing so.
-%
-%
+
 
 \subsection{Numerical results}
 
@@ -1405,79 +1316,6 @@ Figure \ref{fig:J} illustrates the computed optimal cost-to-go for the inverted 
 
 For both cost functions the optimal policy for the discrete gear-ratio mode $k$ is quite complex. This illustrates that optimal solutions for this type non-linear hybrid system representative of robotic systems are not trivial, even for a single axis. One observation regarding the gear-ratio selection policy, is that the larger second gear-ratio is used often in situation where the robot needs to be drastically deviated from its natural motion, and the small second gear-ratio is used when the controller let the robot move in the natural direction. This connects back with the idea of attenuating the load-dynamics, with a large gear-ratio when it is advantageous, or leveraging the load-dynamics, with a small gear-ratio when the natural motion is advantageous. 
 
-
-
-
-%\subsection{Feedback laws simplification}
-%
-%TODO Using regresstion to obtain analytical feedback laws...
-%
-%In this section, simplified algebraic control laws are extracted from the numerical map of optimal control actions for the quadratic cost controller. The dynamic programming algorithm outputs a list of optimal actions that is assumed are samples of a  map of optimal actions $\vec{u}^* = \pi^* ( \vec{x} )$. The goal is then to find a simplified map $\hat{\pi}( \vec{x} )$ based on the samples. Here a two-steps approach is used; first the state-space is segmented into zones based on the optimal discrete action $u_2$, then regression is used to compute the $u_1$ map independently in each zone. 
-%
-%\subsubsection{1-DoF linear robot example}
-%
-%\paragraph{Segmentation}
-%For the resulting optimal policy found at Fig. \ref{fig:u0_LQR}, three main zones can be identified. The boundaries are approximated by two lines at $\dot{x}= \pm \; 20 $, and the samples are separated into two groups:
-%\begin{align}
-%\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 1} \quad \text{if} \; | \dot{x} | \geq 20 \\
-%\left \{ \vec{u}^i , \vec{x}^i \right \} \rightarrow \text{Group 2} \quad \text{if} \; | \dot{x} | < 20
-%\end{align}
-%
-%For more complex segmentation, machine learning techniques could be used to perform the classification.
-%
-%\paragraph{Continuous maps}
-%
-%In each zones, the optimal continuous input $u_1^*$ is very close to a planar surface with exceptions when the input saturates or near the boundaries, see Fig. \ref{fig:u0_LQR}. Here, it is proposed to forgo absolute optimality and instead use the simplest control law that can globally approximate $u_1^*$ map. Hence, simple linear plane are fitted on the samples group by group. The regression is defined as follow, the dependent variable to approximate is $u_1$, the independent variables are the state coordinates $\vec{x}^T = [ x  \; \dot{x} ]$ and the parameter vector is $\vec{\alpha}^T = [ k_p  \; k_d ]$. Hence the continuous control variable $\hat{u}_1$ is approximated with the following linear map:
-%\begin{align}
-%\hat{u}_1 = \vec{\alpha}^T \vec{x} = k_p  x + k_d \dot{x}
-%\end{align}
-%which is essentially a simple proportional-derivative control law. Then the parameters are estimated using a least-square criterion, $\vec{\alpha}_1$ using the samples in group 1 and $\vec{\alpha}_2$ samples in group 2. Then combining the segmentation and both linear maps, the global control policy is approximated with the following law:
-%\begin{align}
-%\vec{ \hat{u}} &= \hat{\pi} ( \vec{x} )
- %= \left \{ 
-	%\begin{array}{c}
-	%\left[
-	%\begin{array}{c}
-		 %\vec{\alpha}_1^T \vec{x} \\
-		 %1 
-	%\end{array} 
-	%\right] 		
-	%\text{if} \; | \dot{x} | \geq 20 \\ \\
-		 %\left[
-		%\begin{array}{c}
-		 %\vec{\alpha}_2^T \vec{x} \\ 
-		 %2
-	%\end{array}
-		 %\right]
-		%\text{if} \; | \dot{x} | < 20
-	%\end{array}
-	%\right.
-	%\label{eq:uhat}
-%\end{align}
-%Fig. \ref{fig:u0_LQR_approx} shows the resulting continuous control policy $\hat{u}_1$ for the full state-space, and is an approximation of Fig. \ref{fig:u0_LQR} map.
-%
-%%\begin{figure}[H]
-	%%\centering
-		%%\includegraphics[width=0.30\textwidth]{u1aq.png}
-	%%\caption{Continuous map approximation for $u_1$}
-	%%\label{fig:u0_LQR_approx}
-%%\end{figure}
-%
-%\begin{figure}[htpb]
-				%\vspace{-10pt}
-        %\centering
-				%\subfloat[Map for $u_1$ (Nm)]{
-        %\includegraphics[width=0.45\textwidth]{u1aq.pdf}
-				%\label{fig:u0_LQR_approx}}
-        %\subfloat[Phase plane behavior]{
-				%\includegraphics[width=0.40\textwidth]{pp2q.pdf}
-				%\label{fig:phase_plot_lqr}}
-        %\caption{Approximated control laws and resulting behavior}\label{fig:approx}
-%\end{figure}
-%
-%
-%The resulting behavior with the control law of eq.\eqref{eq:uhat} is illustrated in the phase plane at Fig. \ref{fig:phase_plot_lqr}, where the arrows illustrate the state derivative throughout the state space. The blue arrows illustrate the natural dynamic of the system and the red arrows illustrate the closed behavior with the control policy of eq.\eqref{eq:uhat}. At high speed with the small reduction ratio, the controller only takes small actions illustrated by the fact that red arrows only have small deviation compared to blue arrows. However at low speed, the large reduction ratio is used to drastically change the natural behavior of the system, illustrated by the large red arrows. 
-%
 
 
 \subsection{Advanced dynamic programming techniques}
@@ -1617,12 +1455,12 @@ In the simulation presented so-far, fast gear-shifts were not inhibited by any o
 %
 \begin{figure}[htp]
 	\centering
-		\includegraphics[width=0.90\textwidth]{chattering_compared.jpg}
+		\includegraphics[width=0.90\textwidth]{chattering_compared.pdf}
 	\caption{Fast gear-shifting inhibition scheme comparison}
 	\label{fig:ChatteringComparaison}
 \end{figure}
 
-This figure shows that the hysteresis scheme is not necessary an improvement over the point-by-point gear-ratio selection, since for the gear-shift at $t=1.8$, it would have been better to avoid it completely. The Rollout approach is shown more successful at filtering-out high-frequency switching. Furthermore, another interesting advantageous side effect is observed: with the Rollout approach, the first gear-shift is commanded slightly in advance. This can be advantageous when controlling a real system where the gear-shift process is executed with a delay. 
+This figure shows that the hysteresis scheme is not necessary an improvement over the point-by-point gear-ratio selection, since for the gear-shift at $t=1.8$, it would have been better to avoid it completely. The Rollout approach is shown more successful at filtering-out high-frequency switching. Furthermore, another interesting advantageous side effect is observed: with the Rollout approach, the first gear-shift is commanded slightly in advance. This can be advantageous when controlling a real system where the gear-shift process is executed with a delay: the simulation can model this delay and the controller can react in advance accordingly.
 
 
 

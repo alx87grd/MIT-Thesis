@@ -11,7 +11,7 @@ In this appendix, the nomenclature and the mathematical equations, used to repre
 				\multicolumn{4}{c}{Scalars} \\
 				\hline \hline
 			$n$             &  :  & number of DoF                                              & \\
-			$m$             &  :  & number of actuator                                         & \\
+			$m$             &  :  & number of actuators                                        & \\
 			$c$             &  :  & number of contact constraints                              & \\
 			$o$             &  :  & number of end-effector coordinates                         & \\ 
 			$l$             &  :  & number of discrete operating modes                         & \\ 
@@ -20,19 +20,20 @@ In this appendix, the nomenclature and the mathematical equations, used to repre
 			\hline \hline
 			\multicolumn{4}{c}{Vectors} \\
 			\hline \hline
+			$\vec{\tau}$    &  :  & Electromagnetic motor torques                              & $m$  \\
+			$\vec{q}$       &  :  & Joint coordinates position vector                          & $n$  \\
+			$\vec{x}$       &  :  & Dynamic state vector $[\vec{\dot{q}} ;\vec{q}]$            & $n$  \\
+			$\vec{w}$       &  :  & Motor coordinates velocity vector                          & $m$  \\ 
 			$\vec{g}$       &  :  & Gravitational forces vector                                & $n$  \\
-			$\vec{f}_c$     &  :  & Contact forces vector                                      & $c$  \\
-			$\vec{f}_e$     &  :  & End-effector forces vector                                 & $o$  \\
 			$\vec{c}$       &  :  & Sum of state-dependent generalized forces                  & $n$  \\
 			$\vec{d}$       &  :  & Unknown disturbance forces                                 & $n$  \\
-			$\vec{\tau}$    &  :  & Electromagnetic motor torques                              & $m$  \\
 			$\vec{\tau}_I$  &  :  & Sum of intrinsic actuator forces                           & $m$  \\
 			$\vec{\tau}_E$  &  :  & Sum of extrinsic forces                                    & $n$  \\
-			$\vec{q}$       &  :  & Joint coordinates position vector                          & $n$  \\
-			$\vec{p}$       &  :  & End-effector position vector                               & $o$  \\
 			$\vec{a}$       &  :  & Actuator coordinates position vector                       & $m$  \\
-			$\vec{w}$       &  :  & Motor coordinates velocity vector                          & $m$  \\ 
 			$\vec{\phi}$    &  :  & Constraint vector                                          & $c$  \\
+			$\vec{f}_c$     &  :  & Contact forces vector                                      & $c$  \\
+			$\vec{f}_e$     &  :  & End-effector forces vector                                 & $o$  \\
+			$\vec{p}$       &  :  & End-effector position vector                               & $o$  \\
 			%$\vec{\lambda}$ &  :  & Coordinates of velocity subspace respecting constraints    & $n-c$  \\
 			\hline \hline
 			\multicolumn{4}{c}{Matrices} \\
