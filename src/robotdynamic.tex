@@ -103,7 +103,7 @@ The following equation represents the most general case:
 %
 \begin{align}
 H_k \vec{\ddot{q}} + C_k \vec{\dot{q}} + D_k \vec{\dot{q}} + \vec{g} =  \underbrace{ J_a^T(\vec{q}) R^T }_{B(\vec{q})}  \vec{\tau} + J_e^T(\vec{q}) \vec{f}_e + J_c^T(\vec{q}) \vec{f}_c
-\label{eq:manipulator}
+\label{eq:manipulator_gen}
 \end{align}
 %
 Where matrices with subscript $k$ include the motor-rotor dynamics contributions when the gear-ratio configuration $R_k$ is used:
@@ -121,7 +121,7 @@ Coordinates transforms are defined by:
 \vec{\dot{p}}   &= J_e( \vec{q} ) \vec{\dot{q} }  \quad \text{ from joint-space to end-effector   } \\
 \vec{\dot{a}}   &= J_a( \vec{q} ) \vec{\dot{q} }  \quad \text{ from joint-space to actuator-space } \\
 \vec{w }        &= R              \vec{\dot{a} }  \quad \text{ from actuator-space to rotor-space } 
-\label{eq:coord_transform}
+\label{eq:coord_transform2}
 \end{align}
 %
 Note that the distinction between actuator output coordinates and joint coordinates, useful for the DSDM-Arm shoulder mechanism, is omitted for brevity in Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators}. 

@@ -165,7 +165,7 @@ To achieve the large reduction needed for the shoulder actuator of the robot, wh
 
 The linear actuator assembly was initially designed as an experimental test bench for the DSDM technology \cite{girard_two-speed_2015}. Unlike the revolute actuators, the transmission is sealed and lubricated with oil and flexible coupling are used to connect all the components.  The linear actuator is thus more heavy duty, bigger and heavier than the revolute actuators. However, the linear actuator assembly is fixed to the ground and not a moving part of the DSDM-Arm, hence drawback of its weight and volume are limited. 
 
-Two \textit{Maxon} RE-25 motors capable of continuous operation of 20 Watts and 0.03 Nm are used for both M1 and M2. Only M2 is equipped with a gear-head for the linear actuator; the reduction provided by the ball-screw and the differential are sufficient for the high-speed mode. Overall gear-ratios in the design and resulting specifications are given at Table. \ref{tab:specrev}.
+Two \textit{Maxon} RE-25 motors capable of continuous operation of 20 Watts and 0.03 Nm are used for both M1 and M2. Only M2 is equipped with a gear-head for the linear actuator; the reduction provided by the ball-screw and the differential are sufficient for the high-speed mode. Overall gear-ratios in the design and resulting specifications are given at Table. \ref{tab:speclin}.
 
 \begin{table}[htbp]
 	\centering
@@ -179,7 +179,7 @@ Two \textit{Maxon} RE-25 motors capable of continuous operation of 20 Watts and 
 			4 & 72 & 20 & 20 & 20 & 600 & 0.7 \\
 			\hline
 		\end{tabular}
-	\label{tab:specrev}
+	\label{tab:speclin}
 \end{table}
 
 It is interesting to note that any commercially available linear actuator matching similar specifications of force and speed are much bigger and heavier than the presented linear actuator prototype, even with this un-optimized design. With a single gear-ratio, commercial actuator would need to use a DC motor of roughly $0.7 \, \frac{m}{s} \times 600 N \; = \; 0.4 kW $, almost 2/3 of a horsepower. A \textit{Maxon} motor (in the same DC category) weight over 2 kg to meet those specifications, compared to two 20 W motor weighting each about 130g. Of course, the linear actuator with a single big motor would be much more powerful than the presented linear actuator, but such power might be unnecessary. There is a need for actuators that can be both fast and strong, not necessary powerful, and very lightweight. 
