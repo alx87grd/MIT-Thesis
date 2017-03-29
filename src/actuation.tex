@@ -183,9 +183,7 @@ The envisioned implementation of the DSDM concept is to embed all the components
 
 
 \subsection{Principle}
-\label{sec:princ}
-
-
+%\label{sec:princ}
 
 The DSDM can be used in two modes, high-force mode when the brake is closed and high-speed mode when the brake is open. The result is like having two very different reduction ratio you can choose from during operation. Fig. \ref{fig:lever} conceptually illustrates the principle with a leverage analogy, M1 acts like a force source connected almost directly to the output and M2 acts like a displacement source with a large lever arm relative to the output. 
 %
@@ -1329,7 +1327,6 @@ Alternatively, as for the braking law used for synchronization during the down-s
 %
 \begin{align}
 w_{1,d}  = - R_1 \frac{ p_{ext} }{I_o + I_1 R_1^2}
-\label{eq:dsdm_impact_gen_delta_w1}
 \end{align}
 %
 Then, while using the regular high-speed controller to control the output, the secondary objective loop can be used to track M1 velocity set-point $w_{1,d}$ in the nullspace. This is analogous to the synchronization controller of eq. \eqref{eq:syncrhonization_ctl} but with a non-zero set-point for M1:
