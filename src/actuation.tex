@@ -127,28 +127,31 @@ To the knowledge of the author, no other technology meets all those requirements
 
 \subsection{Related works}
 %\paragraph{Other dual-motor actuators} 
-Many dual-motor actuators have been proposed in the literature \cite{tagliamonte_double_2012}, with different goals and architectures. So called macro-micro actuators, see Fig. \ref{fig:macromicro}, are essentially series-elastic actuators equipped with an additional small motor directly attached to the output. Variable stiffness actuators (VSA), see Fig. \ref{fig:vsa}, are also series elastic actuators where a small motor can modulate either the spring directly or the transmission between the spring and the output.
-%
-\begin{figure}[htp]
-        \centering
-				\subfloat[Macro-Micro \cite{morrell_parallel-coupled_1998}]{
-        \includegraphics[width=0.45\textwidth]{macromicro.png}
-				\label{fig:macromicro}}
-        \subfloat[Variable stiffness \cite{jafari_new_2014}]{
-				\includegraphics[width=0.45\textwidth]{VSA.png}
-				\label{fig:vsa}}
-        \caption{Other types of dual-motor architectures}\label{fig:dualmotoractuators}
-\end{figure}
-%
-Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuator model illustrating the conceptual differences between many approaches. Variable stiffness actuators use a variable transmission placed between a compliant element and the load, where it influence the reflected output stiffness but not the steady-state power-transmission characteristics. Macro-micro actuators have a fixed reflected output stiffness, but the advantage is that the additional direct-drive motor on the output makes possible to emulate a wide-range of output impedance. \textbf{The proposed VGA actuators in this thesis are fundamentally differents, it is the transmission between the motor and the load that is varied, like in a car transmission.} The main advantage of VGA is regarding efficient power transmission, enabling small motors to make full use of their maximum power at high speed and at low speed. Macro-micro actuators and VSA have no advantages over a regular electric motor regarding the range of speed at which power can be transmitted. On the other hand, macro-micro and VSA have the ability to store and release potential energy in their compliant element, which is not the case with VGA. Regarding, natural reflected impedance, both VSA and VGA have the ability to change it. One fundamental difference is that VGA can only attenuate or amplify the natural inertia and friction of the rotor, while VSA can only modify its reflected stiffness. 
+Many dual-motor actuators have been proposed in the literature \cite{tagliamonte_double_2012}, with different goals and architectures. So called macro-micro actuators, are essentially series-elastic actuators equipped with an additional small motor directly attached to the output \cite{morrell_parallel-coupled_1998}. Variable stiffness actuators (VSA) are also based on series elastic actuator architecture, where a small motor can modulate either the spring directly or the transmission between the spring and the output \cite{jafari_new_2014}. Fig. \ref{fig:variableimpedanceactuators} shows a generalized bond-graph actuator model illustrating the conceptual differences between many approaches. 
 
-\begin{figure}[htp]
+\begin{figure}[hb]
 	\centering
 		\includegraphics[width=0.90\textwidth]{variableimpedanceactuators.pdf}
 	\caption{Different approaches for variable impedance actuators}
 	\label{fig:variableimpedanceactuators}
 \end{figure}
 
+Variable stiffness actuators use a variable transmission placed between a compliant element and the load, where it influence the reflected output stiffness but not the steady-state power-transmission characteristics. Macro-micro actuators have a fixed reflected output stiffness, but the advantage is that the additional direct-drive motor on the output makes possible to emulate a wide-range of output impedance. \textbf{The proposed VGA actuators in this thesis are fundamentally differents, it is the transmission between the motor and the load that is varied, like in a car transmission.} The main advantage of VGA is regarding efficient power transmission, enabling small motors to make full use of their maximum power at high speed and at low speed. Macro-micro actuators and VSA have no advantages over a regular electric motor regarding the range of speed at which power can be transmitted. On the other hand, macro-micro and VSA have the ability to store and release potential energy in their compliant element, which is not the case with VGA. Regarding, natural reflected impedance, both VSA and VGA have the ability to change it. One fundamental difference is that VGA can only attenuate or amplify the natural inertia and friction of the rotor, while VSA can only modify its reflected stiffness. 
+
+
+
+%% , see Fig. \ref{fig:vsa},
+%\begin{figure}[htp]
+        %\centering
+				%\subfloat[Macro-Micro \cite{morrell_parallel-coupled_1998}]{
+        %\includegraphics[width=0.45\textwidth]{macromicro.png}
+				%\label{fig:macromicro}}
+        %\subfloat[Variable stiffness \cite{jafari_new_2014}]{
+				%\includegraphics[width=0.45\textwidth]{VSA.png}
+				%\label{fig:vsa}}
+        %\caption{Other types of dual-motor architectures}\label{fig:dualmotoractuators}
+%\end{figure}
+%%
 
 
 
