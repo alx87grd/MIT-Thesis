@@ -1371,7 +1371,7 @@ w_1^+ =  w_1^- + \Delta w_1 \approx w_{1,d}  + R_1 \frac{ p_{ext} }{I_o + I_1 R_
 %
 Hence, it would be possible to engaged the brake and switch to high-force mode almost instantaneously. In practice, because of speed saturation it won't always be possible to perfectly track the desired speed $w_{1,d}$ in the nullspace, or to perfectly predict the contact impulse $p_{ext}$. However, by running this control scheme and bringing $w_1^+$ as close as possible to zero, gear-shift will nonetheless be achieved faster because synchronization error will be smaller at the start of the down-shift process.
 %
-The preparation controller is illustrated in the form of a block diagram at Fig. \ref{fig:imp_loop}. Note that the expected impulse would need to be computed by an high-level controller aware of the general system situation. Section \ref{sec:contact} present techniques to compute impulsive contact forces with a model for multi-DoF robots, that could be used by the high-level controller. 
+The preparation controller is illustrated at Fig. \ref{fig:imp_loop}. Note that the expected impulse would need to be computed by an high-level controller aware of the general system situation. Section \ref{sec:contact} present techniques to compute impulsive contact forces with a model for multi-DoF robots, that could be used by the high-level controller. 
 
 
 
@@ -1582,27 +1582,27 @@ In this Chapter, an actuation technology capable of fast switching between two o
 
 \section{Potential directions of further development}
 
-Here are a few possible axis of future development. 
-
+Here are a few possible axis of further development:
+%
 \begin{itemize}
 		\item Developing a product-like actuator system:
 		\begin{itemize}
-			\item Embedded mechanical design using frameless motors
-			\item Dedicated power-electronics and low-level controllers
+			\item Embedded mechanical design using frameless motors;
+			\item Dedicated power-electronics and low-level controllers.
 		\end{itemize}
 		\item Architecture ideas:
 		\begin{itemize}
-			\item Multi-domain transducers, ex.: M1 $\rightarrow$ pneumatic and M2 $\rightarrow$ hydraulic
-			\item Clutch system to reconfigure motors so both of them can always actively transmit torques (M1 is deadmass during high-force mode)
+			\item Multi-domain transducers, ex.: M1 $\rightarrow$ pneumatic and M2 $\rightarrow$ hydraulic;
+			\item Clutch system to reconfigure motors so both of them can always actively transmit torques (M1 is deadmass during high-force mode).
 		\end{itemize}
 		\item Exploiting more thoroughly the nullspace:
 		\begin{itemize}
-			\item Secondary controller maximizing efficiency based on electrical model
-			\item Formulating a multi-objective optimal control problem including speed limits, torque limits, efficiency and other criteria 
+			\item Secondary controller maximizing efficiency based on an electrical model;
+			\item Formulating a multi-objective optimal control problem including speed limits, torque limits, efficiency and other criteria.
 		\end{itemize}
 		\item Exploring the new possibilities for robotic tasks:
 		\begin{itemize}
-			\item Using DSDM for legged locomotion
-			\item Using DSDM for manipulation of large heavy objects
+			\item Using DSDM for legged locomotion;
+			\item Using DSDM for manipulation of large heavy objects.
 		\end{itemize}
 \end{itemize}
