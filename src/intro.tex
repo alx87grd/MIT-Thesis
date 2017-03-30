@@ -12,7 +12,7 @@
 %There is one quality more important than know-how.... This is know-how by which we determine not only how to accomplish our purposes, but what our purposes are to be.
 %Norbert Wiener
 
-This thesis proposes an actuation technology and control schemes addressing the fundamental problem of efficient power-transmission in diverse situations. In many robotic systems, actuators are often required to operate in distinctively different torque-speed load conditions. Machine tools, for instance, are usually either moving at high-speed unloaded during reaching phases, or moving slowly applying large forces during manufacturing operations (see Fig. \ref{fig:machinetool}). Also a legged robot, for example, has to move its leg forward quickly through the air and, once touching the ground, it has to bear a large load (see Fig. \ref{fig:leggedrobot}), or a gripper needs to reach the part quickly and then has to apply large holding forces (see Fig. \ref{fig:gripper}).
+This thesis proposes an actuation technology and control schemes addressing the fundamental problem of efficient power transmission in diverse situations. In many robotic systems, actuators are often required to operate in distinctively different torque-speed load conditions. Machine tools, for instance, are usually either moving at high speed unloaded during reaching phases, or moving slowly applying large forces during manufacturing operations (see Fig. \ref{fig:machinetool}). Also a legged robot, for example, has to move its leg forward quickly through the air and, once touching the ground, it has to bear a large load (see Fig. \ref{fig:leggedrobot}), or a gripper needs to reach the part quickly and then has to apply large holding forces (see Fig. \ref{fig:gripper}).
 %
 \begin{figure}[H]
 				%\vspace{-10pt}
@@ -30,10 +30,10 @@ This thesis proposes an actuation technology and control schemes addressing the 
 				\label{fig:app}
 \end{figure}
 
-These two operating conditions, high speed at low torque vs. high torque at low speed, are often an order of magnitude different, while the required output power is similarly low. This discrepancy in requirements is problematic as most actuators will be operating far for their optimal conditions with a gear ratio picked from a middle ground. Electromagnetic actuators are not optimal in term of efficiency and power output at extremum torque-speed conditions. This often leads to the use of over-sized and inefficient actuators, which is inhibitory particularly for mobile robots.
+These two operating conditions, high speed at low torque vs. high torque at low speed, are often an order of magnitude different, while the required output power is similarly low. This discrepancy in requirements is problematic as most actuators will be operating far for their optimal conditions with a gear ratio picked from a middle ground. Electromagnetic actuators are not optimal in term of efficiency and power output at extremum torque-speed conditions. This often leads to the use of over-sized and inefficient actuators, when designing for such bimodal operations, which is inhibitory particularly for mobile robots.
 
 
-\section{Proposed approach: Variable Transmissions}
+\section{Proposed approach: variable transmissions}
 \label{sec:ProposedSolutionRobotsUsingMultipleGearRatioActuators}
 
 To meet the power requirement of all operating points with small actuators, it is proposed to use electric motors coupled to a gearbox where the reduction ratio can be drastically changed online, see Fig. \ref{fig:2s}. Using such Variable Gear-ratio Actuator (VGA) on the many joint of robotic systems, leads to offering a wide range of properties in terms of speed, force and impedance, see Fig. \ref{fig:vgarobots}.
@@ -55,19 +55,19 @@ To meet the power requirement of all operating points with small actuators, it i
 
 The two main advantage of the VGA approach are: \textbf{good power output and efficiency for a wide range of output speeds} and \textbf{radical changes of intrinsic impedance} (goes with the square of the reduction ratio). 
 
-\subsection{Features of gear-shifting in a robotic context}
+\subsection{Features of gear shifting in a robotic context}
 
 \paragraph{Power output and efficiency over a wide range of speed}
 In many situations, using multiple gear ratios allows for the downsizing of the motors while still meeting required forces/speeds capabilities. A small lightweight actuator can generate large torques and move at high speed if equipped with both a large and a small gear ratio. Furthermore, by actively selecting gearing ratios to keep motors in efficient regimes, the energy consumption of a robot can be greatly reduced. 
 
 \paragraph{Radical changes of reflected impedance}
-The transmission has a radical effect on the output impedance of a robot; the motor inertia and viscous damping are reflected to the output proportionally with the square of the reduction ratio. Gear-shifting can thus also be used as an alternative approach to variable impedance actuation. A robot joint could be made back-drivable by selecting a small reduction ratio, to interact safely with the environment.  Alternatively, a joint could be made non-backdrivable by selecting a very large reduction ratio, to resist easily external disturbances.
+The transmission has a radical effect on the output impedance of a robot; the motor inertia and viscous damping are reflected to the output proportionally with the square of the reduction ratio. Gear shifting can thus also be used as an alternative approach to variable impedance actuation. A robot joint could be made backdrivable by selecting a small reduction ratio, to interact safely with the environment.  Alternatively, a joint could be made non-backdrivable by selecting a very large reduction ratio, to resist easily external disturbances.
 
 \paragraph{Exploitation or attenuation of the external load dynamics}
 Changing the gear ratio has a radical effect on the natural dynamics of a system. By changing dynamically the gear ratio, it is possible to select the natural dynamic behavior that is most advantageous for a task. For instance, selecting a small reduction ratio to exploit gravitational forces pulling the robot in a desired direction, or on the other hand, selecting a large reduction ratio to hold a heavy weight with small actuator torques.
 
 \paragraph{Directionality of properties}
-For a multiple degrees of freedom (DoF) mechanism, the speed/force properties are directional. Typically the Jacobian (transformation from motor coordinates to task-space coordinates) of a mechanism is only a function of the configuration $J=J(\vec{q})$, but a mechanism using $m$ variable gear ratio actuators with $l$ possible gear ratio, the Jacobian would also be function of the selected gear ratios $R$ and dependent on control inputs $J=J(\vec{q},R)$. Hence, for a given configuration there is $m^l$ manipulability ellipsoid options. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear ratios would be picked to meet the task requirements in terms of load bearing, speed and impedance. 
+For a multiple degrees-of-freedom (DoF) mechanism, the speed/force properties are directional. Typically the Jacobian (transformation from motor coordinates to task-space coordinates) of a mechanism is only a function of the configuration $J=J(\vec{q})$, but a mechanism using $m$ variable gear ratio actuators with $l$ possible gear ratios, the Jacobian would also be function of the selected gear ratios $R$ and dependent on control inputs $J=J(\vec{q},R)$. Hence, for a given configuration there is $m^l$ manipulability ellipsoid options. Fig. \ref{fig:gearselectionlegged} illustrates situations where gear ratios would be picked to meet the task requirements in terms of load bearing, speed and impedance. 
 
 
 \begin{figure}[hb]
@@ -91,13 +91,11 @@ For a multiple degrees of freedom (DoF) mechanism, the speed/force properties ar
 
 \subsection{Differences from vehicle powertrain transmissions}
 
-Variable transmissions have been mostly explored in the context of vehicle power-trains. Their usage in robotics raise different issues but also new opportunities, and those distinctions are briefly presented in this section.
+Variable transmissions have been mostly explored in the context of vehicle powertrains. Their usage in robotics raise different issues but also new opportunities, and those distinctions are briefly presented in this section.
 
 \paragraph{Range of gear ratios}
 %
-For car transmissions, a typical gear ratio range start with a ~3:1 reduction for the first gear and the last gear ratio is an overdrive of about ~0.8:1. For robotic applications, the explored idea in this thesis is a much wider range between gear ratios (one order-of-magnitude and more). For instance, an actuator prototype is built having a first gear with a 474:1 reduction and a second (and last) gear with a 23:1 reduction. 
-
-%\subsubsection{Characteristic of transducer and driven load}
+For car transmissions, a typical gear ratio range start with a ~3:1 reduction for the first gear and the last gear ratio is an overdrive of about ~0.8:1. For robotic applications, the explored idea in this thesis is a much wider range between gear ratios (one order-of-magnitude and more). For instance, this thesis presents an actuator prototype having a first gear with a 474:1 reduction and a second (and last) gear with a 23:1 reduction. 
 
 \paragraph{Electromagnetic transducer vs. internal combustion engine characteristics}
 %
@@ -106,23 +104,23 @@ Internal combustion engines have an efficient power-output on a narrow range of 
 %\newline
 \paragraph{Car dynamics vs. robot dynamics}
 %
-For car power-trains the driven load is always a large inertia and is thus naturally attenuating any discontinuity in torque during a gear-shift. However, this is not the case in a general robotic context. 
+For car powertrains the driven load is always a large inertia and is thus naturally attenuating any discontinuity in torque during a gear shift. However, this is not the case in a general robotic context. 
 
 \paragraph{Mutli-DoF systems}
 %
-Last and most fundamental difference, this thesis explores the control of VGA in multi-DoF systems like robotic arms, while for vehicle power-train the system is always single-axis.
+Last and most fundamental difference, this thesis explores the control of VGA in multi-DoF systems like robotic arms, while for vehicle powertrains the system is always single-axis.
 
-\paragraph{Solutions Concepts}
+\paragraph{Solutions concepts}
 %
 All in all, as exemplified at eq. \eqref{eq:ratiorangestypicalrobot}, this thesis explores variable transmissions in multi-axis systems where gear ratios exhibit drastic variations. This differs from typical car transmission with small jumps between successive gear ratios for a single-axis system, see eq. \eqref{eq:ratiorangestypicalcar}.
 %
 \begin{align}
-  \text{Car Transmission:}& \quad R \in \{ \, 3 \, , \,  2 \, , \, 1.4 \, , \, 1 \, , \, 0.8 \, \} 
+  \text{Car transmission:}& \quad R \in \{ \, 3 \, , \,  2 \, , \, 1.4 \, , \, 1 \, , \, 0.8 \, \} 
 	\label{eq:ratiorangestypicalcar}
 	%%
 	\\
 	%%
-	\text{Proposed Robots:}& \quad R \in 
+	\text{Proposed robots:}& \quad R \in 
 	\scriptsize
 	\left \{
 	\left[
@@ -159,10 +157,10 @@ All in all, as exemplified at eq. \eqref{eq:ratiorangestypicalrobot}, this thesi
 \label{sec:MainChallenges}
 
 \paragraph{How to make fast and seamless gearshifts?}
-Gear shifting is more technically challenging in robotics applications than in vehicle applications. For powertrains, the load is mostly a large inertia, while for robots, the loads may exhibit a rich range of dynamics including spring-like and damper-like loads. Hence, unlike vehicle applications, leaving the load free momentarily during transitions (from one gear ratio to another) is not acceptable in the context of robotics. Moreover, many robotic applications would benefit from having order-of-magnitudes difference between the possible gear ratios, i.e. a wider range of ratio than what is typical in vehicle power-trains. Hence, an effective gear shifting methodology adapted to robotics is needed, allowing for fast and seamless transitions between very different gear ratios under diverse load conditions.
+Gear shifting is more technically challenging in robotics applications than in vehicle applications. For powertrains, the load is mostly a large inertia, while for robots, the loads may exhibit a rich range of dynamics including spring-like and damper-like loads. Hence, unlike vehicle applications, leaving the load free momentarily during transitions (from one gear ratio to another) is not acceptable in the context of robotics. Moreover, many robotic applications would benefit from having order-of-magnitudes difference between the possible gear ratios, i.e. a wider range of ratio than what is typical in vehicle powertrains. Hence, an effective gear shifting methodology adapted to robotics is needed, allowing for fast and seamless transitions between very different gear ratios under diverse load conditions.
 
 \paragraph{When to use what gear ratio?}
-From the control perspective, automating the gear ratios selection in a robotic context is a new and challenging problem. Gear-shifting is a very non-linear process and the plant becomes a hybrid dynamical system if the usable gear ratios are a set of discrete values. Hence, no classical control approach can be applied directly to handle the additional gear ratio selection control input. In simple scenarios, the gear ratio selection can be based on simple principles. However, to handle the generalized problem of the gear ratios selection for multi-DoF robots, that experience diverse types of forces acting simultaneously and coupling between each axis, new methodologies are needed to generate trajectories and feedback laws that would use effectively all the gear ratios options and exploit their advantages.
+From the control perspective, automating the gear ratios selection in a robotic context is a new and challenging problem. Gear shifting is a very non-linear process and the plant becomes a hybrid dynamical system if the usable gear ratios are a set of discrete values. Hence, no classical control approach can be applied directly to handle the additional gear ratio selection control input. In simple scenarios, the gear ratio selection can be based on simple principles. However, to handle the generalized problem of the gear ratios selection for multi-DoF robots, that experience diverse types of forces acting simultaneously and coupling between each axis, new methodologies are needed to generate trajectories and feedback laws that would use effectively all the gear ratios options and exploit their advantages.
 
 
 \newpage
@@ -170,11 +168,9 @@ From the control perspective, automating the gear ratios selection in a robotic 
 \section{Original contributions}
 \label{sec:contribution}
 
-%The main contributions of this thesis are the development of a novel robotic system using variable gear ratio actuators and control algorithms, addressing dynamic selection of gear ratios and control of transitions from one gear ratio to another.
-
 \subsection{Gear-shifting methodology adapted to robotics}
 
-The first major contribution of the thesis is an actuation technology capable of fast and seamless gear-shift between two discrete order-of-magnitude different gear ratios. This technology consist of a mechanical architecture, that will be refer as DSDM (dual-speed dual-motor), used in conjunction with novel gear-shifting control algorithms. The key idea is exploiting the internal degree-of-freedom (DoF) of the actuator to make possible transiting for one gear ratio to another while also always fully controlling the output load. 
+The first major contribution of the thesis is an actuation technology capable of fast and seamless gear-shift between two discrete order-of-magnitude different gear ratios. This technology consist of a mechanical architecture, that will be refer as DSDM (dual-speed dual-motor), used in conjunction with novel gear  shifting control algorithms. The key idea is exploiting the internal degree-of-freedom (DoF) of the actuator to make possible transiting for one gear ratio to another while also always fully controlling the output load. 
 
 \subsection{Control algorithms to select gear ratios dynamically}
 
@@ -208,7 +204,7 @@ A \emph{Python} library was developed for providing tools for planning trajector
 
 \paragraph{Analytical}
 %
-Control laws exploiting the nullspace of DSDM actuators, leading to independent control of the internal DoF are synthesized. A modeling approach and representation for multi-DoF system with variable transmissions is proposed, with a special emphasis on intrinsic vs. extrinsic dynamics. A closed-form solution of optimal gear ratio for a class of $n$-DoF robotic systems on a known trajectory is derived. Model-based control laws and optimal gear ratios selection algorithms are proposed, and guarantees in terms of stability and chattering behavior are derived.
+Control laws exploiting the null space of DSDM actuators, leading to independent control of the internal DoF are synthesized. A modeling approach and representation for multi-DoF system with variable transmissions is proposed, with a special emphasis on intrinsic vs. extrinsic dynamics. A closed-form solution of optimal gear ratio for a class of $n$-DoF robotic systems on a known trajectory is derived. Model-based control laws and optimal gear ratios selection algorithms are proposed, and guarantees in terms of stability and chattering behavior are derived.
 
 \paragraph{Simulations}
 %
@@ -222,6 +218,6 @@ Multiple experiments with actuator prototypes demonstrate the salient features o
 \section{Organization of the thesis}
 \label{sec:OrganisationOfTheThesis}
 
-First, chapter \ref{sec:VisionForAircraftManufacturingAutomation} discusses manufacturing applications that would benefit from the developed technologies in this thesis. Chapter \ref{sec:MultipleSpeedActuationTechnology} then presents a variable gear ratio actuator technology, referred to as DSDM, using a gear-shifting methodology adapted to robotics. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} explores the generalized problem of dynamic selection of gear ratios for a robotic systems equipped with variable gear-reducer, and present control algorithms. Chapter \ref{sec:ExperimentalValidation} presents a novel robotic arm using three custom built DSDM actuators, used in all experiments presented in this thesis, and discusses the mechanical design and control system implementation. %Chapter \ref{sec:casestudy} presents examples of using the proposed control algorithms in different situations.
+First, chapter \ref{sec:VisionForAircraftManufacturingAutomation} discusses manufacturing applications that would benefit from the developed technologies in this thesis. Chapter \ref{sec:MultipleSpeedActuationTechnology} then presents a variable gear ratio actuator technology, referred to as DSDM, using a gear-shifting methodology adapted to robotics. Chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} explores the generalized problem of dynamic selection of gear ratios for a robotic systems equipped with variable transmissions, and present control algorithms. Chapter \ref{sec:ExperimentalValidation} presents a novel robotic arm using three custom built DSDM actuators, used in all experiments presented in this thesis, and discusses the mechanical design and control system implementation. %Chapter \ref{sec:casestudy} presents examples of using the proposed control algorithms in different situations.
 
 
