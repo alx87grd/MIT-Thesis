@@ -765,7 +765,7 @@ Advantageous features of the Rollout gear-selection scheme are 1) filtering-out 
 
 The proposed control scheme requires simulating $l$ trajectory at each time steps, which is usually tractable computationally. However, this is sub-optimal in the sense that gear-ratios are fixed on each trajectory. With more computational power, additional options of more complex sequences of discrete gear-ratios could be included. Each option of a predetermined sequence of gear-ratios could be seen as a form of motion primitive, a proposed approach to simplify control/planning when the number of possible action is too large to fully explore \cite{gray_predictive_2012}. This would also connect with the idea of family of modes proposed to simplify MPC control of hybrid systems \cite{hogan_feedback_2016}. The proposed Rollout gear-selection scheme, can thus also be seen as optimizing over $l$ motion primitives consisting of using fixed gear-ratios for the next $h$ seconds. 
 
-Furthermore, if the optimization would also be conducted over possible motor torques, instead of constraining them to always follow a given feedback law, then the control scheme would correspond to full scale MPC. However, MPC is in general very hard to implement at satisfactory fast rate for non-linear multi-DOF robotic systems, especially when the system is hybrid \cite{hogan_feedback_2016}. 
+Furthermore, if the optimization would also be conducted over all possible motor torques, instead of constraining them to always follow a given feedback law, then the control scheme would correspond to full scale MPC. However, MPC is in general very hard to implement at satisfactory fast rate for non-linear multi-DOF robotic systems, especially when the system is hybrid \cite{hogan_feedback_2016}. 
 %
 All in all, depending on the complexity of the controlled robotic system and the available computational power, the proposed control scheme can be adapted from a very easy-to-compute point-by-point optimization with hysteresis, to more optimal but computationally-heavy predictive schemes with a variety of level of complexity. 
 
@@ -898,7 +898,7 @@ Q = \Delta t_{shift} \operatornamewithlimits{max} \left[ \vec{\tau}^T \vec{\tau}
 %
 For the time horizon $h$ it is not necessary a case of larger is better, since the cost computed with fixed gear-ratios over a long simulated period does not represent well the real future cost, since gear-shift are possible in the real future. Very short time horizon would largely inhibit gear-shifting since gain of changing the gear-ratios on a short period would be small compared to the gear-shift penalty. 
 
-A rule of thumbs, as a starting point, is to set the time horizon to the expected average amount of time spent between two gear-shifts. This is motivated by the fact that in that case, most predicted trajectory with fixed gear-ratios will be representative of the real future trajectory. Simulations and experiments can be used to experimentally adjust this parameter. Alternatively, the cost function could also be discounted: putting more weight on immediate cost and less weight on far ahead uncertain cost. 
+A rule of thumbs, as a starting point, is to set the time horizon to the expected average amount of time spent between two gear-shifts. This is motivated by the fact that in that case, most predicted trajectories with fixed gear-ratios will be representative of the real future trajectory. Simulations and experiments can be used to experimentally adjust this parameter. Alternatively, the cost function could also be discounted: putting more weight on immediate cost and less weight on far ahead uncertain cost. 
 
 
 
@@ -1507,7 +1507,7 @@ Fig. \ref{fig:rob} shows four additional experiments with the wrist demonstratin
 				\hspace{-5pt}
 				\subfloat[]{ % intrinsic dynamics
 				\includegraphics[width=0.20\textwidth]{fig16d.pdf} }
-        \caption{Experiments with Sliding Mode version of the R* controller }
+        \caption{Experiments with the R* Sliding Mode controller }
 				\label{fig:rob}
 \end{figure}
 
