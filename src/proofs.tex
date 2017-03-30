@@ -278,11 +278,11 @@ J^*   &= 2 \sum_i{ \left[ \tau_i^E \tau_i^I + \left| \tau_i^E \tau_i^I \right| \
 %
 
 \newpage
-\section{Stability Proofs}
+\section{Stability proofs}
 \label{sec:stabproofs}
 
  
-\subsection{R* Computed Torque Controller}
+\subsection{R* Computed Torque controller}
 \label{sec:stabrstar1}
 
 In this section, the stability of motions when using the R* Computed Torque Controller is demonstrated for any arbitrary sequence of selected gear-ratio. However, here perfect knowledge of the equation of motions is assumed.
@@ -331,7 +331,7 @@ Hence, convergence of error to zero is guaranteed if both gain matrix $K_D$ and 
 
 \newpage
 
-\subsection{R* Sliding Mode Controller}
+\subsection{R* Sliding Mode controller}
 \label{sec:stabrstar2}
 
 In this section, the stability of motions when using the R* Sliding Mode Controller is demonstrated for any arbitrary sequence of selected gear-ratio, in the presence of bounded uncertainty.
@@ -428,7 +428,7 @@ Thus, if the gains are defined based on disturbance bounds and according to eq.\
 
 \newpage
 
-\section{Chattering Bounds with Rollout Gear-selection}
+\section{Chattering bounds with Rollout gear selection}
 \label{sec:chat}
 
 This section computes lower bounds for the time interval between successive gear-shifts when using the Rollout gear-selection scheme. 
@@ -707,7 +707,7 @@ For the closed-loop system with the computed torque controller, the error dynami
 %
 Similarly for the sliding mode controller, after all sliding surfaces are reached (happens in finite time) then the error dynamic is also linear and stable.
 %
-Using this matrix exponential solution for error trajectory in the simulations leads to 
+Using this matrix exponential solution for error trajectories in the simulations leads to 
 %
 \begin{align}
 \vec{\hat{x}}_e( \hat{t} , t ) = e^{A (\hat{t} - t )} \vec{x}_e(t)  

@@ -39,7 +39,7 @@ It will be a significant breakthrough if a type of multiple speed transmission c
 
 
 
-\section{Actuator and Powertrain Research}
+\section{Actuator and powertrain research}
 \label{sec:actres}
 
 \paragraph{Classical Actuators} Traditional robots generally use actuators that behave as displacement-sources because of their high intrinsic impedance. These include geared EM motors and hydraulics cylinders. Using a force sensor, it is possible to control the output force with this type of actuators, but the bandwidth is rather limited. To guarantee the stability of the force-feedback scheme only half the intrinsic inertia can be canceled \cite{hogan_impedance_2004}. Since 70's, roboticists have been attempting to build actuators that can behave naturally as a force-source such as series-elastic actuators, pneumatic cylinder and air-muscles \cite{hanafusa_stable_1977}\cite{pratt_series_1995}. However, because of the physical limitation of compliant transmission materials, the achievable bandwidth is limited and precise position control is hardly achievable. Direct drive EM actuators are the best force-source actuators with high fidelity, high bandwidth, and have been used for high-speed robots \cite{asada_direct-drive_1987} and more recently small legged robots \cite{kenneally_design_2016}. However, the very low force density \cite{hollerbach_comparative_1992} and low efficiency at low speeds make them impractical for most mobile robot applications, just holding a payload with static torques require continuous currents in the motors leading to a large energy consumption even though no mechanical work is done. 
@@ -114,8 +114,8 @@ In the actuator field, lever mechanisms with variable attachment points that lea
 
 Many clever mechanisms have proposed to be used as CVT. However, all designs have some major drawback regarding either: total variation range, constraints on output motion, ratio-variation speed, allowable shift conditions, efficiency, etc. The best indication of this is the automotive industry. Theoretically, there is a huge incentive to use CVT with internal combustion engined because of their narrow peak of power and efficiency. However, despite a century of development in one of the largest industry, transmissions using many discrete gear-ratios are still the most widely adopted solution. Even with the recent efforts to improve fuel economy, the trend in the industry is to use transmissions with a large number of discrete gear-ratios \cite{phillips_10-speed_2010}\cite{goleski_multi-speed_2015}. Furthermore, compared to the automotive field, the incentive of using CVT in robotics is diminished because of more flexible torque curves of electric motor and the challenges are greater because of the wider desired range of ratios. To conclude, all the limitations of CVT, especially the limited variation range for typical designs, make this technology un-adapted for general purpose robotic actuators. However, a breakthrough in term of IVT technology would be very interesting for the field of robotics.
 
-\subsection{Novel Contribution}
-%\paragraph{Novel Contribution} 
+\subsection{Novel contribution}
+
 The presented DSDM actuator in this chapter, address the issue of improving available power and efficiency over a wide range of operating speeds, which has rarely been addressed in the robotics literature. Also, the actuator enables order-of-magnitude variation of the output impedance, which is also a highly desirable feature.  \textbf{The main novel contribution is the methodology for gear shifting between two very different gear-ratios seamlessly even in highly dynamic situations, which is a key enabling feature for robotic applications.} A mechanical architecture where two motors are coupled using a 3-ports gearbox and a brake is used in conjunction with novel control scheme to provide full control of the output during gear shifting. The mechanical architecture is not new by itself as similar architectures (using planetary and brakes) are used in hybrid car powertrains, automatic transmissions and special actuators. However, here this architecture is used in conjunction with a novel controller to provide full control of the output during gear shifting. A preliminary version of this work has been published  by the author in \cite{girard_two-speed_2015}, but this chapter includes a more throughout analysis and new algorithms for fast gear-shift even during impacts. 
 
 To the knowledge of the author, no other technology meets all those requirements:
@@ -291,7 +291,7 @@ An additional secondary advantage of the DSDM architecture is that some minimum 
 
 This section derives mathematical equations describing the behavior of a DSDM actuator for the purpose of designing adequate control laws. 
 
-\subsection{3-ports Planetary Gear Junction}
+\subsection{3-ports planetary gear junction}
 
 \begin{figure}[htp]
 	\centering
@@ -1176,7 +1176,7 @@ The nullspace can be used for many possible objectives. In case the first motor 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsection{Fast and Seamless Transitions (gear-shift)}
+\subsection{Fast and seamless transitions (gearshifts)}
 \label{sec:fastshifts}
 
 This section addresses transition control between the two discrete operating modes.
@@ -1384,7 +1384,7 @@ The preparation controller is illustrated in the form of a block diagram at Fig.
 
 This section presents experimental results with the wrist DSDM prototype of the DSDM-Arm. Information regarding the mechanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, the high-level control loop is a simple PID controller (recall Fig. \ref{fig:dsdm_control_architecture}). Set-points are commanded from a joystick controller. 
 
-\subsection{DSDM Dynamic Behavior}
+\subsection{DSDM dynamic behavior}
 
 %\begin{figure}[H]
 	%\centering
@@ -1446,7 +1446,7 @@ Fig. \ref{fig:dsdm_nullspace} illustrates the internal DoF of DSDM actuators. He
 \end{figure}
 
 
-\subsection{Seamless Transitions}
+\subsection{Seamless transitions}
 
 \subsubsection{Constant Speed}
 Experiments here show gear-shifts execution while controlling the output to track a fixed speed. With the DSDM-Arm wrist tracking a 1 rad/s velocity, the average synchronization time for a down-shift, which is about 250 msec without preparation, is improved to 30 msec with the preparation scheme. Faster synchronization times of less than 20 msec were also achieved with another experimental set-up \cite{girard_two-speed_2015}. Hence while those experiments demonstrated that very fast gear-shifts in the range of 20 msec are possible, even faster synchronizations could be possible, since the bottleneck here is implementation factors, not fundamental aspects. 

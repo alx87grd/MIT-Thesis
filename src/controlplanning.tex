@@ -145,7 +145,7 @@ Computation time is in the order of 1-10 sec depending the robot complexity. Hen
 
 \newpage
 
-\section{Modeling Variable Gear-Ratio Actuators}
+\section{Modeling variable gear-ratio actuators}
 \label{sec:model}
 
 \begin{flushright}
@@ -714,7 +714,7 @@ R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \operatornamewithlimits{max}
 %
 The result of this optimization is independent from the position of states with respect to the switching surface $s=0$, and would remove this source of rapid change of optimal gear-ratios solutions. Also, the sliding mode controller could be implemented with smoothing techniques for the discontinuous torque, many techniques exist \cite{slotine_applied_1991} \cite{perruquetti_sliding_2002}. This would also alleviate one source of chattering for the gear-ratios selection.
 
-\subsection{Rollout Gear-ratios Selection}
+\subsection{Rollout gear-ratios selection}
 
 A better approach to the problem of avoiding fast gear-shifting, is to associate a one-time cost with transitions and optimize over a time-horizon. This way a trade-off between changing gear-ratios quickly to minimize torques and minimizing the number of gear-shifts can be formalized.
 %
@@ -1513,7 +1513,7 @@ Fig. \ref{fig:rob} shows four additional experiments with the wrist demonstratin
 
 Note that the discontinuous torque required to guarantee convergence despite disturbances is bigger for the case when the disturbance bound is increased, and also is greatly reduced when down-shifting to a large gear-ratio at low speeds (since the required discontinuous gain is inversely proportional to the gear-ratio). In a practical implementation, smoothing techniques should be implemented to avoid exciting the unmodeled high-frequency modes with the torque chattering.
 
-\subsection{2-DoF Experiments}
+\subsection{2-DoF experiments}
 
 Fig. \ref{fig:exp_traj_2dof_x} and Fig. \ref{fig:exp_traj_2dof_u} show an experiment using 2-DoF, the wrist joint and the elbow joint of the DSDM-Arm. The goal is a fixed joint configuration, and the R* Sliding Mode controller, including the Rollout gear-selection scheme, is used. Results shows success in tracking the goal for both DoF.
 

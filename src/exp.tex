@@ -37,7 +37,7 @@ This chapter present a novel 3-DoF robotic arm prototype using DSDM actuators, s
 
 This section describes the mechanical design of the arm. The goal was to develop a research platform to validate experimentally the ideas proposed in this thesis, but also to demonstrate the advantages of robotic systems with variable gear-ratio actuators. This arm is thus design to be light-weight compared to robotic arm of similar size, maximum speeds and forces. 
 
-\subsection{DSDM Actuator Design}
+\subsection{DSDM actuator design}
 \label{sec:ActuatorDesign}
  
 Three actuator prototypes were developed for the shoulder, elbow and wrist DoF of the arm, with different mechanical advantages. The shoulder actuator is designed to drive a ballscrew, for a large efficient reduction, and the others actuators are embedded into revolute joints. 
@@ -185,7 +185,7 @@ Two \textit{Maxon} RE-25 motors capable of continuous operation of 20 Watts and 
 It is interesting to note that any commercially available linear actuator matching similar specifications of force and speed are much bigger and heavier than the presented linear actuator prototype, even with this un-optimized design. With a single gear-ratio, commercial actuator would need to use a DC motor of roughly $0.7 \, \frac{m}{s} \times 600 N \; = \; 0.4 kW $, almost 2/3 of a horsepower. A \textit{Maxon} motor (in the same DC category) weight over 2 kg to meet those specifications, compared to two 20 W motor weighting each about 130g. Of course, the linear actuator with a single big motor would be much more powerful than the presented linear actuator, but such power might be unnecessary. There is a need for actuators that can be both fast and strong, not necessary powerful, and very lightweight. 
 
 
-\subsection{Arm Design}
+\subsection{Arm design}
 \label{sec:DSDMArm}
 
 The DSDM-arm is built using very lightweight square tubing of carbon fiber. 3D printed plastic (ABS) parts are designed to make the junction between revolute joint assemblies and the tubes. The revolute joint assemblies are joined to printed parts with a bolt pattern, and printed parts are simply clamped on the square tubes. This allows for very quick reconfiguration of the arm, tubes of different lengths can be used and revolute joints can be mounted at different angles on the tubes. The carbon fiber tube between the shoulder and the elbow has a cross section of 2"x2" while the tubes linking elbow-wirst and wrist-end-effector have a 1"x1" cross section. 
@@ -281,7 +281,7 @@ Regarding the backlash in the gearing, this could be avoided by spending more en
 
 This section discusses implementation of the control algorithms for the DSDM-Arm. 
 
-\subsection{Global Architecture}
+\subsection{Global architecture}
 
 Fig. \ref{fig:archi_diagram} illustrates the hierarchical control architecture for the DSDM-Arm. At the very high-level an operator gives commands to the system using a wireless \textit{xbox-360} controller, and at the very low level, pwm signal are sent to motor power-electronic circuits. The physical platforms include a desktop computer running Ubuntu 14.04 and ROS \cite{quigley_ros:_2009}, and multiple micro-controllers. 
 
@@ -294,7 +294,7 @@ Fig. \ref{fig:archi_diagram} illustrates the hierarchical control architecture f
 
 The high-level motion planning algorithm, the centralized robot controller is running on the desktop. Each motor as its own micro-controller handling the low-level current control loop. The plan for the DSDM controllers, was to decentralize them on one individual micro-controllers for each actuators. However, at the time of writing these lines, all three DSDM controllers are programs running on the desktop, which communicates directly with the six motor boards. Communication between the desktop and motor micro-controllers is done over USB connections.
 
-\subsection{ROS Architecture}
+\subsection{ROS architecture}
 
 Fig. \ref{fig:ros_3dsdm} and \ref{fig:ros_dsdm} illustrates the software architecture in ROS, those figures were generated directly from ROS using the \textit{rqt\_graph} command. Each ellipse, nodes using the ROS nomenclature, represent an independent program, and arrows represent communication pipelines in between those programs, topics using the ROS nomenclature. All programs were written in \textit{python} with the exception of the FlexSEA drivers, handling the communication with motor micro-controllers, which are written in \textit{C++}.
 
@@ -317,7 +317,7 @@ Fig. \ref{fig:ros_3dsdm} and \ref{fig:ros_dsdm} illustrates the software archite
 
 The \textit{joy} node read button states of the wireless controller, and broadcast them when button state changes. This program is available as an open-source ROS package. The \textit{nav} node then maps buttons to operating modes and desired goals. Multiple operating modes are available: sending a configuration goal to the planner, sending a reference directly to the robot controller, or manually controlling actuator torques and gear-ratios. 
 
-\subsection{Trajectory Planning}
+\subsection{Trajectory planning}
 
 The \textit{plan} node implement the RRT algorithm, as described in sec. \ref{sec:SamplingBasedTrajectoryPlanner}, to generate feasible trajectories. When receiving a new configuration goal, the node reads the current states, search for a feasible trajectory, and then broadcast the reference trajectory solution. Execution time of the search is stochastic, but is on the order of about 1 sec for 1-DoF systems and 10 sec for 2-DoF systems, with the custom implementation.
 
@@ -325,7 +325,7 @@ The \textit{plan} node implement the RRT algorithm, as described in sec. \ref{se
 
 The FlexSEA driver nodes are programed to continuously request and receive encoder measurements from motor boards at a rate of 500 Hz. The DSDM controller nodes then read those values, process them (kinematic relationship based on gear-ratios and filtered differentiation to compute velocities), and broadcast position and velocity of actuator output coordinates. The \textit{obs} node then read all actuator measurements and transposes them to joint coordinates. This step is trivial except for the 4-bar mechanism of the shoulder joint for which an interpolation function synthesized offline is used. 
 
-\subsection{Robot Controller}
+\subsection{Robot controller}
 
 The master robot controller, loads a reference trajectory, and compute actuator torques and gear-ratios in closed-loop based on state feedback at the rate of 500 Hz. Multiple control policies from chapter \ref{sec:ControlAndPlanningOfRobotUsingVariableGearRatioActuators} are implemented:
 %
@@ -337,7 +337,7 @@ The master robot controller, loads a reference trajectory, and compute actuator 
 %
 For controlling only 1-DoF with two gear-ratios options, the Rollout gear-selection can run with a time horizon of 1-2 sec without slowing down the 500 Hz rate of the controller. However, when running the controller for 2-DoF with four gear-ratios options, the predictive simulations had to be simplified by using very rough integration steps for the scheme to run at 500 Hz. This should not be taken as a computational limit of the approach since here non-optimized inefficient \textit{python} code was used.
 
-\subsection{DSDM Actuator Controllers}
+\subsection{DSDM actuator controllers}
 
 DSDM controllers are currently implemented as ROS nodes. They receive a torque and a gear-ratio command from the master robot controller and send current set-points and brake command to the motor drivers, also at 500 Hz. DSDM controller nodes implement the control schemes described in Chapter \ref{sec:MultipleSpeedActuationTechnology}.
 
