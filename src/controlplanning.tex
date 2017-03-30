@@ -95,7 +95,7 @@ This chapter proposed control schemes to dynamically select the optimal gear-rat
 				\subfloat[ Model-based approach ]{ %extrinsic dynamics
 				\includegraphics[width=0.45\textwidth]{archi3.pdf}
 				\label{fig:archi3}}
-        \caption{Proposed Control Architectures}
+        \caption{Proposed control architectures}
 				\label{fig:controlarchitectures}
 \end{figure}
 %
@@ -519,7 +519,7 @@ The salient feature of the R* Computed Torque controller is that the optimal gea
 \begin{figure}[t]
 	\centering
 		\includegraphics[width=0.99\textwidth]{Rstar_block_big.pdf}
-	\caption{R* Computed Torque Controller}
+	\caption{R* Computed Torque controller}
 	\label{fig:Rstar_block_big}
 \end{figure}
 
@@ -574,7 +574,7 @@ R^{*} &= \operatornamewithlimits{argmin}\limits_{R} \left[ \vec{\tau}^T\vec{\tau
 \begin{figure}[t]
 	\centering
 		\includegraphics[width=0.99\textwidth]{sliding_blocks.pdf}
-	\caption{R* Sliding Mode Controller}
+	\caption{R* Sliding Mode controller}
 	\label{fig:sliding_blocks}
 \end{figure}
 %
@@ -721,14 +721,14 @@ A better approach to the problem of avoiding fast gear-shifting, is to associate
 \begin{figure}[tp]
 	\centering
 		\includegraphics[width=0.99\textwidth]{Rollout_block.pdf}
-	\caption{Rollout with Computed Torque control as base policy}
+	\caption{Rollout with Computed Torque Control as base policy}
 	\label{fig:Rollout_block}
 \end{figure}
 %
 \begin{figure}[tp]
 	\centering
 		\includegraphics[width=0.99\textwidth]{Rollout_sliding_block.pdf}
-	\caption{Rollout with Sliding Mode control as base policy}
+	\caption{Rollout with Sliding Mode Control as base policy}
 	\label{fig:Rollout_sliding_block}
 \end{figure}
 %
@@ -752,7 +752,7 @@ where $Q$ is the cost penalty for gear-shifting. Hence, optimal gear-ratios, com
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.85\textwidth]{rollout.pdf}
-	\caption[Rollout gear-selection]{Rollout gear-selection}
+	\caption[Rollout gear selection]{Rollout gear selection}
 	\label{fig:rollout}
 \end{figure}
 
@@ -1205,7 +1205,7 @@ Fig. \ref{fig:J} to \ref{fig:u1} illustrate the numerical results for system 1. 
 				\subfloat[Minimum energy]{
 				\includegraphics[width=0.31\textwidth]{Je.png}
 				\label{fig:J_energy}}
-        \caption{Optimal cost-to-go $J^*$}\label{fig:J}
+        \caption[Optimal cost-to-go]{Optimal cost-to-go $J^*$}\label{fig:J}
 \end{figure}
 %
 \begin{figure}[p]
@@ -1220,7 +1220,7 @@ Fig. \ref{fig:J} to \ref{fig:u1} illustrate the numerical results for system 1. 
 				\subfloat[Minimum energy]{
 				\includegraphics[width=0.31\textwidth]{u1e.png}
 				\label{fig:u0_energy}}
-        \caption{Optimal policy for the continuous torque command $\tau$ [Nm]}\label{fig:u0}
+        \caption[Optimal policy for the continuous torque command]{Optimal policy for the continuous torque command $\tau$ [Nm]}\label{fig:u0}
 \end{figure}
 %
 \begin{figure}[p]
@@ -1235,7 +1235,7 @@ Fig. \ref{fig:J} to \ref{fig:u1} illustrate the numerical results for system 1. 
 				\subfloat[Minimum energy]{
 				\includegraphics[width=0.31\textwidth]{u2e.png}
 				\label{fig:u1_energy}}
-        \caption{Optimal policy for the gear-ratio mode selection $k$}\label{fig:u1}
+        \caption[Optimal policy for the gear-ratio mode selection]{Optimal policy for the gear-ratio mode selection $k$}\label{fig:u1}
 \end{figure}
 %
 \begin{figure}[p]
@@ -1277,7 +1277,7 @@ Figure \ref{fig:J2} illustrates the computed optimal cost-to-go for the inverted
         \subfloat[Quadratic cost]{
 				\includegraphics[width=0.48\textwidth]{J_quadratic.png}%J_LQR.png
 				\label{fig:J_LQR2}}
-        \caption{Optimal cost-to-go $J^*$}\label{fig:J2}
+        \caption[Optimal cost-to-go]{Optimal cost-to-go $J^*$}\label{fig:J2}
 \end{figure}
 
 \begin{figure}[p]
@@ -1288,7 +1288,7 @@ Figure \ref{fig:J2} illustrates the computed optimal cost-to-go for the inverted
         \subfloat[Quadratic cost]{
 				\includegraphics[width=0.48\textwidth]{u0_quadratic.png}
 				\label{fig:u0_LQR2}}
-        \caption{Optimal policy for the continuous torque command $\tau$ [Nm]}\label{fig:u02}
+        \caption[Optimal policy for the continuous torque command]{Optimal policy for the continuous torque command $\tau$ [Nm]}\label{fig:u02}
 \end{figure}
 
 \begin{figure}[p]
@@ -1299,7 +1299,7 @@ Figure \ref{fig:J2} illustrates the computed optimal cost-to-go for the inverted
         \subfloat[Quadratic cost]{
 				\includegraphics[width=0.48\textwidth]{u1_quadratic.png}
 				\label{fig:u1_LQR2}}
-        \caption{Optimal policy for the discrete gear selection $k \in \{1,2\}$}\label{fig:u12}
+        \caption[Optimal policy for the discrete gear selection]{Optimal policy for the discrete gear selection $k \in \{1,2\}$}\label{fig:u12}
 \end{figure}
 
 \begin{figure}[p]
@@ -1438,7 +1438,7 @@ It is interesting that the model based approach can find a solution with a traje
 				%\hspace{-5pt}
 				\subfloat[RRT with R* Computed Torque]{ 
 				\includegraphics[width=0.50\textwidth]{vs_rrt.pdf} }
-        \caption{Model based approach compared to value iteration}
+        \caption{Model based approach compared to Value Iteration}
 				\label{fig:vs}
 \end{figure}
 
@@ -1450,7 +1450,7 @@ In the simulation presented so-far, fast gear-shifts were not inhibited by any o
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.90\textwidth]{chattering_compared.pdf}
-	\caption{Fast gear-shifting inhibition scheme comparison}
+	\caption{Fast gear-shifting inhibition}
 	\label{fig:ChatteringComparaison}
 \end{figure}
 
@@ -1507,7 +1507,7 @@ Fig. \ref{fig:rob} shows four additional experiments with the wrist demonstratin
 				\hspace{-5pt}
 				\subfloat[]{ % intrinsic dynamics
 				\includegraphics[width=0.20\textwidth]{fig16d.pdf} }
-        \caption{Experiments with sliding mode version of the R* controller }
+        \caption{Experiments with Sliding Mode version of the R* controller }
 				\label{fig:rob}
 \end{figure}
 
@@ -1521,7 +1521,7 @@ Fig. \ref{fig:exp_traj_2dof_x} and Fig. \ref{fig:exp_traj_2dof_u} show an experi
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.85\textwidth]{2dof_test3_x.pdf}
-	\caption{R* Sliding Mode Controller tracking a target with 2 DoF: trajectory}
+	\caption{R* Sliding Mode controller tracking a target with 2 DoF: trajectory}
 	\label{fig:exp_traj_2dof_x}
 	%\vspace{-10pt}
 \end{figure}
@@ -1531,7 +1531,7 @@ Fig. \ref{fig:exp_traj_2dof_x} and Fig. \ref{fig:exp_traj_2dof_u} show an experi
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.85\textwidth]{2dof_test3_u.pdf}
-	\caption{R* Sliding Mode Controller tracking a target with 2 DoF: control inputs}
+	\caption{R* Sliding Mode controller tracking a target with 2 DoF: control inputs}
 	\label{fig:exp_traj_2dof_u}
 	%\vspace{-10pt}
 \end{figure}

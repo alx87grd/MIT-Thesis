@@ -64,7 +64,7 @@ Some advance electric motor systems can extend their operation at high-speed by 
 \begin{figure}[ht]
 	\centering
 		\includegraphics[width=0.5\textwidth]{EM_fluxweakening.pdf}
-	\caption{Force-speed curve of electric motor using flux weakening }
+	\caption{Force-speed curve of an electric motor using flux weakening }
 	\label{fig:EM_fluxweakening}
 \end{figure}
 
@@ -92,7 +92,7 @@ Fig. \ref{fig:forcefidelity} shows typical transmitted force profile during gear
 \begin{figure}[htb]
 	\centering
 		\includegraphics[width=0.90\textwidth]{typeloads.pdf}
-	\caption{Type of loads encountered by vehicle powertrain vs. robot actuators}
+	\caption{Type of loads encountered by vehicle powertrains vs. robot actuators}
 	\label{fig:typeloads}
 \end{figure}
 
@@ -193,7 +193,7 @@ The DSDM can be used in two modes, high-force mode when the brake is closed and 
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.60\textwidth]{lever.pdf}
-	\caption{Dual input system}
+	\caption{Dual inputs system}
 	\label{fig:lever}
 \end{figure}
 %
@@ -215,7 +215,7 @@ Fig. \ref{fig:torquespeed} illustrates the operating range of the DSDM actuator 
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.65\textwidth]{torquespeed.pdf}
-	\caption[DSDM actuator operation region]{DSDM actuator operation regions}
+	\caption[DSDM actuator operation regions]{DSDM actuator operation regions}
 	\label{fig:torquespeed}
 \end{figure}
 
@@ -233,7 +233,7 @@ A DSDM actuator will be lighter than a single motor for applications with a wide
         \subfloat[DSDM solution]{
 				\includegraphics[width=0.42\textwidth]{sol2.pdf}
 				\label{fig:s2}}
-        \caption{Case study of two actuator solution for two 10 W operating points }\label{fig:solutions}
+        \caption{Case study of two actuator solutions for two 10 W operating points }\label{fig:solutions}
 \end{figure}
 
 \begin{figure}[H]
@@ -263,7 +263,7 @@ An additional secondary advantage of the DSDM architecture is that some minimum 
 
 \begin{table}[h]
 	\centering
-	\caption{Safe Failure Modes of a DSDM actuator}
+	\caption{Safe failure modes of a DSDM actuator}
 	\vspace{+5pt}
 		\begin{tabular}{| p{1.8in} | p{4.2in} |}
 		\hline \hline
@@ -657,7 +657,7 @@ Fig. \ref{fig:operatingmodes} illustrates the two different discrete modes of th
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.99\textwidth]{operating_modes.pdf}
-	\caption{Discrete operating modes of the actuators}
+	\caption{Discrete operating modes of the DSDM}
 	\label{fig:operatingmodes}
 \end{figure}
 %
@@ -1097,7 +1097,7 @@ Fig. \ref{fig:dsdm_control_architecture} shows the proposed hierarchical control
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.95\textwidth]{dsdm_control_architecture.pdf}
-	\caption{Control Architecture of a DSDM Controller}
+	\caption{Control architecture of a DSDM controller}
 	\label{fig:dsdm_control_architecture}
 \end{figure}
 
@@ -1148,28 +1148,28 @@ The nullspace can be used for many possible objectives. In case the first motor 
 \begin{figure}[p]
 	\centering
 		\includegraphics[width=0.90\textwidth]{HF_ctl.pdf}
-	\caption{High-Force Mode Controller}
+	\caption{High-force mode: Controller}
 	\label{fig:HF_loop}
 \end{figure}
 
 \begin{figure}[p]
 	\centering
 		\includegraphics[width=0.90\textwidth]{HS_ctl.pdf}
-	\caption{High-Speed Mode: Generic Controller}
+	\caption{High-speed mode: Generic controller}
 	\label{fig:HS_loop}
 \end{figure}
 
 \begin{figure}[p]
 	\centering
 		\includegraphics[width=0.90\textwidth]{down_ctl.pdf}
-	\caption{High-Speed Mode: Synchronization controller}
+	\caption{High-speed mode: Synchronization controller}
 	\label{fig:down_loop}
 \end{figure}
 
 \begin{figure}[p]
 	\centering
 		\includegraphics[width=0.90\textwidth]{imp_ctl.pdf}
-	\caption{High-Speed Mode: Impact Preparation Controller}
+	\caption{High-speed mode: Impact preparation controller}
 	\label{fig:imp_loop}
 \end{figure}
 
@@ -1379,7 +1379,7 @@ The preparation controller is illustrated in the form of a block diagram at Fig.
 
 \newpage
 
-\section{Experimental Results}
+\section{Experimental results}
 \label{sec:dsdm_exp}
 
 This section presents experimental results with the wrist DSDM prototype of the DSDM-Arm. Information regarding the mechanical design and controller implementation is presented in Chapter \ref{sec:ExperimentalValidation}. In experiments where the output is controlled in closed-loop for position or velocity tracking, the high-level control loop is a simple PID controller (recall Fig. \ref{fig:dsdm_control_architecture}). Set-points are commanded from a joystick controller. 
@@ -1403,7 +1403,7 @@ This section presents experimental results with the wrist DSDM prototype of the 
 \begin{figure}[hb]
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_manual_shift.pdf}
-	\caption[DSDM behavior overview]{DSDM actuator with torque and mode commands set from a joystick}
+	\caption[DSDM actuator behavior overview]{DSDM actuator with torque and mode commands set from a joystick}
 	\label{fig:dsdm_manual_shift}
 \end{figure}
 %
@@ -1440,7 +1440,7 @@ Fig. \ref{fig:dsdm_nullspace} illustrates the internal DoF of DSDM actuators. He
 	\centering
 		\includegraphics[width=0.75\textwidth]{dsdm_nullspace.pdf}
 		\vspace{-10pt}
-	\caption[DSDM actuator tracking constant output velocity: nullspace]{Experimental demonstration of independence of the output with respect to the secondary controller input, with the DSDM actuator tracking constant output velocity while sending manual commands in the nullspace }
+	\caption[DSDM actuator nullspace]{Experimental demonstration of independence of the output with respect to the secondary controller input, with the DSDM actuator tracking constant output velocity while sending manual commands in the nullspace }
 	\label{fig:dsdm_nullspace}
 	\vspace{-10pt}
 \end{figure}
@@ -1463,7 +1463,7 @@ Fig. \ref{fig:dsdm_cstspd_shifts} illustrates the DSDM actuator maintaining a co
 \begin{figure}[p]
 	\centering
 		\includegraphics[width=0.85\textwidth]{dsdm_cstspd_shifts.pdf}
-	\caption[DSDM actuator tracking constant output velocity: shifts]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode (no preparation) }
+	\caption[DSDM actuator constant velocity gearshifts]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode (no preparation) }
 	\label{fig:dsdm_cstspd_shifts}
 \end{figure}
 %
@@ -1472,7 +1472,7 @@ Fig. \ref{fig:dsdm_cstspd_shifts_withprep} illustrates how the idea of preparati
 \begin{figure}[p]
 	\centering
 		\includegraphics[width=0.85\textwidth]{dsdm_cstspd_shifts_withprep.pdf}
-	\caption[DSDM actuator tracking constant output velocity: preparation]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode (with preparation) }
+	\caption[DSDM actuator constant velocity gearshifts with preparation]{DSDM actuator tracking constant output velocity while shifting back and forth between high-speed mode and high-force mode (with preparation) }
 	\label{fig:dsdm_cstspd_shifts_withprep}
 \end{figure}
 %

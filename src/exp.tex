@@ -96,14 +96,14 @@ Hence, the design of the brake is coupled with the desired ratio between $R_1$ a
 Because it allows for simpler and modular designs, it was decided to use off-the-shelf \textit{Maxon} motor brakes that can be mounted directly on a motor assembly. All actuator designs use the \textit{Maxon} motor brake AB-28, which have a holding torque capability of 0.4 Nm and weight 51 g. 
 
 
-\subsubsection{Revolute Joint Actuators}
+\subsubsection{Revolute joint actuators}
 
 Fig. \ref{fig:dsdm_act} shows the prototype for a revolute DSDM actuator. The elbow and wrist actuator have the same design with the exception of using different gear-head for the motors, leading to overall different gear-ratios $R_1$ and $R_2$.
 %
 \begin{figure}[htp]
 	\centering
 		\includegraphics[width=0.70\textwidth]{dsdm_proto2.pdf}
-	\caption{Revolute joint DSDM actuator prototype } %Max continuous torque of 40 Nm and maximum velocity of 100 RPM
+	\caption{Revolute joint prototype with DSDM actuation } %Max continuous torque of 40 Nm and maximum velocity of 100 RPM
 	\label{fig:dsdm_act}
 \end{figure}
 %
@@ -219,7 +219,7 @@ Table \ref{tab:robotspec} shows the arm specifications at the joints in term of 
 
 \begin{table}[htbp]
 	\centering
-	\caption{DSDM-Arm Joint Specifications}
+	\caption{DSDM-Arm joint specifications}
 		\begin{tabular}{ c c c c c c c c c c }
 			\hline
 			   & Range  & \multicolumn{2}{c}{Reduction} & \multicolumn{2}{c}{Max. Velocity} & \multicolumn{2}{c}{Max. Torque} & \multicolumn{2}{c}{Inertia} \\
@@ -244,7 +244,7 @@ Table \ref{tab:robotspec} shows the arm specifications at the joints in term of 
 
 \begin{table}[htpb]
 	\centering
-	\caption[DSDM-Arm End-point Specifications]{DSDM-Arm End-point Specifications with Configuration of Fig. \ref{fig:arm_config}}
+	\caption[DSDM-Arm end-point specifications]{DSDM-Arm end-point specifications with the configuration illustrated at Fig. \ref{fig:arm_config}}
 		\begin{tabular}{ c c c c c c c }
 			\hline
 			   & \multicolumn{2}{c}{Max. Velocity} & \multicolumn{2}{c}{Max. Force} & \multicolumn{2}{c}{Reflected Mass}\\
@@ -288,7 +288,7 @@ Fig. \ref{fig:archi_diagram} illustrates the hierarchical control architecture f
 \begin{figure}[H]
 	\centering
 		\includegraphics[width=0.95\textwidth]{ros_diagram.png}
-	\caption{Control Software Architecture}
+	\caption{Control software architecture}
 	\label{fig:archi_diagram}
 \end{figure}
 
