@@ -2,7 +2,7 @@
 \label{sec:proofs}
 
 
-\section{Simplified equations of motion for diagonal $R$}
+\section{Simplified equations of motion for diagonal R}
 \label{sec:Rdiagndof}
 
 Here the derivation of the simplified form of equations of motion, where intrinsic and extrinsic forces are two separate terms, is derived for a class of $n$-DoF fully actuated robots.
@@ -632,7 +632,7 @@ Regarding the new term, the time derivative of instantaneous cost in the simulat
 \dot{C}_k    = \frac{\partial C_k}{\partial t} = \frac{\partial C_k}{\partial \vec{\tau}} \frac{\partial \vec{\tau}}{\partial \vec{\hat{x}}} \frac{\partial \vec{\hat{x}}}{\partial t} 
 \end{align}
 %
-This term represent how much the computed cost can vary, between two simulations computed with $dt$ interval, for time interval shared by the two simulations. 
+This term represent how much the computed cost can vary on simulated trajectories, between two simulations computed with $dt$ time interval. 
 
 \paragraph{Cost function sensitivity}
 %
@@ -663,7 +663,7 @@ For the sliding mode control law, because of the additional discontinuous term $
 -2G \leq \left[ \Delta \vec{\tau}_d \right]_i \leq 2G
 \end{align}
 %
-Lets assume for simplicity that the cost function would penalize independently the continuous torque term and the discontinuous torque term:
+Lets assume, for simplicity, that the cost function would penalize independently the continuous torque term and the discontinuous torque term:
 %
 \begin{align}
 C_k = C_{c} + C_{d} = C_{c} + \vec{\tau}_d^T \vec{\tau}_d
@@ -736,5 +736,5 @@ Note that conclusion 3 is consistent with the previous analysis (sec. \ref{sec:c
 \int_{t}^{t+h}{ \dot{C}_k \, d\hat{t} } \leq \dot{C}_k^{max} h
 \end{align}
 %
-the result is very conservative and unadapted when the time horizon $h$ is very large.
+the result is very conservative when the time horizon $h$ is large.
 
